@@ -2,23 +2,30 @@
 
 import { useRouter } from "next/navigation";
 import { useLocale } from "@wikitraveler/ui";
-import { consumeAccessReturn } from "./navigationReturn";
+import {
+  ACCESS_IN_APP_BACK_KEY,
+  clearInAppBack,
+  consumeAccessReturn,
+  nextHistoryIdx,
+  shouldRestoreDiscoveryViaBack,
+} from "./navigationReturn";
 
 /** Navigate back in session history, or to a saved return URL / fallback when opened directly. */
 export function useHistoryBack(fallbackHref = "/") {
   const router = useRouter();
 
   return () => {
+    if (typeof window !== "undefined") {
+      const inAppReturn = sessionStorage.getItem(ACCESS_IN_APP_BACK_KEY) === "1";
+      const historyIdx = nextHistoryIdx(window.history.state);
+      if (shouldRestoreDiscoveryViaBack({ inAppReturn, historyIdx })) {
+        clearInAppBack();
+        router.back();
+        return;
+      }
+    }
     const saved = consumeAccessReturn();
-    if (saved) {
-      router.push(saved);
-      return;
-    }
-    if (typeof window !== "undefined" && window.history.length > 1) {
-      router.back();
-      return;
-    }
-    router.push(fallbackHref);
+    router.push(saved || fallbackHref);
   };
 }
 

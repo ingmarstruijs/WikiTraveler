@@ -234,8 +234,7 @@ export function RegionMap({
   const { t } = useLocale();
   const [internalPins, setInternalPins] = useState<MapPin[]>(() => {
     if (!viewportBrowse) return [];
-    const session = readMapBrowseSession();
-    return session.searched ? session.pins : [];
+    return readMapBrowseSession().pins;
   });
   const [internalLoading, setInternalLoading] = useState(false);
   const [internalError, setInternalError] = useState("");
@@ -245,7 +244,10 @@ export function RegionMap({
     Boolean(viewportBrowse && readMapBrowseSession().areaDirty)
   );
   const initialViewportSearchDone = useRef(
-    Boolean(viewportBrowse && readMapBrowseSession().searched)
+    Boolean(
+      viewportBrowse &&
+        (readMapBrowseSession().searched || readMapBrowseSession().pins.length > 0)
+    )
   );
   const [coverageHint, setCoverageHint] = useState(false);
 
@@ -280,6 +282,7 @@ export function RegionMap({
   const pendingViewportRefreshRef = useRef(false);
   const wasViewportBrowseRef = useRef(viewportBrowse);
   const updateRadiiRef = useRef<(() => void) | null>(null);
+  const renderMarkersRef = useRef<() => void>(() => {});
   const viewportFetchRef = useRef(0);
   const refreshViewportRef = useRef<() => Promise<void>>(async () => {});
   const onSelectPropertyRef = useRef(onSelectProperty);
@@ -296,10 +299,10 @@ export function RegionMap({
       return;
     }
     onViewportPinsChange?.(visibleInternalPins);
-    if (visibleInternalPins.length > 0 || initialViewportSearchDone.current) {
+    if (visibleInternalPins.length > 0) {
       patchMapBrowseSession({
         pins: visibleInternalPins,
-        searched: initialViewportSearchDone.current,
+        searched: true,
       });
     }
   }, [viewportBrowse, visibleInternalPins, onViewportPinsChange]);
@@ -313,11 +316,20 @@ export function RegionMap({
         map.invalidateSize();
         if (mapHasSize(map)) void refreshViewportRef.current();
       });
+      window.setTimeout(() => {
+        const live = mapRef.current;
+        if (!live) return;
+        live.invalidateSize();
+        if (mapHasSize(live) && pinsRef.current.length === 0) {
+          void refreshViewportRef.current();
+        }
+      }, 180);
       return;
     }
 
     const zoom = map.getZoom();
     if (zoom < MAP_PIN_MIN_ZOOM) {
+      if (!mapHasSize(map)) return;
       setZoomHint(true);
       setAreaDirty(false);
       setCoverageHint(false);
@@ -460,12 +472,54 @@ export function RegionMap({
   useEffect(() => {
     if (!visible || !mapReady) return;
     const map = mapRef.current;
+    const el = containerRef.current;
     if (!map) return;
     requestAnimationFrame(() => {
       suppressAreaDirtyRef.current = true;
       ignoreMoveDirtyUntilRef.current = Date.now() + 500;
       map.invalidateSize();
+      renderMarkersRef.current();
     });
+
+    const onPageShow = () => {
+      const live = mapRef.current;
+      if (!live) return;
+      suppressAreaDirtyRef.current = true;
+      ignoreMoveDirtyUntilRef.current = Date.now() + 500;
+      live.invalidateSize();
+    };
+    window.addEventListener("pageshow", onPageShow);
+
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+    let lastW = 0;
+    let lastH = 0;
+    const ro =
+      el && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => {
+            const live = mapRef.current;
+            if (!live) return;
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+              const prevEmpty = lastW < 40 || lastH < 40;
+              live.invalidateSize();
+              const size = live.getSize();
+              lastW = size.x;
+              lastH = size.y;
+              if (prevEmpty && mapHasSize(live)) {
+                suppressAreaDirtyRef.current = true;
+                ignoreMoveDirtyUntilRef.current = Date.now() + 400;
+                renderMarkersRef.current();
+              }
+            }, 50);
+          })
+        : null;
+    if (ro && el) ro.observe(el);
+
+    return () => {
+      window.removeEventListener("pageshow", onPageShow);
+      if (resizeTimer) clearTimeout(resizeTimer);
+      ro?.disconnect();
+    };
   }, [visible, mapReady]);
 
   useEffect(() => {
@@ -556,6 +610,7 @@ export function RegionMap({
       }
       const zoom = map.getZoom();
       if (zoom < MAP_PIN_MIN_ZOOM) {
+        if (!mapHasSize(map)) return;
         setZoomHint(true);
         setAreaDirty(false);
         setCoverageHint(false);
@@ -595,13 +650,16 @@ export function RegionMap({
     }
 
     if (!initialViewportSearchDone.current) {
+      const session = readMapBrowseSession();
+      if (session.pins.length > 0 || session.searched) {
+        initialViewportSearchDone.current = true;
+        if (session.pins.length > 0) setInternalPins(session.pins);
+        setAreaDirty(session.areaDirty);
+        return;
+      }
       initialViewportSearchDone.current = true;
       if (enteredBrowse) {
         setAreaDirty(true);
-        return;
-      }
-      if (readMapBrowseSession().searched && readMapBrowseSession().pins.length > 0) {
-        setAreaDirty(false);
         return;
       }
       void refreshViewport().then(() => {
@@ -612,6 +670,12 @@ export function RegionMap({
     }
 
     if (enteredBrowse) {
+      const session = readMapBrowseSession();
+      if (session.pins.length > 0) {
+        setInternalPins(session.pins);
+        setAreaDirty(session.areaDirty);
+        return;
+      }
       setAreaDirty(true);
     }
   }, [mapReady, viewportBrowse, useExternal, refreshViewport]);
@@ -722,6 +786,8 @@ export function RegionMap({
       });
     }
   }
+
+  renderMarkersRef.current = renderMarkers;
 
   useEffect(() => {
     renderMarkers();

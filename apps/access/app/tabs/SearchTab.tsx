@@ -42,6 +42,7 @@ import {
   overridesFromFeatures,
   readA11yPreferences,
   subscribeA11yPreferences,
+  withProfileFeatures,
   type A11yPreferenceKey,
 } from "../lib/a11yPreferences";
 
@@ -93,9 +94,22 @@ export function SearchTab({ dataNodeUrl, homeNodeUrl, active = true }: Props) {
   const searchParams = useSearchParams();
   const [boot] = useState(() => initialSearchState(searchParams));
   const [query, setQuery] = useState(boot.query);
-  const [filters, setFilters] = useState<SearchFilters>(boot.filters);
-  const [profilePrefs, setProfilePrefs] = useState<A11yPreferenceKey[]>([]);
-  const [prefOverridesOff, setPrefOverridesOff] = useState<string[]>([]);
+  const [profilePrefs, setProfilePrefs] = useState<A11yPreferenceKey[]>(() => readA11yPreferences());
+  const [prefOverridesOff, setPrefOverridesOff] = useState<string[]>(() => {
+    const prefs = readA11yPreferences();
+    if (searchParams.get("features")) {
+      return overridesFromFeatures(boot.filters.features, prefs);
+    }
+    return readSearchSession()?.prefOverridesOff ?? [];
+  });
+  const [filters, setFilters] = useState<SearchFilters>(() => {
+    if (searchParams.get("features")) return boot.filters;
+    return withProfileFeatures(
+      boot.filters,
+      readA11yPreferences(),
+      readSearchSession()?.prefOverridesOff ?? []
+    );
+  });
   const [discoveryView, setDiscoveryView] = useState<DiscoveryViewMode>(boot.view);
   const [searchFeatures, setSearchFeatures] = useState<SearchFeature[]>([]);
   const [results, setResults] = useState<PropertySummary[] | null>(() => {
@@ -123,6 +137,7 @@ export function SearchTab({ dataNodeUrl, homeNodeUrl, active = true }: Props) {
   const [placeHint, setPlaceHint] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const skipUrlHydrate = useRef(true);
+  const skipSearchSessionWrite = useRef(true);
   const profilePrefsRef = useRef<A11yPreferenceKey[]>([]);
   profilePrefsRef.current = profilePrefs;
   const prefOverridesOffRef = useRef<string[]>([]);
@@ -203,9 +218,18 @@ export function SearchTab({ dataNodeUrl, homeNodeUrl, active = true }: Props) {
     const nextQuery = searchParams.get("q") ?? "";
     const nextFilters = filtersFromSearchParams(searchParams);
     const nextView = parseDiscoveryView(searchParams.get("view"));
+    const prefs = profilePrefsRef.current;
     setQuery(nextQuery);
-    setFilters(nextFilters);
-    setPrefOverridesOff(overridesFromFeatures(nextFilters.features, profilePrefsRef.current));
+    if (searchParams.get("features")) {
+      setFilters(nextFilters);
+      setPrefOverridesOff(overridesFromFeatures(nextFilters.features, prefs));
+    } else {
+      const overrides = prefOverridesOffRef.current.filter((key) =>
+        prefs.includes(key as A11yPreferenceKey)
+      );
+      setPrefOverridesOff(overrides);
+      setFilters(withProfileFeatures(nextFilters, prefs, overrides));
+    }
     setPage(1);
     if (nextView) {
       setDiscoveryView(nextView);
@@ -214,6 +238,10 @@ export function SearchTab({ dataNodeUrl, homeNodeUrl, active = true }: Props) {
   }, [searchParams]);
 
   useEffect(() => {
+    if (skipSearchSessionWrite.current) {
+      skipSearchSessionWrite.current = false;
+      return;
+    }
     writeSearchSession({ query, filters, page, view: discoveryView, prefOverridesOff });
   }, [query, filters, page, discoveryView, prefOverridesOff]);
 

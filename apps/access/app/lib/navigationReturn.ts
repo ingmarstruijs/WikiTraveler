@@ -2,6 +2,8 @@ import type { SearchFilters } from "@wikitraveler/ui";
 import type { DiscoveryViewMode } from "./discoveryUtils";
 
 export const ACCESS_RETURN_KEY = "wt_access_return";
+/** Set when leaving discovery via an in-app link so Back can restore history instead of remounting `/`. */
+export const ACCESS_IN_APP_BACK_KEY = "wt_access_in_app_back";
 
 export type AccessTabId = "search" | "saved" | "contribute" | "profile";
 
@@ -64,6 +66,30 @@ export function buildAccessReturnUrl(state: AccessReturnState): string {
 export function saveAccessReturn(state: AccessReturnState): void {
   if (typeof window === "undefined") return;
   sessionStorage.setItem(ACCESS_RETURN_KEY, buildAccessReturnUrl(state));
+  sessionStorage.setItem(ACCESS_IN_APP_BACK_KEY, "1");
+}
+
+export function clearInAppBack(): void {
+  if (typeof window === "undefined") return;
+  sessionStorage.removeItem(ACCESS_IN_APP_BACK_KEY);
+}
+
+export function nextHistoryIdx(historyState: unknown): number | null {
+  if (historyState && typeof historyState === "object" && "idx" in historyState) {
+    const idx = (historyState as { idx: unknown }).idx;
+    if (typeof idx === "number" && Number.isFinite(idx)) return idx;
+  }
+  return null;
+}
+
+/** Prefer `history.back()` so the discovery map (pins, camera, sheet) is restored. */
+export function shouldRestoreDiscoveryViaBack(options: {
+  inAppReturn: boolean;
+  historyIdx: number | null;
+}): boolean {
+  if (options.inAppReturn) return true;
+  if (options.historyIdx != null) return options.historyIdx > 0;
+  return false;
 }
 
 export function readAccessReturn(): string | null {
