@@ -22,6 +22,8 @@ interface Props {
   compact?: boolean;
   maxItems?: number;
   showClear?: boolean;
+  /** Render the heading even when the list is empty (Contribute dashboard). */
+  showEmpty?: boolean;
   onItemsChange?: (count: number) => void;
   returnState?: AccessReturnState;
 }
@@ -31,6 +33,7 @@ export function RecentPropertiesSection({
   compact = false,
   maxItems = 10,
   showClear = true,
+  showEmpty = false,
   onItemsChange,
   returnState,
 }: Props) {
@@ -108,7 +111,7 @@ export function RecentPropertiesSection({
     reload();
   }
 
-  if (items.length === 0) return null;
+  if (items.length === 0 && !showEmpty) return null;
 
   const fallbackNodeUrl = getStoredNodeUrl();
   const staleCount = missingIds.size;
@@ -133,57 +136,63 @@ export function RecentPropertiesSection({
         </p>
       )}
 
-      <div style={{ display: "grid", gap: 8 }}>
-        {items.map((p) => {
-          const date = new Date(p.auditedAt);
-          const label = date.toLocaleDateString(locale, { month: "short", day: "numeric" });
-          const propertyNodeUrl = p.nodeUrl ?? fallbackNodeUrl;
-          const isMissing = missingIds.has(p.id);
+      {items.length === 0 ? (
+        <p className="fk-contribute-recent-empty">{t("ui.recentEmptyBody")}</p>
+      ) : (
+        <>
+          <div className="fk-recent-list">
+            {items.map((p) => {
+              const date = new Date(p.auditedAt);
+              const label = date.toLocaleDateString(locale, { month: "short", day: "numeric" });
+              const propertyNodeUrl = p.nodeUrl ?? fallbackNodeUrl;
+              const isMissing = missingIds.has(p.id);
 
-          return (
-            <Link
-              key={p.id}
-              href={propertyOrAuditHref(p.id, propertyNodeUrl, homeNodeUrl, contributor)}
-              style={{ textDecoration: "none", opacity: isMissing ? 0.75 : 1 }}
-              onClick={() => {
-                if (returnState) saveAccessReturn(returnState);
-              }}
-            >
-              <div className="recent-row">
-                <div className="recent-row-icon" aria-hidden="true">📝</div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p className="recent-name">{p.name}</p>
-                  <p className="recent-loc">{p.location}</p>
-                  {isMissing && (
-                    <p style={{ fontSize: 11, color: "var(--wt-danger)", marginTop: 2 }}>
-                      {t("ui.propertyMissingTitle")}
-                    </p>
-                  )}
-                </div>
-                <div style={{ textAlign: "right", flexShrink: 0 }}>
-                  <p className="recent-date">{label}</p>
-                  {isMissing ? (
-                    <button
-                      type="button"
-                      onClick={(e) => handleRemove(p.id, e)}
-                      className="recent-action-btn"
-                    >
-                      {t("ui.recentRemove")}
-                    </button>
-                  ) : (
-                    <p className="recent-reaudit">{t("ui.recentReaudit")}</p>
-                  )}
-                </div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+              return (
+                <Link
+                  key={p.id}
+                  href={propertyOrAuditHref(p.id, propertyNodeUrl, homeNodeUrl, contributor)}
+                  className="fk-recent-link"
+                  onClick={() => {
+                    if (returnState) saveAccessReturn(returnState);
+                  }}
+                >
+                  <div className="recent-row">
+                    <div className="recent-row-icon" aria-hidden="true">📝</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p className="recent-name">{p.name}</p>
+                      <p className="recent-loc">{p.location}</p>
+                      {isMissing && (
+                        <p style={{ fontSize: 11, color: "var(--wt-danger)", marginTop: 2 }}>
+                          {t("ui.propertyMissingTitle")}
+                        </p>
+                      )}
+                    </div>
+                    <div style={{ textAlign: "right", flexShrink: 0 }}>
+                      <p className="recent-date">{label}</p>
+                      {isMissing ? (
+                        <button
+                          type="button"
+                          onClick={(e) => handleRemove(p.id, e)}
+                          className="recent-action-btn"
+                        >
+                          {t("ui.recentRemove")}
+                        </button>
+                      ) : (
+                        <p className="recent-reaudit">{t("ui.recentReaudit")}</p>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
 
-      {showClear && (
-        <button type="button" onClick={handleClearAll} className="fk-recent-clear">
-          {t("ui.recentClear")}
-        </button>
+          {showClear && (
+            <button type="button" onClick={handleClearAll} className="fk-recent-clear">
+              {t("ui.recentClear")}
+            </button>
+          )}
+        </>
       )}
     </section>
   );

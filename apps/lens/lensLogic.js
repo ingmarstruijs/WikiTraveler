@@ -7,7 +7,7 @@ export const DEFAULT_NODE_URL = "https://node-eu.wikitraveler.org";
 export const ACCESS_HUB_URL = "https://access.wikitraveler.org";
 export const ONBOARDING_KEY = "lensOnboardingDone";
 
-/** Coverage categories — mirrors Access PropertyDetail score model. */
+/** Coverage categories — same field→step map as Access (`auditStepForField`). */
 export const CATEGORY_EXPECTED = [
   { id: "mobility", labelKey: "ui.auditStepMobility", steps: ["entrance", "mobility"], expected: 11 },
   { id: "room", labelKey: "ui.auditStepRoom", steps: ["room"], expected: 7 },
@@ -48,6 +48,10 @@ export const FEATURE_HIGHLIGHTS = [
   "elevator_present",
   "parking_accessible",
 ];
+
+/** Wait this long after the last keystroke before querying the node. */
+export const SEARCH_DEBOUNCE_MS = 500;
+export const SEARCH_MIN_CHARS = 2;
 
 export function truthyFactValue(value) {
   const v = String(value ?? "").trim().toLowerCase();
@@ -261,6 +265,209 @@ export function extractHotelNameFromTitle(title) {
     .replace(/\s*[|\u2013\u2014]\s*(Booking\.com|Expedia|Hotels\.com|Agoda).*$/i, "")
     .replace(/,\s*[A-Z][^,]+.*$/, "")
     .trim();
+}
+
+/** Display grouping — mirrors Access `SECTION_RULES` / `splitRoomSectionFacts`. */
+const FACT_SECTION_RULES = [
+  {
+    id: "entrance",
+    labelKey: "ui.propertySectionEntrance",
+    fields: [
+      "step_free_entrance",
+      "automatic_door",
+      "ramp_present",
+      "door_width_cm",
+      "path_to_entrance",
+    ],
+  },
+  {
+    id: "mobility",
+    labelKey: "ui.propertySectionCirculation",
+    fields: [
+      "elevator_present",
+      "elevator_width_cm",
+      "corridor_min_width_cm",
+      "parking_accessible",
+      "pool_lift",
+      "elevator_floor_count",
+    ],
+  },
+  {
+    id: "room",
+    labelKey: "ui.propertySectionRoom",
+    fields: [
+      "room_types_available",
+      "accessible_room_description",
+      "step_free_room",
+      "clear_space_beside_bed",
+      "bed_height_cm",
+      "turning_circle_cm",
+      "accessible_room_count",
+    ],
+    prefixes: ["room-type:"],
+  },
+  {
+    id: "bathroom",
+    labelKey: "ui.propertySectionBathroom",
+    fields: ["accessible_bathroom", "roll_in_shower", "grab_bars_bathroom"],
+  },
+  {
+    id: "communication",
+    labelKey: "ui.propertySectionSensory",
+    fields: [
+      "hearing_loop",
+      "braille_signage",
+      "tactile_paving",
+      "visual_alarms",
+      "service_animal_policy",
+    ],
+  },
+];
+
+const ROOM_FACT_ORDER = [
+  "step_free_room",
+  "clear_space_beside_bed",
+  "bed_height_cm",
+  "turning_circle_cm",
+  "accessible_room_description",
+  "roll_in_shower",
+  "grab_bars_bathroom",
+];
+
+function factStorageKey(fact) {
+  return `${fact.scopeKey ?? "property"}:${fact.fieldName}`;
+}
+
+export function groupFactsBySection(facts) {
+  const assigned = new Set();
+  const sections = [];
+  const list = facts ?? [];
+  for (const rule of FACT_SECTION_RULES) {
+    const sectionFacts = list.filter((f) => {
+      const key = factStorageKey(f);
+      if (assigned.has(key)) return false;
+      const match =
+        rule.fields.includes(f.fieldName) ||
+        (rule.prefixes ?? []).some((p) => String(f.scopeKey ?? "").startsWith(p));
+      if (!match) return false;
+      assigned.add(key);
+      return true;
+    });
+    if (sectionFacts.length > 0) {
+      sections.push({ id: rule.id, labelKey: rule.labelKey, facts: sectionFacts });
+    }
+  }
+  const other = list.filter((f) => !assigned.has(factStorageKey(f)));
+  if (other.length > 0) {
+    sections.push({ id: "other", labelKey: "ui.propertySectionOther", facts: other });
+  }
+  return sections;
+}
+
+export function splitRoomSectionFacts(facts) {
+  const overview = [];
+  const byType = new Map();
+  for (const fact of facts ?? []) {
+    const scope = fact.scopeKey ?? "property";
+    if (scope.startsWith("room-type:")) {
+      const typeId = scope.slice("room-type:".length);
+      const grouped = byType.get(typeId) ?? [];
+      grouped.push(fact);
+      byType.set(typeId, grouped);
+    } else {
+      overview.push(fact);
+    }
+  }
+
+  const orderFact = overview.find((f) => f.fieldName === "room_types_available");
+  const preferred = String(orderFact?.value ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const groups = [];
+  const seen = new Set();
+  const sortFacts = (list) =>
+    [...list].sort((a, b) => {
+      const ai = ROOM_FACT_ORDER.indexOf(a.fieldName);
+      const bi = ROOM_FACT_ORDER.indexOf(b.fieldName);
+      return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    });
+
+  for (const typeId of preferred) {
+    const grouped = byType.get(typeId);
+    if (!grouped) continue;
+    groups.push({ typeId, facts: sortFacts(grouped) });
+    seen.add(typeId);
+  }
+  for (const [typeId, grouped] of byType) {
+    if (seen.has(typeId)) continue;
+    groups.push({ typeId, facts: sortFacts(grouped) });
+  }
+  return { overview, groups };
+}
+
+/** Same highlight icons as Access `AccessibilityIconRow`. */
+export const A11Y_ICON_FIELDS = [
+  {
+    field: "step_free_entrance",
+    tone: "entrance",
+    labelKey: "ui.a11yPref_step_free_entrance",
+    paths: "M4 20h16M8 20V10l4-4 4 4v10M12 14v6",
+  },
+  {
+    field: "accessible_bathroom",
+    tone: "mobility",
+    labelKey: "ui.a11yPref_accessible_bathroom",
+    paths: "M12 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm-4 6h8l-1.5 9h-5L8 11zm-2 3h2m10 0h2",
+  },
+  {
+    field: "elevator_present",
+    tone: "mobility",
+    labelKey: "ui.a11yPref_elevator_present",
+    paths: "M5 3h14v18H5zM9 8l3-3 3 3M9 16l3 3 3-3",
+  },
+  {
+    field: "parking_accessible",
+    tone: "parking",
+    labelKey: "ui.a11yPref_parking_accessible",
+    paths: "M8 4h6a4 4 0 0 1 0 8H8zm0 0v16",
+  },
+  {
+    field: "braille_signage",
+    tone: "sensory",
+    labelKey: "ui.a11yPref_braille_signage",
+    paths: "M7 7h.01M12 7h.01M17 7h.01M7 12h.01M12 12h.01M17 12h.01M7 17h.01M12 17h.01",
+  },
+  {
+    field: "hearing_loop",
+    tone: "hearing",
+    labelKey: "ui.a11yPref_hearing_loop",
+    paths: "M6 10a6 6 0 0 1 12 0M9 11a3 3 0 0 1 6 0v2a2 2 0 0 1-2 2h-1",
+  },
+  {
+    field: "visual_alarms",
+    tone: "hearing",
+    labelKey: "ui.a11yPref_visual_alarms",
+    paths:
+      "M12 3v2M12 19v2M5 12H3M21 12h-2M6.3 6.3l-1.4-1.4M19.1 19.1l-1.4-1.4M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z",
+  },
+  {
+    field: "ramp_present",
+    tone: "entrance",
+    labelKey: "ui.a11yPref_ramp_present",
+    paths: "M4 18h16L8 6H4z",
+  },
+];
+
+export function presentA11yIcons(facts, max = 5) {
+  const byName = new Map();
+  for (const f of facts ?? []) byName.set(f.fieldName, f.value);
+  const present = A11Y_ICON_FIELDS.filter((icon) => truthyFactValue(byName.get(icon.field)));
+  return {
+    shown: present.slice(0, max),
+    more: Math.max(0, present.length - Math.min(max, present.length)),
+  };
 }
 
 export function featurePresence(facts, fieldNames = FEATURE_HIGHLIGHTS) {

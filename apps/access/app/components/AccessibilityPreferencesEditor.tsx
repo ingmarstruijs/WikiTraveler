@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale } from "@wikitraveler/ui";
 import {
   readA11yPreferences,
+  subscribeA11yPreferences,
   writeA11yPreferences,
   type A11yPreferenceKey,
   A11Y_PREFERENCE_OPTIONS,
@@ -20,7 +21,9 @@ export function AccessibilityPreferencesEditor({ summary = false }: Props) {
   const [editing, setEditing] = useState(!summary);
 
   useEffect(() => {
-    setSelected(readA11yPreferences());
+    const sync = () => setSelected(readA11yPreferences());
+    sync();
+    return subscribeA11yPreferences(sync);
   }, []);
 
   function toggle(key: A11yPreferenceKey) {

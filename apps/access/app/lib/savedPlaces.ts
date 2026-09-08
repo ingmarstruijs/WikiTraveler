@@ -26,9 +26,18 @@ function emitSavedChange() {
   window.dispatchEvent(new Event(SAVED_PLACES_EVENT));
 }
 
+function canonicalPlaceNodeUrl(url: string): string {
+  const trimmed = url.trim().replace(/\/$/, "");
+  if (trimmed === "/node-api") {
+    return (process.env.NEXT_PUBLIC_NODE_API_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  }
+  return trimmed;
+}
+
 function normalizePlace(place: SavedPlace): SavedPlace {
   return {
     ...place,
+    nodeUrl: canonicalPlaceNodeUrl(place.nodeUrl),
     category: place.category ?? inferSavedCategory(place.name, place.location),
   };
 }

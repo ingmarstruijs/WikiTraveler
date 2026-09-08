@@ -25,7 +25,9 @@ var WtI18n = (() => {
     LOCALE_LABELS: () => LOCALE_LABELS,
     LOCALE_STORAGE_KEY: () => LOCALE_STORAGE_KEY,
     SUPPORTED_LOCALES: () => SUPPORTED_LOCALES,
+    formatFactValue: () => formatFactValue,
     getFieldLabel: () => getFieldLabel,
+    getRoomTypeLabel: () => getRoomTypeLabel,
     getTierLabel: () => getTierLabel,
     isSupportedLocale: () => isSupportedLocale,
     resolveLocale: () => resolveLocale,
@@ -230,12 +232,6 @@ var WtI18n = (() => {
       auditStepRoom: "Room",
       auditStepBathroom: "Bathroom",
       auditStepCommunication: "Communication",
-      onboardingTitle: "Welcome to WikiTraveler Access",
-      onboardingBody: "Find verified accessibility info for stays \u2014 and help keep it accurate.",
-      onboardingTraveler: "I'm looking for accessible stays",
-      onboardingAuditor: "I also audit properties",
-      onboardingContinue: "Continue",
-      onboardingSkip: "Skip",
       toggleYes: "Yes",
       togglePartial: "Partial",
       toggleNo: "No",
@@ -815,6 +811,8 @@ var WtI18n = (() => {
       contributeReports: "Reports",
       contributeResolved: "Resolved",
       contributeQueueHint: "Open the community signals queue in",
+      contributeCtaHint: "Register a stay so auditors can verify it.",
+      contributeImpact: "Your activity",
       verifyAccess: "Verify on site",
       propertyLoadFailed: "Could not load this property.",
       propertyNoFacts: "No accessibility facts yet",
@@ -1099,12 +1097,6 @@ var WtI18n = (() => {
       auditStepRoom: "Kamer",
       auditStepBathroom: "Badkamer",
       auditStepCommunication: "Communicatie",
-      onboardingTitle: "Welkom bij WikiTraveler Access",
-      onboardingBody: "Vind geverifieerde toegankelijkheidsinfo \u2014 en help die accuraat te houden.",
-      onboardingTraveler: "Ik zoek toegankelijke verblijven",
-      onboardingAuditor: "Ik audit ook properties",
-      onboardingContinue: "Doorgaan",
-      onboardingSkip: "Overslaan",
       toggleYes: "Ja",
       togglePartial: "Gedeeltelijk",
       toggleNo: "Nee",
@@ -1685,6 +1677,8 @@ var WtI18n = (() => {
       contributeReports: "Meldingen",
       contributeResolved: "Opgelost",
       contributeQueueHint: "Open de communitysignalen-wachtrij in",
+      contributeCtaHint: "Voeg een locatie toe zodat auditors die kunnen verifi\xEBren.",
+      contributeImpact: "Jouw activiteit",
       verifyAccess: "Ter plaatse verifi\xEBren",
       propertyLoadFailed: "Kon deze locatie niet laden.",
       propertyNoFacts: "Nog geen toegankelijkheidsgegevens",
@@ -1969,12 +1963,6 @@ var WtI18n = (() => {
       auditStepRoom: "Zimmer",
       auditStepBathroom: "Bad",
       auditStepCommunication: "Kommunikation",
-      onboardingTitle: "Willkommen bei WikiTraveler Access",
-      onboardingBody: "Finden Sie verifizierte Barrierefreiheitsinfos \u2014 und halten Sie sie aktuell.",
-      onboardingTraveler: "Ich suche barrierefreie Unterk\xFCnfte",
-      onboardingAuditor: "Ich pr\xFCfe auch Unterk\xFCnfte",
-      onboardingContinue: "Weiter",
-      onboardingSkip: "\xDCberspringen",
       toggleYes: "Ja",
       togglePartial: "Teilweise",
       toggleNo: "Nein",
@@ -2555,6 +2543,8 @@ var WtI18n = (() => {
       contributeReports: "Meldungen",
       contributeResolved: "Erledigt",
       contributeQueueHint: "Community-Signale-Warteschlange \xF6ffnen in",
+      contributeCtaHint: "Einen Ort anlegen, damit Auditoren ihn pr\xFCfen k\xF6nnen.",
+      contributeImpact: "Ihre Aktivit\xE4t",
       verifyAccess: "Vor Ort verifizieren",
       propertyLoadFailed: "Unterkunft konnte nicht geladen werden.",
       propertyNoFacts: "Noch keine Barrierefreiheitsdaten",
@@ -2839,12 +2829,6 @@ var WtI18n = (() => {
       auditStepRoom: "Chambre",
       auditStepBathroom: "Salle de bain",
       auditStepCommunication: "Communication",
-      onboardingTitle: "Bienvenue sur WikiTraveler Access",
-      onboardingBody: "Trouvez des infos d'accessibilit\xE9 v\xE9rifi\xE9es \u2014 et aidez \xE0 les maintenir.",
-      onboardingTraveler: "Je cherche des s\xE9jours accessibles",
-      onboardingAuditor: "J'audite aussi des \xE9tablissements",
-      onboardingContinue: "Continuer",
-      onboardingSkip: "Passer",
       toggleYes: "Oui",
       togglePartial: "Partiel",
       toggleNo: "Non",
@@ -3425,6 +3409,8 @@ var WtI18n = (() => {
       contributeReports: "Signalements",
       contributeResolved: "R\xE9solus",
       contributeQueueHint: "Ouvrir la file des signalements dans",
+      contributeCtaHint: "Ajoutez un \xE9tablissement pour que les auditeurs puissent le v\xE9rifier.",
+      contributeImpact: "Votre activit\xE9",
       verifyAccess: "V\xE9rifier sur place",
       propertyLoadFailed: "Impossible de charger cet \xE9tablissement.",
       propertyNoFacts: "Pas encore de donn\xE9es d'accessibilit\xE9",
@@ -3511,6 +3497,69 @@ var WtI18n = (() => {
     }
   };
 
+  // src/factDisplay.ts
+  var PROSE_FIELD_NAMES = /* @__PURE__ */ new Set([
+    "notes",
+    "accessible_room_description",
+    "service_animal_policy"
+  ]);
+  var FIELD_UNITS = {
+    door_width_cm: "cm",
+    bed_height_cm: "cm",
+    turning_circle_cm: "cm"
+  };
+  function isProseField(fieldName) {
+    return PROSE_FIELD_NAMES.has(fieldName);
+  }
+  function formatFactValue(fieldName, value, options = {}) {
+    const locale = options.locale ?? "en";
+    const rawValue = String(value ?? "").trim();
+    const valueLocale = options.valueLocale ?? null;
+    const isProse = isProseField(fieldName);
+    if (isProse) {
+      const localesDiffer = valueLocale != null && valueLocale !== locale && isSupportedLocalePair(valueLocale, locale);
+      const useTranslation = Boolean(
+        options.machineTranslated && options.translatedValue && options.translatedValue.trim() && (localesDiffer || options.translatedValue.trim() !== rawValue)
+      );
+      return {
+        displayValue: useTranslation ? options.translatedValue : rawValue,
+        rawValue,
+        isProse: true,
+        machineTranslated: Boolean(useTranslation),
+        displayMode: useTranslation ? "translated" : "original",
+        valueLocale,
+        submittedLanguageLabel: valueLocale && valueLocale !== locale ? LOCALE_LABELS[valueLocale] ?? valueLocale : void 0
+      };
+    }
+    let displayValue = rawValue;
+    if (rawValue === "yes" || rawValue === "true") displayValue = t("ui.yes", locale);
+    else if (rawValue === "no" || rawValue === "false") displayValue = t("ui.no", locale);
+    else if (rawValue === "partial") displayValue = t("ui.partial", locale);
+    else if (rawValue === "n/a" || rawValue === "n.a." || rawValue === "na") {
+      displayValue = t("ui.notApplicable", locale);
+    } else if (fieldName === "room_types_available") {
+      displayValue = rawValue.split(",").map((part) => part.trim()).filter(Boolean).map((id) => getRoomTypeLabel(id, locale)).join(", ");
+    } else if (isFieldEnumValue(fieldName, rawValue, locale)) {
+      displayValue = rawValue.split(",").map((part) => part.trim()).filter(Boolean).map((token) => getFieldEnumLabel(fieldName, token, locale)).join(", ");
+    } else {
+      const unit = options.unit ?? FIELD_UNITS[fieldName];
+      if (unit && rawValue && !Number.isNaN(Number(rawValue))) {
+        displayValue = `${rawValue} ${unit}`;
+      }
+    }
+    return {
+      displayValue,
+      rawValue,
+      isProse: false,
+      machineTranslated: false,
+      displayMode: "original",
+      valueLocale
+    };
+  }
+  function isSupportedLocalePair(a, b) {
+    return a !== b;
+  }
+
   // src/index.ts
   var SUPPORTED_LOCALES = ["en", "nl", "de", "fr"];
   var DEFAULT_LOCALE = "en";
@@ -3581,6 +3630,21 @@ var WtI18n = (() => {
   }
   function getTierLabel(tier, locale = DEFAULT_LOCALE) {
     return getCatalog(locale).tier[tier] ?? tier;
+  }
+  function getRoomTypeLabel(roomType, locale = DEFAULT_LOCALE) {
+    return getCatalog(locale).roomTypes[roomType] ?? roomType.replace(/_/g, " ");
+  }
+  function getFieldEnumLabel(fieldName, value, locale = DEFAULT_LOCALE) {
+    return lookupFieldEnumLabel(fieldName, value, locale) ?? value.replace(/_/g, " ");
+  }
+  function lookupFieldEnumLabel(fieldName, value, locale) {
+    const key = `${fieldName}.${value}`;
+    return getCatalog(locale).fieldEnums[key] ?? (locale !== "en" ? getCatalog("en").fieldEnums[key] : void 0) ?? null;
+  }
+  function isFieldEnumValue(fieldName, value, locale = DEFAULT_LOCALE) {
+    const tokens = value.split(",").map((part) => part.trim()).filter(Boolean);
+    if (tokens.length === 0) return false;
+    return tokens.every((token) => lookupFieldEnumLabel(fieldName, token, locale) != null);
   }
   return __toCommonJS(browser_exports);
 })();

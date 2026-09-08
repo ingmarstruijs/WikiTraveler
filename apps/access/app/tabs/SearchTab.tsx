@@ -29,6 +29,7 @@ import {
   type DiscoveryViewMode,
 } from "../lib/discoveryUtils";
 import { readSearchSession, writeSearchSession } from "../lib/searchSession";
+import { patchMapBrowseSession, readMapBrowseSession } from "../lib/mapBrowseSession";
 import type { DataRegionResolve } from "../hooks/useNodeContext";
 import type { MapPin } from "../lib/accessApi";
 import { geocodePlace, looksLikePlaceQuery } from "../lib/geocodePlace";
@@ -97,16 +98,27 @@ export function SearchTab({ dataNodeUrl, homeNodeUrl, active = true }: Props) {
   const [prefOverridesOff, setPrefOverridesOff] = useState<string[]>([]);
   const [discoveryView, setDiscoveryView] = useState<DiscoveryViewMode>(boot.view);
   const [searchFeatures, setSearchFeatures] = useState<SearchFeature[]>([]);
-  const [results, setResults] = useState<PropertySummary[] | null>(null);
+  const [results, setResults] = useState<PropertySummary[] | null>(() => {
+    const session = readMapBrowseSession();
+    return session.nearMe ? session.nearResults : null;
+  });
   const [page, setPage] = useState(boot.page);
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(() => {
+    const session = readMapBrowseSession();
+    return session.nearMe && session.nearResults ? session.nearResults.length : 0;
+  });
   const [loading, setLoading] = useState(false);
   const [searchError, setSearchError] = useState("");
   const [geoError, setGeoError] = useState("");
-  const [mapDataNodeUrl, setMapDataNodeUrl] = useState(dataNodeUrl);
-  const [viewportPins, setViewportPins] = useState<MapPin[]>([]);
-  const [nearMe, setNearMe] = useState(false);
-  const [nearCoords, setNearCoords] = useState<{ lat: number; lon: number } | null>(null);
+  const [mapDataNodeUrl, setMapDataNodeUrl] = useState(() => {
+    const session = readMapBrowseSession();
+    return session.mapDataNodeUrl || dataNodeUrl;
+  });
+  const [viewportPins, setViewportPins] = useState<MapPin[]>(() => readMapBrowseSession().pins);
+  const [nearMe, setNearMe] = useState(() => readMapBrowseSession().nearMe);
+  const [nearCoords, setNearCoords] = useState<{ lat: number; lon: number } | null>(
+    () => readMapBrowseSession().nearCoords
+  );
   const [nearLoading, setNearLoading] = useState(false);
   const [placeHint, setPlaceHint] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -206,6 +218,15 @@ export function SearchTab({ dataNodeUrl, homeNodeUrl, active = true }: Props) {
   }, [query, filters, page, discoveryView, prefOverridesOff]);
 
   useEffect(() => {
+    patchMapBrowseSession({
+      nearMe,
+      nearCoords,
+      nearResults: nearMe ? results : null,
+      mapDataNodeUrl,
+    });
+  }, [nearMe, nearCoords, results, mapDataNodeUrl]);
+
+  useEffect(() => {
     return subscribeA11yPreferences(() => {
       const prefs = readA11yPreferences();
       const previousPrefs = profilePrefsRef.current;
@@ -249,7 +270,10 @@ export function SearchTab({ dataNodeUrl, homeNodeUrl, active = true }: Props) {
     return () => controller.abort();
   }, [locale, dataNodeUrl]);
 
+  const prevHomeDataNode = useRef(dataNodeUrl);
   useEffect(() => {
+    if (prevHomeDataNode.current === dataNodeUrl) return;
+    prevHomeDataNode.current = dataNodeUrl;
     setMapDataNodeUrl(dataNodeUrl);
   }, [dataNodeUrl]);
 
@@ -341,6 +365,12 @@ export function SearchTab({ dataNodeUrl, homeNodeUrl, active = true }: Props) {
       hasAccessibleRoom: null,
       features: featuresFromPrefs(profilePrefsRef.current, [], []),
     }));
+    patchMapBrowseSession({
+      nearMe: false,
+      nearCoords: null,
+      nearResults: null,
+      areaDirty: false,
+    });
   }, []);
 
   useEffect(() => {

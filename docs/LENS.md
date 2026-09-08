@@ -4,7 +4,7 @@ WikiTraveler Lens injects accessibility facts on booking sites (Chrome MV3).
 
 **Home node** = identity (register / JWT). Default in a fresh install: `https://node-eu.wikitraveler.org`. **Data node** = regional facts via `/api/peers/resolve`. Federation stays invisible; uncovered listings show “No WikiTraveler coverage here.” ([RFC-0002](./rfcs/0002-global-hub-access.md) M4)
 
-Popup: accessibility score + feature highlights; **View details** / **Report issue** open Access (report uses `?report=1`). Client cache: TTL + in-flight dedupe for health, search, and accessibility ([`lensCache.js`](../apps/lens/lensCache.js)); listing tooltips use a short miss TTL.
+Popup: accessibility score + Access-style feature icons, facts grouped by section (including per-room-type values); **View details** / **Report issue** open Access (report uses `?report=1`). Property search waits **500ms** after the last keystroke (Enter searches immediately). Client cache: TTL + in-flight dedupe for health, search, and accessibility ([`lensCache.js`](../apps/lens/lensCache.js)); listing tooltips use a short miss TTL.
 
 ## How Lens talks to nodes
 

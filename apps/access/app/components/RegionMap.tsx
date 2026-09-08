@@ -12,6 +12,14 @@ import {
 import { filterPinsByFeatures } from "../lib/mapPinFeatures";
 import { readMapPinColors, readMapUserColors } from "../lib/mapThemeColors";
 import { readMapCamera, saveMapCamera } from "../lib/mapCameraSession";
+import { patchMapBrowseSession, readMapBrowseSession } from "../lib/mapBrowseSession";
+import {
+  clampBottomOverlayPx,
+  fallbackDiscoveryMapBottomOverlay,
+  mapFitPaddingForBottomSheet,
+  measureDiscoveryMapBottomOverlay,
+  targetZoomForShowOnMap,
+} from "../lib/mapFocus";
 import { dataNodeFromResolve, isConfirmedUncovered } from "../lib/peerCoverage";
 
 /** Below this zoom, no property pins — ask the traveler to zoom in. */
@@ -58,6 +66,13 @@ interface Props {
   locateLabel?: string;
   /** Clear the typed search so this map can browse the visible area. */
   onBrowseThisArea?: () => void;
+  /**
+   * Increment to pan a pin into the visible map (above the discovery bottom sheet).
+   * Ignored when nonce is 0 so restoring a selected pin does not move the camera.
+   */
+  focusNonce?: number;
+  focusLat?: number | null;
+  focusLon?: number | null;
 }
 
 function getTileConfig() {
@@ -171,6 +186,21 @@ function persistMapCamera(map: import("leaflet").Map) {
   saveMapCamera({ lat: center.lat, lon: center.lng, zoom: map.getZoom() });
 }
 
+function mapHasSize(map: import("leaflet").Map): boolean {
+  const size = map.getSize();
+  return size.x > 40 && size.y > 40;
+}
+
+function fitMapToRadius(
+  map: import("leaflet").Map,
+  L: typeof import("leaflet"),
+  loc: UserLocation,
+  radiusKm: number
+) {
+  const bounds = L.latLng(loc.lat, loc.lon).toBounds(radiusKm * 1000 * 2);
+  map.fitBounds(bounds, { padding: [28, 28], maxZoom: 16, animate: true });
+}
+
 
 export function RegionMap({
   nodeUrl,
@@ -196,16 +226,27 @@ export function RegionMap({
   locateLoading = false,
   locateLabel,
   onBrowseThisArea,
+  focusNonce = 0,
+  focusLat = null,
+  focusLon = null,
 }: Props) {
   const { mode } = useTheme();
   const { t } = useLocale();
-  const [internalPins, setInternalPins] = useState<MapPin[]>([]);
+  const [internalPins, setInternalPins] = useState<MapPin[]>(() => {
+    if (!viewportBrowse) return [];
+    const session = readMapBrowseSession();
+    return session.searched ? session.pins : [];
+  });
   const [internalLoading, setInternalLoading] = useState(false);
   const [internalError, setInternalError] = useState("");
   const [mapReady, setMapReady] = useState(false);
   const [zoomHint, setZoomHint] = useState(false);
-  const [areaDirty, setAreaDirty] = useState(false);
-  const initialViewportSearchDone = useRef(false);
+  const [areaDirty, setAreaDirty] = useState(() =>
+    Boolean(viewportBrowse && readMapBrowseSession().areaDirty)
+  );
+  const initialViewportSearchDone = useRef(
+    Boolean(viewportBrowse && readMapBrowseSession().searched)
+  );
   const [coverageHint, setCoverageHint] = useState(false);
 
   const homeNodeUrlRef = useRef(homeNodeUrl);
@@ -235,10 +276,12 @@ export function RegionMap({
   const savedIdsRef = useRef<Set<string>>(new Set());
   const lastFitSignatureRef = useRef<string | null>(null);
   const suppressAreaDirtyRef = useRef(false);
+  const ignoreMoveDirtyUntilRef = useRef(0);
   const pendingViewportRefreshRef = useRef(false);
   const wasViewportBrowseRef = useRef(viewportBrowse);
   const updateRadiiRef = useRef<(() => void) | null>(null);
   const viewportFetchRef = useRef(0);
+  const refreshViewportRef = useRef<() => Promise<void>>(async () => {});
   const onSelectPropertyRef = useRef(onSelectProperty);
   onSelectPropertyRef.current = onSelectProperty;
 
@@ -253,12 +296,25 @@ export function RegionMap({
       return;
     }
     onViewportPinsChange?.(visibleInternalPins);
+    if (visibleInternalPins.length > 0 || initialViewportSearchDone.current) {
+      patchMapBrowseSession({
+        pins: visibleInternalPins,
+        searched: initialViewportSearchDone.current,
+      });
+    }
   }, [viewportBrowse, visibleInternalPins, onViewportPinsChange]);
 
   const refreshViewport = useCallback(async () => {
     if (!viewportBrowse || useExternal) return;
     const map = mapRef.current;
     if (!map) return;
+    if (!mapHasSize(map)) {
+      requestAnimationFrame(() => {
+        map.invalidateSize();
+        if (mapHasSize(map)) void refreshViewportRef.current();
+      });
+      return;
+    }
 
     const zoom = map.getZoom();
     if (zoom < MAP_PIN_MIN_ZOOM) {
@@ -307,6 +363,7 @@ export function RegionMap({
       if (fetchId === viewportFetchRef.current) setInternalLoading(false);
     }
   }, [viewportBrowse, useExternal, onDataNodeUrlChange, t]);
+  refreshViewportRef.current = refreshViewport;
 
   // Legacy internal fetch (non-viewport): load region=1 style not available on peers —
   // callers should pass external pins or use viewportBrowse.
@@ -328,7 +385,6 @@ export function RegionMap({
         containerRef
       );
       lastFitSignatureRef.current = null;
-      initialViewportSearchDone.current = false;
       setMapReady(false);
       return;
     }
@@ -348,7 +404,7 @@ export function RegionMap({
         initialZoom = restored.zoom;
       } else if (userLocation) {
         initialCenter = [userLocation.lat, userLocation.lon];
-        initialZoom = 12;
+        initialZoom = 15;
       } else {
         initialCenter = [52.3, 5.3];
         initialZoom = viewportBrowse ? 6 : 7;
@@ -365,6 +421,9 @@ export function RegionMap({
       layerGroupRef.current = L.featureGroup().addTo(map);
       userLayerRef.current = L.layerGroup().addTo(map);
 
+      suppressAreaDirtyRef.current = true;
+      ignoreMoveDirtyUntilRef.current = Date.now() + 900;
+
       map.on("zoomend", () => {
         updateRadiiRef.current?.();
         persistMapCamera(map);
@@ -374,6 +433,8 @@ export function RegionMap({
       requestAnimationFrame(() => {
         if (!mapRef.current) return;
         map.invalidateSize();
+        ignoreMoveDirtyUntilRef.current = Date.now() + 600;
+        suppressAreaDirtyRef.current = true;
       });
 
       setMapReady(true);
@@ -390,19 +451,92 @@ export function RegionMap({
         containerRef
       );
       lastFitSignatureRef.current = null;
-      initialViewportSearchDone.current = false;
       setMapReady(false);
     };
-  }, [active, userLocation, viewportBrowse]);
+    // Keep the Leaflet instance across locate-me / browse mode changes; only tear down when the tab is inactive.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- remounting on userLocation/viewportBrowse was dropping the 1 km view and browse cache
+  }, [active]);
 
   useEffect(() => {
     if (!visible || !mapReady) return;
     const map = mapRef.current;
     if (!map) return;
     requestAnimationFrame(() => {
+      suppressAreaDirtyRef.current = true;
+      ignoreMoveDirtyUntilRef.current = Date.now() + 500;
       map.invalidateSize();
     });
   }, [visible, mapReady]);
+
+  useEffect(() => {
+    if (!mapReady || !visible || focusNonce === 0) return;
+    if (focusLat == null || focusLon == null || (focusLat === 0 && focusLon === 0)) return;
+    const map = mapRef.current;
+    const L = leafletRef.current;
+    if (!map || !L) return;
+
+    let cancelled = false;
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const pan = (allowRetry: boolean) => {
+      if (cancelled || !mapRef.current || !leafletRef.current) return;
+      const live = mapRef.current;
+      live.invalidateSize();
+      if (!mapHasSize(live)) {
+        if (allowRetry) retryTimer = setTimeout(() => pan(false), 80);
+        return;
+      }
+
+      const measured = measureDiscoveryMapBottomOverlay(containerRef.current);
+      const mapHeight = live.getSize().y;
+      const desktopSplit =
+        typeof window.matchMedia === "function" && window.matchMedia("(min-width: 900px)").matches;
+      let overlayPx = measured;
+      if (overlayPx < 40) {
+        if (allowRetry) {
+          retryTimer = setTimeout(() => pan(false), 80);
+          return;
+        }
+        overlayPx = fallbackDiscoveryMapBottomOverlay(mapHeight, desktopSplit);
+      }
+      overlayPx = clampBottomOverlayPx(overlayPx, mapHeight);
+
+      suppressAreaDirtyRef.current = true;
+      ignoreMoveDirtyUntilRef.current = Date.now() + 1200;
+      const bounds = leafletRef.current.latLngBounds(
+        [focusLat, focusLon],
+        [focusLat, focusLon]
+      );
+      live.fitBounds(bounds, {
+        ...mapFitPaddingForBottomSheet(overlayPx),
+        maxZoom: targetZoomForShowOnMap(live.getZoom()),
+        animate: true,
+      });
+    };
+
+    const frame = requestAnimationFrame(() => requestAnimationFrame(() => pan(true)));
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+      if (retryTimer) clearTimeout(retryTimer);
+    };
+  }, [focusNonce, focusLat, focusLon, mapReady, visible]);
+
+  useEffect(() => {
+    if (!mapReady || !userLocation || radiusKm == null || radiusKm <= 0) return;
+    const map = mapRef.current;
+    const L = leafletRef.current;
+    if (!map || !L) return;
+    const fitSignature = `radius|${userLocation.lat},${userLocation.lon}|${radiusKm}`;
+    if (fitSignature === lastFitSignatureRef.current) return;
+    lastFitSignatureRef.current = fitSignature;
+    suppressAreaDirtyRef.current = true;
+    ignoreMoveDirtyUntilRef.current = Date.now() + 900;
+    requestAnimationFrame(() => {
+      if (!mapRef.current || !leafletRef.current) return;
+      fitMapToRadius(mapRef.current, leafletRef.current, userLocation, radiusKm);
+    });
+  }, [mapReady, userLocation, radiusKm]);
 
   useEffect(() => {
     if (!mapReady) return;
@@ -411,6 +545,10 @@ export function RegionMap({
 
     const syncChromeAfterMove = () => {
       persistMapCamera(map);
+      if (Date.now() < ignoreMoveDirtyUntilRef.current) {
+        suppressAreaDirtyRef.current = false;
+        return;
+      }
       if (suppressAreaDirtyRef.current) {
         suppressAreaDirtyRef.current = false;
         setAreaDirty(false);
@@ -427,6 +565,7 @@ export function RegionMap({
       setZoomHint(false);
       if (initialViewportSearchDone.current || !viewportBrowse) {
         setAreaDirty(true);
+        patchMapBrowseSession({ areaDirty: true });
       }
     };
 
@@ -448,7 +587,10 @@ export function RegionMap({
     if (pendingViewportRefreshRef.current) {
       pendingViewportRefreshRef.current = false;
       initialViewportSearchDone.current = true;
-      void refreshViewport().then(() => setAreaDirty(false));
+      void refreshViewport().then(() => {
+        setAreaDirty(false);
+        patchMapBrowseSession({ areaDirty: false, searched: true });
+      });
       return;
     }
 
@@ -458,7 +600,14 @@ export function RegionMap({
         setAreaDirty(true);
         return;
       }
-      void refreshViewport().then(() => setAreaDirty(false));
+      if (readMapBrowseSession().searched && readMapBrowseSession().pins.length > 0) {
+        setAreaDirty(false);
+        return;
+      }
+      void refreshViewport().then(() => {
+        setAreaDirty(false);
+        patchMapBrowseSession({ areaDirty: false, searched: true });
+      });
       return;
     }
 
@@ -560,8 +709,8 @@ export function RegionMap({
       }
     }
 
-    // Do not re-zoom on marker rebuild — that fights user zoom-out.
-    if (viewportBrowse) return;
+    // Viewport browse keeps the traveler's zoom. Near-me fits the 1 km circle in its own effect.
+    if (viewportBrowse || (userLocation && radiusKm != null && radiusKm > 0)) return;
 
     const fitSignature = `${sorted.map((p) => p.id).join(",")}|${userLocation ? `${userLocation.lat},${userLocation.lon}` : ""}|${radiusKm ?? ""}`;
     if (autoFit && fitSignature !== lastFitSignatureRef.current) {
@@ -635,7 +784,10 @@ export function RegionMap({
               className="fk-map-search-area-btn"
               onClick={() => {
                 if (viewportBrowse) {
-                  void refreshViewport().then(() => setAreaDirty(false));
+                  void refreshViewport().then(() => {
+                    setAreaDirty(false);
+                    patchMapBrowseSession({ areaDirty: false, searched: true });
+                  });
                   return;
                 }
                 pendingViewportRefreshRef.current = true;

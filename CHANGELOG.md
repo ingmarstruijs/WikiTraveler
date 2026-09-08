@@ -10,6 +10,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-09-08
+
+### Operator notes
+
+- **Patch release** — additive Prisma migration since `0.5.1`: `user_profile_favorites` (User a11y/theme columns + `Favorite` table). Run `DATABASE_URL=… pnpm db:deploy` **before** deploying node.
+- Redeploy **Node + Access**. Reload unpacked Lens or install the GitHub Release zip. Gossip protocol unchanged (`2`).
+- Docker: `ghcr.io/ingmarstruijs/wikitraveler-node:0.5.2`, `wikitraveler-access:0.5.2`.
+- GitHub Release attaches `manifest.json`, Lens zip (`0.5.2`), and SDK dist. npm `@wikitraveler/sdk@0.5.2` stages via Trusted Publishing (`npm stage publish` → 2FA approve). See [RELEASES.md](docs/RELEASES.md).
+- Chrome Web Store upload of the Lens zip remains a separate maintainer step ([LENS.md](docs/LENS.md)).
+
 ### Added
 
 - Access profile sync: favorites, accessibility preferences, and theme sync to the home-node account (`GET`/`PUT /api/auth/preferences`, `/api/auth/favorites`); localStorage remains a per-user cache ([ACCESS-UX.md](docs/ACCESS-UX.md))
@@ -18,11 +28,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 
 - Access heroes use shared padding/logo sizing (tabs + toolbar); property detail loading skeleton matches mobile stack vs desktop photo|sheet split ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access Contribute: stacked mobile dashboard and two-column desktop layout (add-property CTA, activity stats, recent audits) ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access discovery list: favorited rows use the same card chrome as other properties; heart uses theme accent like map pins ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access Favorites desktop: equal-width card grid (cover photo + “Add a place” as a matching tile) instead of a leftover mobile strip ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Lens popup facts match Access: grouped sections, quieter Verified status, per-room-type values, accessibility icons packed left under the address ([LENS.md](docs/LENS.md))
+
+### Removed
+
+- Access first-run onboarding dialog (traveler/auditor/skip) — it did not change any settings ([ACCESS-UX.md](docs/ACCESS-UX.md))
 
 ### Fixed
 
+- Lens popup fact labels stay on one line (flex on table cells no longer collapses the column)
 - Access profile sync write-through runs app-wide (property detail hearts / prefs), so a second logged-in device can see the same favorites and preferences ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access “near me” GPS: keep the map visible while requesting location, clear permission/HTTPS errors with retry, then search within 1 km ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access profile sync no longer lets a focus/visibility pull overwrite hearts or accessibility preferences that have not been pushed yet
+- Access profile sync applies home-node accessibility preferences and theme on a new login (empty device no longer keeps the default theme stamp over the server)
+- Access “near me” GPS: keep the map visible while requesting location, then fit a **1 km** radius around the traveler without remounting the map ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access “Show on map” in the discovery list pans the pin into the visible map above the preview bottom sheet ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access property accessibility score uses the same field-to-category mapping as Lens (room-scoped bathroom facts no longer inflate Room and drop Bathroom)
+- Lens popup search waits until typing pauses (500ms debounce; Enter searches immediately)
 - Docker node/Access images build `@wikitraveler/audit` (release images no longer fail module-not-found)
 - Release npm OIDC job: drop `setup-node` `registry-url` / empty `_authToken` so Trusted Publishing can authenticate ([RELEASES.md](docs/RELEASES.md))
 

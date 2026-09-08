@@ -12,7 +12,9 @@ vi.mock("./accessApi", () => ({
 
 import { writeA11yPreferences, readA11yPreferences } from "./a11yPreferences";
 import { readSavedPlaces, writeSavedPlaces } from "./savedPlaces";
-import { syncProfileFromServer } from "./profileSync";
+import { readAccessThemePreference } from "./themePreference";
+import { scheduleFavoritesPush, syncProfileFromServer } from "./profileSync";
+import { writeUserScoped } from "./userScopedStorage";
 
 const mem = new Map<string, string>();
 
@@ -86,6 +88,34 @@ describe("syncProfileFromServer", () => {
     expect(readSavedPlaces()[0]?.id).toBe("p1");
   });
 
+  it("hydrates a11y prefs and theme on a fresh device even if a default-theme stamp is newer", async () => {
+    writeUserScoped("wt_prefs_updated_at", "2026-09-08T12:00:00.000Z");
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url.endsWith("/api/auth/me")) {
+          return jsonResponse({
+            preferences: {
+              a11yPreferences: ["elevator_present", "ramp_present"],
+              theme: "dark",
+              updatedAt: "2026-06-01T00:00:00.000Z",
+            },
+          });
+        }
+        if (url.includes("/api/auth/favorites")) {
+          return jsonResponse({ places: [], updatedAt: "2026-01-01T00:00:00.000Z" });
+        }
+        return jsonResponse({}, false);
+      })
+    );
+
+    await syncProfileFromServer();
+    expect(readA11yPreferences()).toEqual(["elevator_present", "ramp_present"]);
+    expect(readAccessThemePreference()).toBe("dark");
+  });
+
   it("pushes local favorites when server is empty even if updatedAt is non-zero", async () => {
     writeSavedPlaces(
       [
@@ -131,5 +161,64 @@ describe("syncProfileFromServer", () => {
     await syncProfileFromServer();
     expect(putBodies.length).toBeGreaterThan(0);
     expect(putBodies[0]).toContain("local-2");
+  });
+
+  it("does not let a concurrent pull overwrite unsynced local favorites", async () => {
+    writeSavedPlaces(
+      [
+        {
+          id: "local-new",
+          name: "Local new",
+          location: "",
+          nodeUrl: "http://localhost:3000",
+          savedAt: "2026-09-08T00:00:00.000Z",
+        },
+      ],
+      { skipSync: true }
+    );
+    scheduleFavoritesPush();
+
+    const putBodies: string[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input);
+        if (url.endsWith("/api/auth/me")) {
+          return jsonResponse({
+            preferences: {
+              a11yPreferences: [],
+              theme: null,
+              updatedAt: "2026-09-01T00:00:00.000Z",
+            },
+          });
+        }
+        if (url.includes("/api/auth/favorites") && init?.method === "PUT") {
+          putBodies.push(String(init.body));
+          return jsonResponse({
+            places: JSON.parse(String(init.body)).places,
+            updatedAt: "2026-09-08T12:00:00.000Z",
+          });
+        }
+        if (url.includes("/api/auth/favorites")) {
+          return jsonResponse({
+            places: [
+              {
+                id: "server-old",
+                name: "Server",
+                location: "",
+                nodeUrl: "http://localhost:3000",
+                savedAt: "2026-08-01T00:00:00.000Z",
+              },
+            ],
+            updatedAt: "2026-09-01T00:00:00.000Z",
+          });
+        }
+        return jsonResponse({}, false);
+      })
+    );
+
+    await syncProfileFromServer();
+    expect(putBodies.some((body) => body.includes("local-new"))).toBe(true);
+    expect(readSavedPlaces().map((p) => p.id)).toEqual(["local-new"]);
   });
 });

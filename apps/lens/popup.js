@@ -4,8 +4,8 @@ import {
   ACCESS_HUB_URL,
   DEFAULT_NODE_URL,
   ONBOARDING_KEY,
-  FEATURE_HIGHLIGHTS,
-  truthyFactValue,
+  SEARCH_DEBOUNCE_MS,
+  SEARCH_MIN_CHARS,
   computeCategoryBars,
   overallAccessibilityScore,
   propertyViewUrl,
@@ -13,6 +13,9 @@ import {
   buildHotelSearchQueries,
   pickBestPropertyMatch,
   propertyReportUrl,
+  groupFactsBySection,
+  splitRoomSectionFacts,
+  presentA11yIcons,
 } from "./lensLogic.js";
 import {
   cachedFetch,
@@ -151,7 +154,7 @@ function resolveFactDisplay(fact, locale) {
     typeof meta?.confidence === "string" ? meta.confidence.toLowerCase() : null;
   const evidence = typeof meta?.evidence === "string" ? meta.evidence.trim() : "";
 
-  let displayValue = rawValue;
+  let displayValue = wtFormatFactValue(fact.fieldName, rawValue, locale, fact);
   if (
     tier === "AI_GUESS" &&
     CONFIDENCE_ONLY.has(rawValue.toLowerCase()) &&
@@ -181,73 +184,96 @@ function appendFactBadges(container, tier, confidence, locale) {
   container.appendChild(badges);
 }
 
+function appendFactRow(table, f, locale) {
+  const { tier, displayValue, confidence, evidence, rawValue } = resolveFactDisplay(f, locale);
+  const label = wtFieldLabel(f.fieldName, locale);
+  const useStackedLayout = f.fieldName === "notes" || displayValue.length > 48;
+
+  const row = table.insertRow();
+  if (useStackedLayout) {
+    row.className = "fact-row--stacked";
+    const cell = row.insertCell();
+    cell.colSpan = 2;
+
+    const labelEl = document.createElement("div");
+    labelEl.className = "fact-stacked-label";
+    labelEl.appendChild(document.createTextNode(label));
+    appendFactBadges(labelEl, tier, confidence, locale);
+    cell.appendChild(labelEl);
+
+    const valueEl = document.createElement("div");
+    valueEl.className = "fact-stacked-value";
+    valueEl.textContent = displayValue;
+    cell.appendChild(valueEl);
+
+    if (
+      tier === "AI_GUESS" &&
+      evidence &&
+      evidence !== displayValue &&
+      !CONFIDENCE_ONLY.has(rawValue.toLowerCase())
+    ) {
+      const evidenceEl = document.createElement("div");
+      evidenceEl.className = "fact-evidence";
+      evidenceEl.textContent = evidence;
+      cell.appendChild(evidenceEl);
+    }
+    return;
+  }
+
+  const labelCell = row.insertCell();
+  labelCell.className = "fact-label";
+  const labelWrap = document.createElement("div");
+  labelWrap.textContent = label;
+  labelCell.appendChild(labelWrap);
+  appendFactBadges(labelCell, tier, confidence, locale);
+
+  const valueCell = row.insertCell();
+  valueCell.className = "fact-value-cell";
+  valueCell.textContent = displayValue;
+}
+
 function createFactsTable(facts, locale) {
   const table = document.createElement("table");
   table.className = "facts-table";
-
-  const thead = table.createTHead();
-  const headerRow = thead.insertRow();
-  [wtT("ui.lensFactFeature", locale), wtT("ui.lensFactValue", locale)].forEach((heading) => {
-    const th = document.createElement("th");
-    th.scope = "col";
-    th.textContent = heading;
-    headerRow.appendChild(th);
-  });
-
-  facts.forEach((f) => {
-    const { tier, displayValue, confidence, evidence, rawValue } = resolveFactDisplay(f, locale);
-    const label = wtFieldLabel(f.fieldName, locale);
-    const useStackedLayout = f.fieldName === "notes" || displayValue.length > 48;
-
-    const row = table.insertRow();
-    if (useStackedLayout) {
-      row.className = "fact-row--stacked";
-      const cell = row.insertCell();
-      cell.colSpan = 2;
-
-      const labelEl = document.createElement("div");
-      labelEl.className = "fact-stacked-label";
-      labelEl.appendChild(document.createTextNode(label));
-      appendFactBadges(labelEl, tier, confidence, locale);
-      cell.appendChild(labelEl);
-
-      const valueEl = document.createElement("div");
-      valueEl.className = "fact-stacked-value";
-      valueEl.textContent = displayValue;
-      cell.appendChild(valueEl);
-
-      if (
-        tier === "AI_GUESS" &&
-        evidence &&
-        evidence !== displayValue &&
-        !CONFIDENCE_ONLY.has(rawValue.toLowerCase())
-      ) {
-        const evidenceEl = document.createElement("div");
-        evidenceEl.className = "fact-evidence";
-        evidenceEl.textContent = evidence;
-        cell.appendChild(evidenceEl);
-      }
-      return;
-    }
-
-    const labelCell = row.insertCell();
-    labelCell.className = "fact-label";
-    labelCell.textContent = label;
-
-    const valueCell = row.insertCell();
-    valueCell.className = "fact-value-cell";
-
-    const valueWrap = document.createElement("div");
-    valueWrap.textContent = displayValue;
-    valueCell.appendChild(valueWrap);
-
-    const badgeWrap = document.createElement("div");
-    badgeWrap.style.marginTop = "4px";
-    appendFactBadges(badgeWrap, tier, confidence, locale);
-    valueCell.appendChild(badgeWrap);
-  });
-
+  facts.forEach((f) => appendFactRow(table, f, locale));
   return table;
+}
+
+function createFactsSections(facts, locale) {
+  const wrap = document.createElement("div");
+  wrap.className = "facts-sections";
+  const display = (facts ?? []).filter((f) => f.fieldName !== "notes");
+  for (const section of groupFactsBySection(display)) {
+    const sec = document.createElement("section");
+    sec.className = "facts-section";
+    const heading = document.createElement("h2");
+    heading.className = "facts-section-title";
+    heading.textContent = wtT(section.labelKey, locale);
+    sec.appendChild(heading);
+
+    if (section.id === "room") {
+      const { overview, groups } = splitRoomSectionFacts(section.facts);
+      if (overview.length > 0) sec.appendChild(createFactsTable(overview, locale));
+      for (const group of groups) {
+        const box = document.createElement("div");
+        box.className = "facts-room-type";
+        const kicker = document.createElement("p");
+        kicker.className = "facts-room-kicker";
+        kicker.textContent = wtT("ui.propertyAuditedRoomType", locale);
+        const title = document.createElement("h3");
+        title.className = "facts-room-title";
+        title.textContent = wtRoomTypeLabel(group.typeId, locale);
+        box.appendChild(kicker);
+        box.appendChild(title);
+        box.appendChild(createFactsTable(group.facts, locale));
+        sec.appendChild(box);
+      }
+    } else {
+      sec.appendChild(createFactsTable(section.facts, locale));
+    }
+    wrap.appendChild(sec);
+  }
+  return wrap;
 }
 
 function auditPhotoUrl(photo) {
@@ -371,23 +397,36 @@ function createScoreBlock(facts, locale) {
   return wrap;
 }
 
-function createFeatureGrid(facts, locale) {
-  const byName = new Map((facts ?? []).map((f) => [f.fieldName, f]));
+function createA11yIconRow(facts, locale) {
+  const { shown, more } = presentA11yIcons(facts, 5);
+  if (shown.length === 0) return null;
+
   const grid = document.createElement("div");
-  grid.className = "feature-grid";
+  grid.className = "a11y-icons a11y-icons--labeled";
+  grid.setAttribute("aria-label", wtT("ui.a11yPreferencesTitle", locale));
 
-  FEATURE_HIGHLIGHTS.forEach((fieldName) => {
-    const fact = byName.get(fieldName);
-    const present = fact && truthyFactValue(fact.value);
-    const tile = document.createElement("div");
-    tile.className = `feature-tile${present ? "" : " is-missing"}`;
-    tile.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  shown.forEach((icon) => {
+    const wrap = document.createElement("div");
+    wrap.className = `a11y-icon-wrap a11y-icon-wrap--${icon.tone}`;
+    wrap.title = wtT(icon.labelKey, locale);
+
+    const iconEl = document.createElement("span");
+    iconEl.className = `a11y-icon a11y-icon--${icon.tone}`;
+    iconEl.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${icon.paths}"></path></svg>`;
+    wrap.appendChild(iconEl);
+
     const label = document.createElement("span");
-    label.textContent = wtFieldLabel(fieldName, locale);
-    tile.appendChild(label);
-    grid.appendChild(tile);
+    label.className = "a11y-icon-label";
+    label.textContent = wtT(icon.labelKey, locale);
+    wrap.appendChild(label);
+    grid.appendChild(wrap);
   });
-
+  if (more > 0) {
+    const extra = document.createElement("div");
+    extra.className = "a11y-icon-more";
+    extra.textContent = `+${more}`;
+    grid.appendChild(extra);
+  }
   return grid;
 }
 
@@ -421,19 +460,10 @@ function initSearchSection(nodeUrl, authHeaders, locale, onSelect) {
     }
   }
 
-  freshInput.addEventListener("input", () => {
-    clearTimeout(searchTimer);
-    const q = freshInput.value.trim();
-    results.innerHTML = "";
-    freshInput.classList.remove("is-searching");
-    freshInput.setAttribute("aria-busy", "false");
-
-    if (q.length < 2) return;
-
-    setSearching(true);
+  function runSearch(q) {
     const seq = ++searchSeq;
-
-    searchTimer = setTimeout(async () => {
+    setSearching(true);
+    void (async () => {
       try {
         const key = searchCacheKey(nodeUrl, q);
         const properties = await cachedFetch(
@@ -498,7 +528,28 @@ function initSearchSection(nodeUrl, authHeaders, locale, onSelect) {
         err.textContent = wtT("ui.searchNoResults", locale);
         results.appendChild(err);
       }
-    }, 350);
+    })();
+  }
+
+  freshInput.addEventListener("input", () => {
+    clearTimeout(searchTimer);
+    const q = freshInput.value.trim();
+    results.innerHTML = "";
+    setSearching(false);
+    if (q.length < SEARCH_MIN_CHARS) return;
+    searchTimer = setTimeout(() => {
+      const latest = freshInput.value.trim();
+      if (latest.length < SEARCH_MIN_CHARS) return;
+      runSearch(latest);
+    }, SEARCH_DEBOUNCE_MS);
+  });
+
+  freshInput.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    clearTimeout(searchTimer);
+    const q = freshInput.value.trim();
+    if (q.length >= SEARCH_MIN_CHARS) runSearch(q);
   });
 }
 
@@ -738,15 +789,13 @@ async function fetchAndRender(resolvedId, displayName, content, nodeUrl, authHea
     loc.textContent = prop.location;
     cardBody.appendChild(loc);
   }
+  const icons = createA11yIconRow(facts, locale);
+  if (icons) cardBody.appendChild(icons);
   card.appendChild(cardBody);
   content.appendChild(card);
 
   const scoreBlock = createScoreBlock(facts, locale);
   if (scoreBlock) content.appendChild(scoreBlock);
-
-  if (hasFacts) {
-    content.appendChild(createFeatureGrid(facts, locale));
-  }
 
   const photosSection = createAuditPhotosSection(data.auditPhotos, data.hasAiGuess, locale);
   if (photosSection) content.appendChild(photosSection);
@@ -763,7 +812,7 @@ async function fetchAndRender(resolvedId, displayName, content, nodeUrl, authHea
     empty.appendChild(p);
     content.appendChild(empty);
   } else {
-    content.appendChild(createFactsTable(facts, locale));
+    content.appendChild(createFactsSections(facts, locale));
   }
 
   const detailsBtn = document.createElement("button");

@@ -20,11 +20,15 @@ function isThemeMode(value: unknown): value is ThemeMode {
   );
 }
 
+function readScopedTheme(): ThemeMode {
+  return readUserScoped<ThemeMode>(SCOPED_KEY, DEFAULT_ACCESS_THEME, isThemeMode);
+}
+
 /** Signed-in travelers: per-account theme. Guests (login/register): standard light. */
 export function readAccessThemePreference(): ThemeMode {
   if (!readAuthToken()) return DEFAULT_ACCESS_THEME;
 
-  const scoped = readUserScoped<ThemeMode>(SCOPED_KEY, DEFAULT_ACCESS_THEME, isThemeMode);
+  const scoped = readScopedTheme();
   if (scoped !== DEFAULT_ACCESS_THEME) return scoped;
 
   if (typeof localStorage === "undefined") return DEFAULT_ACCESS_THEME;
@@ -37,13 +41,16 @@ export function readAccessThemePreference(): ThemeMode {
 }
 
 export function writeAccessThemePreference(mode: ThemeMode, opts?: { skipSync?: boolean }): void {
+  const prevScoped = readAuthToken() ? readScopedTheme() : DEFAULT_ACCESS_THEME;
   if (readAuthToken()) {
     writeUserScoped(SCOPED_KEY, mode);
   }
   if (typeof localStorage !== "undefined") {
     localStorage.setItem(THEME_STORAGE_KEY, mode);
   }
-  if (!opts?.skipSync && readAuthToken()) {
+  // Re-applying the same theme (login hydration / ThemeProvider mount) must not
+  // stamp prefs as dirty — that blocks pulling a11y + theme from the server.
+  if (!opts?.skipSync && readAuthToken() && mode !== prevScoped) {
     emitPreferencesDirty();
   }
 }

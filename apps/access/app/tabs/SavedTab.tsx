@@ -169,21 +169,24 @@ export function SavedTab({ homeNodeUrl, active = true, onAddLocation }: Props) {
           <p className="fk-saved-empty">{t("ui.savedEmpty")}</p>
         ) : visible.length === 0 ? (
           <p className="fk-saved-empty">{t("ui.searchNoResults")}</p>
-        ) : (
-          <ul className="fk-saved-list">
-            {visible.map((p) => (
-              <li key={p.id} className="fk-saved-card fk-saved-card--rich">
-                <div className="fk-saved-card__top">
-                  <span className="fk-saved-card__thumb" aria-hidden="true">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      className="fk-saved-card__thumb-img"
-                      src={thumbSrc(p)}
-                      alt=""
-                      loading="lazy"
-                    />
-                  </span>
-                  <div className="fk-saved-card__main">
+        ) : null}
+
+        <ul className="fk-saved-list">
+          {visible.map((p) => (
+            <li key={p.id} className="fk-saved-card fk-saved-card--rich">
+              <div className="fk-saved-card__top">
+                <span className="fk-saved-card__thumb" aria-hidden="true">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    className="fk-saved-card__thumb-img"
+                    src={thumbSrc(p)}
+                    alt=""
+                    loading="lazy"
+                  />
+                </span>
+                <div className="fk-saved-card__main">
+                  <div className="fk-saved-card__head">
+                    <strong className="fk-saved-card__name">{p.name}</strong>
                     <div className="fk-saved-card__actions">
                       <button
                         type="button"
@@ -207,7 +210,7 @@ export function SavedTab({ homeNodeUrl, active = true, onAddLocation }: Props) {
                           aria-expanded={menuId === p.id}
                           onClick={() => setMenuId((id) => (id === p.id ? null : p.id))}
                         >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                             <circle cx="12" cy="5" r="1.6" />
                             <circle cx="12" cy="12" r="1.6" />
                             <circle cx="12" cy="19" r="1.6" />
@@ -229,42 +232,42 @@ export function SavedTab({ homeNodeUrl, active = true, onAddLocation }: Props) {
                         )}
                       </div>
                     </div>
-                    <strong className="fk-saved-card__name">{p.name}</strong>
-                    <span className="fk-saved-card__loc">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                        <circle cx="12" cy="10" r="3" />
-                      </svg>
-                      {p.location}
-                    </span>
-                    {p.facts && p.facts.length > 0 && (
-                      <AccessibilityIconRow facts={p.facts} max={4} />
-                    )}
                   </div>
+                  <span className="fk-saved-card__loc">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    {p.location}
+                  </span>
+                  {p.facts && p.facts.length > 0 && (
+                    <AccessibilityIconRow facts={p.facts} max={4} />
+                  )}
                 </div>
-                <Link
-                  href={propertyHref(p.id, p.nodeUrl, homeNodeUrl)}
-                  className="fk-saved-card__cta-btn"
-                  onClick={() => saveAccessReturn({ tab: "saved" })}
-                >
-                  {t("ui.mapViewProperty")}
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-                    <polyline points="9 6 15 12 9 18" />
-                  </svg>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        <button
-          type="button"
-          className="fk-saved-add"
-          onClick={() => onAddLocation?.()}
-        >
-          <span aria-hidden="true">+</span>
-          {t("ui.savedAddLocation")}
-        </button>
+              </div>
+              <Link
+                href={propertyHref(p.id, p.nodeUrl, homeNodeUrl)}
+                className="fk-saved-card__cta-btn"
+                onClick={() => saveAccessReturn({ tab: "saved" })}
+              >
+                {t("ui.mapViewProperty")}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                  <polyline points="9 6 15 12 9 18" />
+                </svg>
+              </Link>
+            </li>
+          ))}
+          <li className="fk-saved-add-cell">
+            <button
+              type="button"
+              className="fk-saved-add"
+              onClick={() => onAddLocation?.()}
+            >
+              <span aria-hidden="true">+</span>
+              {t("ui.savedAddLocation")}
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   );
