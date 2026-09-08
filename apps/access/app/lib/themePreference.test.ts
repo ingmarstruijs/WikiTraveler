@@ -1,11 +1,21 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { DEFAULT_ACCESS_THEME, readAccessThemePreference } from "./themePreference";
 
 vi.mock("./authStorage", () => ({
   readAuthToken: vi.fn(),
 }));
 
+vi.mock("./profileSyncEvents", () => ({
+  emitPreferencesDirty: vi.fn(),
+  emitFavoritesDirty: vi.fn(),
+  emitProfileSynced: vi.fn(),
+  PREFERENCES_DIRTY_EVENT: "wt-preferences-dirty",
+  FAVORITES_DIRTY_EVENT: "wt-favorites-dirty",
+  SYNCED_EVENT: "wt-profile-synced",
+}));
+
+import { DEFAULT_ACCESS_THEME, readAccessThemePreference, writeAccessThemePreference } from "./themePreference";
 import { readAuthToken } from "./authStorage";
+import { emitPreferencesDirty } from "./profileSyncEvents";
 
 describe("readAccessThemePreference", () => {
   const store = new Map<string, string>();
@@ -23,6 +33,7 @@ describe("readAccessThemePreference", () => {
       clear: () => store.clear(),
     });
     vi.mocked(readAuthToken).mockReturnValue(null);
+    vi.mocked(emitPreferencesDirty).mockClear();
   });
 
   afterEach(() => {
@@ -40,6 +51,17 @@ describe("readAccessThemePreference", () => {
       "wt_access_theme",
       JSON.stringify({ byUser: { alice: "dark" } })
     );
+    expect(readAccessThemePreference()).toBe("dark");
+  });
+
+  it("does not mark prefs dirty when re-applying the default theme", () => {
+    vi.mocked(readAuthToken).mockReturnValue("token");
+    localStorage.setItem("wt_username", "alice");
+    writeAccessThemePreference("light");
+    expect(emitPreferencesDirty).not.toHaveBeenCalled();
+
+    writeAccessThemePreference("dark");
+    expect(emitPreferencesDirty).toHaveBeenCalledTimes(1);
     expect(readAccessThemePreference()).toBe("dark");
   });
 });

@@ -1,5 +1,5 @@
 import { AUTH_CHANGED_EVENT } from "./authStorage";
-import { emitPreferencesDirty } from "./profileSyncEvents";
+import { emitPreferencesDirty, SYNCED_EVENT } from "./profileSyncEvents";
 import { isStringArray, readUserScoped, writeUserScoped } from "./userScopedStorage";
 
 /** Persistent accessibility search preferences (client + sync hook for Profile). */
@@ -50,10 +50,12 @@ export function subscribeA11yPreferences(onChange: () => void): () => void {
   };
   window.addEventListener(PREFS_EVENT, notify);
   window.addEventListener(AUTH_CHANGED_EVENT, notify);
+  window.addEventListener(SYNCED_EVENT, notify);
   window.addEventListener("storage", onStorage);
   return () => {
     window.removeEventListener(PREFS_EVENT, notify);
     window.removeEventListener(AUTH_CHANGED_EVENT, notify);
+    window.removeEventListener(SYNCED_EVENT, notify);
     window.removeEventListener("storage", onStorage);
   };
 }

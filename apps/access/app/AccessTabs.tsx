@@ -11,7 +11,6 @@ import { ProfileTab } from "./tabs/ProfileTab";
 import { readAuthToken } from "./lib/authStorage";
 import { canContribute, roleFromToken } from "./lib/userRole";
 import { parseAccessTab, type AccessTabId } from "./lib/navigationReturn";
-import { OnboardingOverlay } from "./components/OnboardingOverlay";
 
 type TabId = AccessTabId;
 
@@ -116,7 +115,6 @@ export function AccessTabs() {
       <a href="#main-content" className="wt-skip-link">
         {t("ui.skipToContent")}
       </a>
-      <OnboardingOverlay />
       <main
         id="main-content"
         className={`page fk-main fk-main--flush${activeTab === "search" ? " fk-main--fill" : ""}`}

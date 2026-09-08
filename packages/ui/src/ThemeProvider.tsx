@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { THEME_STORAGE_KEY, parseThemeMode, type ThemeMode } from "./constants";
 
 const THEME_CLASSES = ["wt-dark", "wt-contrast", "wt-calm"] as const;
@@ -34,18 +34,22 @@ export function ThemeProvider({
   onPersist?: (mode: ThemeMode) => void;
 }) {
   const [mode, setModeState] = useState<ThemeMode>("light");
+  const modeRef = useRef<ThemeMode>(mode);
 
   useEffect(() => {
     const initial = parseThemeMode(localStorage.getItem(THEME_STORAGE_KEY));
+    modeRef.current = initial;
     setModeState(initial);
     applyTheme(initial);
   }, []);
 
   const setMode = useCallback((next: ThemeMode) => {
+    const changed = next !== modeRef.current;
+    modeRef.current = next;
     localStorage.setItem(THEME_STORAGE_KEY, next);
-    onPersist?.(next);
-    setModeState(next);
     applyTheme(next);
+    setModeState(next);
+    if (changed) onPersist?.(next);
   }, [onPersist]);
 
   return (

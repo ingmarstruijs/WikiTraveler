@@ -10,6 +10,7 @@ import {
   fetchPropertyAccessibility,
   fetchPropertySignals,
   ENV_NODE_URL,
+  toDisplayNodeUrl,
   type AuditNoteEntry,
   type AuditPhotosPayload,
 } from "../../lib/accessApi";
@@ -30,7 +31,6 @@ import {
   splitRoomSectionFacts,
   unassignedPhotos,
   type DisplayFact,
-  type FactSection,
 } from "../../lib/propertyFacts";
 import { AccessibilityIconRow } from "../../components/AccessibilityIconRow";
 import { PropertyMiniMap } from "../../components/PropertyMiniMap";
@@ -38,24 +38,12 @@ import { TaggedNotes } from "../../components/TaggedNotes";
 import { AuditNotesList } from "../../components/AuditNotesList";
 import { PhotoLightbox } from "../../components/PhotoLightbox";
 import { parseTaggedNotes } from "../../lib/taggedNotes";
+import { computeCategoryBars, overallAccessibilityScore } from "../../lib/accessibilityScore";
 
 interface Props {
   propertyId: string;
   initialNodeUrl?: string;
 }
-
-/** Expected field counts for category fill bars (matches SECTION_RULES). */
-const CATEGORY_EXPECTED: Array<{
-  id: string;
-  labelKey: string;
-  sectionIds: string[];
-  expected: number;
-}> = [
-  { id: "mobility", labelKey: "ui.auditStepMobility", sectionIds: ["entrance", "mobility"], expected: 11 },
-  { id: "room", labelKey: "ui.auditStepRoom", sectionIds: ["room"], expected: 7 },
-  { id: "bathroom", labelKey: "ui.auditStepBathroom", sectionIds: ["bathroom"], expected: 3 },
-  { id: "communication", labelKey: "ui.auditStepCommunication", sectionIds: ["communication"], expected: 5 },
-];
 
 function FactList({
   facts,
@@ -297,33 +285,6 @@ function HeroCarousel({
   );
 }
 
-function categoryBars(sections: FactSection[]): Array<{ id: string; labelKey: string; pct: number; count: number }> {
-  return CATEGORY_EXPECTED.map((cat) => {
-    const count = sections
-      .filter((s) => cat.sectionIds.includes(s.id))
-      .reduce((sum, s) => sum + s.facts.length, 0);
-    const pct = Math.min(100, Math.round((count / cat.expected) * 100));
-    return { id: cat.id, labelKey: cat.labelKey, pct, count };
-  });
-}
-
-/** Overall score = expected-field-weighted coverage across categories (0–100). */
-function overallAccessibilityScore(
-  bars: Array<{ pct: number }>
-): number | null {
-  let weighted = 0;
-  let expected = 0;
-  for (let i = 0; i < CATEGORY_EXPECTED.length; i++) {
-    const bar = bars[i];
-    if (!bar) continue;
-    weighted += bar.pct * CATEGORY_EXPECTED[i].expected;
-    expected += CATEGORY_EXPECTED[i].expected;
-  }
-  if (expected <= 0) return null;
-  if (bars.every((b) => b.pct === 0)) return null;
-  return Math.round(weighted / expected);
-}
-
 export function PropertyDetail({ propertyId, initialNodeUrl }: Props) {
   const { locale, t } = useLocale();
   const searchParams = useSearchParams();
@@ -502,7 +463,7 @@ export function PropertyDetail({ propertyId, initialNodeUrl }: Props) {
       id: data.property.id,
       name: data.property.name,
       location: data.property.location,
-      nodeUrl: targetNodeUrl,
+      nodeUrl: toDisplayNodeUrl(targetNodeUrl),
       imageUrl: heroPhotos[0]?.url ?? null,
       category: inferSavedCategory(data.property.name, data.property.location),
       facts: (data.facts ?? []).map((f) => ({ fieldName: f.fieldName, value: f.value })),
@@ -532,7 +493,7 @@ export function PropertyDetail({ propertyId, initialNodeUrl }: Props) {
   const orphanPhotos = unassignedPhotos(allPhotos, displayFacts);
   const shownStepScopes = new Set<string>();
 
-  const bars = categoryBars(sections);
+  const bars = computeCategoryBars(displayFacts);
   const accessibilityScore = overallAccessibilityScore(bars);
   const excellent = accessibilityScore != null && accessibilityScore >= 70;
   const factTotal =

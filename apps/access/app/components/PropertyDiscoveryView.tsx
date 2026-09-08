@@ -17,6 +17,7 @@ import {
   setDiscoveryViewMode,
   type DiscoveryViewMode,
 } from "../lib/discoveryUtils";
+import { patchMapBrowseSession, readMapBrowseSession } from "../lib/mapBrowseSession";
 
 const TIER_RANK: Record<string, number> = {
   OFFICIAL: 0,
@@ -119,8 +120,10 @@ export function PropertyDiscoveryView({
   listTitle,
 }: Props) {
   const { t, getTierLabel } = useLocale();
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [selectedPin, setSelectedPin] = useState<MapPin | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(() => readMapBrowseSession().selectedPin?.id ?? null);
+  const [selectedPin, setSelectedPin] = useState<MapPin | null>(() => readMapBrowseSession().selectedPin);
+  const [mapFocusNonce, setMapFocusNonce] = useState(0);
+  const [mapFocusTarget, setMapFocusTarget] = useState<{ lat: number; lon: number } | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<DiscoveryViewMode>("map");
   const [desktopSplit, setDesktopSplit] = useState(false);
@@ -202,6 +205,7 @@ export function PropertyDiscoveryView({
     (pin: MapPin | null) => {
       setSelectedPin(pin);
       setSelectedId(pin?.id ?? null);
+      patchMapBrowseSession({ selectedPin: pin });
       if (pin) scrollListToId(pin.id);
     },
     [scrollListToId]
@@ -210,6 +214,7 @@ export function PropertyDiscoveryView({
   const closeMapPreview = useCallback(() => {
     setSelectedPin(null);
     setSelectedId(null);
+    patchMapBrowseSession({ selectedPin: null });
   }, []);
 
   function changeViewMode(mode: DiscoveryViewMode) {
@@ -280,6 +285,9 @@ export function PropertyDiscoveryView({
               locateLoading={locateLoading}
               locateLabel={locateLabel}
               onBrowseThisArea={onBrowseThisArea}
+              focusNonce={mapFocusNonce}
+              focusLat={mapFocusTarget?.lat ?? null}
+              focusLon={mapFocusTarget?.lon ?? null}
             />
             {showMap && selectedPin && (
               <PropertyMapPreview
@@ -311,7 +319,7 @@ export function PropertyDiscoveryView({
             {listTitle && !loading && properties.length > 0 && (
               <p className="fk-discovery-list-title">{listTitle}</p>
             )}
-            {loading && (
+            {loading && properties.length === 0 && (
               <div className="fk-discovery-skeleton-list" aria-hidden="true">
                 {[1, 2, 3].map((n) => (
                   <div key={n} className="fk-discovery-skeleton fk-discovery-skeleton--card" />
@@ -323,7 +331,7 @@ export function PropertyDiscoveryView({
 
             {!loading && properties.length === 0 && emptyState}
 
-            {!loading && properties.length > 0 && (
+            {properties.length > 0 && (
               <ul className="fk-discovery-cards" aria-label={t("ui.searchFindProperties")}>
                 {properties.slice(0, visibleCount).map((property) => {
                   const selected = selectedId === property.id;
@@ -350,6 +358,9 @@ export function PropertyDiscoveryView({
                         onClick={() => {
                           if (returnState) saveAccessReturn(returnState);
                           handleSelect(property.id);
+                          const pin = propertySummaryToMapPin(property);
+                          setSelectedPin(pin);
+                          patchMapBrowseSession({ selectedPin: pin });
                         }}
                       >
                         <span className="fk-disco-item-text">
@@ -419,6 +430,9 @@ export function PropertyDiscoveryView({
                             const pin = propertySummaryToMapPin(property);
                             setSelectedPin(pin);
                             handleSelect(property.id);
+                            patchMapBrowseSession({ selectedPin: pin });
+                            setMapFocusTarget({ lat: pin.lat, lon: pin.lon });
+                            setMapFocusNonce((n) => n + 1);
                             if (!desktopSplit) changeViewMode("map");
                           }}
                         >

@@ -5,6 +5,11 @@ import {
   ONBOARDING_KEY,
   CATEGORY_EXPECTED,
   FEATURE_HIGHLIGHTS,
+  SEARCH_DEBOUNCE_MS,
+  SEARCH_MIN_CHARS,
+  groupFactsBySection,
+  splitRoomSectionFacts,
+  presentA11yIcons,
   truthyFactValue,
   computeCategoryBars,
   overallAccessibilityScore,
@@ -99,6 +104,61 @@ describe("accessibility score", () => {
     const bars = computeCategoryBars([{ fieldName: "notes", value: "hi" }]);
     expect(bars.every((b) => b.count === 0)).toBe(true);
     expect(overallAccessibilityScore(bars)).toBeNull();
+  });
+});
+
+describe("display grouping", () => {
+  it("groups facts into Access sections", () => {
+    const sections = groupFactsBySection([
+      { fieldName: "step_free_entrance", value: "yes" },
+      { fieldName: "elevator_present", value: "yes" },
+      { fieldName: "accessible_bathroom", value: "yes" },
+    ]);
+    expect(sections.map((s) => s.id)).toEqual(["entrance", "mobility", "bathroom"]);
+  });
+
+  it("puts room-scoped facts under the room type, not a flat list", () => {
+    const sections = groupFactsBySection([
+      { fieldName: "room_types_available", value: "twin_room_disability_access" },
+      {
+        fieldName: "bed_height_cm",
+        value: "65",
+        scopeKey: "room-type:twin_room_disability_access",
+      },
+      {
+        fieldName: "roll_in_shower",
+        value: "yes",
+        scopeKey: "room-type:twin_room_disability_access",
+      },
+    ]);
+    const room = sections.find((s) => s.id === "room");
+    const { overview, groups } = splitRoomSectionFacts(room.facts);
+    expect(overview.some((f) => f.fieldName === "room_types_available")).toBe(true);
+    expect(groups).toHaveLength(1);
+    expect(groups[0].typeId).toBe("twin_room_disability_access");
+    expect(groups[0].facts.map((f) => f.fieldName)).toEqual(["bed_height_cm", "roll_in_shower"]);
+  });
+});
+
+describe("presentA11yIcons", () => {
+  it("returns only truthy Access highlight icons", () => {
+    const { shown, more } = presentA11yIcons(
+      [
+        { fieldName: "step_free_entrance", value: "yes" },
+        { fieldName: "elevator_present", value: "no" },
+        { fieldName: "parking_accessible", value: "yes" },
+      ],
+      5
+    );
+    expect(shown.map((i) => i.field)).toEqual(["step_free_entrance", "parking_accessible"]);
+    expect(more).toBe(0);
+  });
+});
+
+describe("search debounce", () => {
+  it("waits half a second after typing before searching", () => {
+    expect(SEARCH_DEBOUNCE_MS).toBe(500);
+    expect(SEARCH_MIN_CHARS).toBe(2);
   });
 });
 

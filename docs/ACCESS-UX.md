@@ -6,7 +6,7 @@ Product lock for the Access PWA redesign (shipped on `main`). Installable web ma
 
 **Bottom nav (mobile):** Search | Favorites | Contribute (AUDITOR/ADMIN only) | Profile
 
-**Desktop chrome (≥900px):** icon-only left rail; Search shows map and list side-by-side; map pin opens a bottom sheet in the map column (scrolls the list to the same place); list hover highlights the map pin; Favorites uses a multi-column grid. Property/audit routes keep focus chrome (no side nav) with wider content. Tab and toolbar heroes share the same navy header padding and logo size; property loading skeleton follows the photo|sheet split on desktop.
+**Desktop chrome (≥900px):** icon-only left rail; Search shows map and list side-by-side; map pin opens a bottom sheet in the map column (scrolls the list to the same place); list hover highlights the map pin; **Show on map** from a list row pans that pin into the visible map (centred above the sheet, not behind it). Favorites uses an equal-width card grid (cover photo; “Add a place” is a matching dashed tile, so one save does not sit as a leftover mobile strip). Property/audit routes keep focus chrome (no side nav) with wider content. Tab and toolbar heroes share the same navy header padding and logo size; property loading skeleton follows the photo|sheet split on desktop. Viewport pins, the selected pin sheet, and locate-me (1 km) are restored when returning from property detail (mobile and desktop). Favorited rows in the discovery list use the same card chrome as other rows; the heart uses the theme primary color, matching map pins. Contribute uses a stacked mobile layout and a two-column desktop dashboard (add-property CTA + activity stats | recent audits).
 
 | Former tab | New home |
 |------------|----------|
@@ -25,9 +25,9 @@ Product lock for the Access PWA redesign (shipped on `main`). Installable web ma
 - **Property:** full-screen route with back; View is primary, Audit secondary
 - **Audit:** wizard chrome (draft / cancel / next) only
 
-**Saved / Favorites:** synced to the signed-in home-node account (localStorage is a per-user cache). Write-through runs app-wide (including property detail hearts), so a second device sees the same list after login. Traveler reports are not shown here. Search and sort apply on this list.
+**Saved / Favorites:** synced to the signed-in home-node account (localStorage is a per-user cache). Write-through runs app-wide (including property detail hearts), so a second device sees the same list after login. Local edits stamp immediately so a focus/visibility pull cannot overwrite unsynced hearts or accessibility preferences. Traveler reports are not shown here. Search and sort apply on this list.
 
-**Profile preferences:** accessibility chips and theme sync to the home node with the same app-wide cache pattern.
+**Profile preferences:** accessibility chips and theme sync to the home node with the same app-wide cache pattern. A new login (empty local cache) pulls both from the server; re-applying the default Standard theme at login does not block that pull.
 
 **Notifications:** bell in the Access hero opens a short popup with a link to updates (resolved/dismissed reports).
 

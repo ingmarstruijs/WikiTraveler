@@ -2,6 +2,8 @@ export {
   t,
   getFieldLabel,
   getTierLabel,
+  getRoomTypeLabel,
+  formatFactValue,
   resolveLocale,
   isSupportedLocale,
   LOCALE_STORAGE_KEY,

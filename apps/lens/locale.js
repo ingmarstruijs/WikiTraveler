@@ -29,6 +29,24 @@ function wtFieldLabel(fieldName, locale) {
   return WtI18n.getFieldLabel(fieldName, locale);
 }
 
+/** @param {string} roomType @param {string} locale */
+function wtRoomTypeLabel(roomType, locale) {
+  return WtI18n.getRoomTypeLabel(roomType, locale);
+}
+
+/** @param {string} fieldName @param {string} value @param {string} locale @param {object} [fact] */
+function wtFormatFactValue(fieldName, value, locale, fact = {}) {
+  if (typeof WtI18n.formatFactValue === "function") {
+    return WtI18n.formatFactValue(fieldName, value, {
+      locale,
+      valueLocale: fact.valueLocale,
+      translatedValue: fact.displayValue,
+      machineTranslated: fact.machineTranslated,
+    }).displayValue;
+  }
+  return String(value ?? "").trim();
+}
+
 /** @param {string} tier @param {string} locale */
 function wtTierLabel(tier, locale) {
   return WtI18n.getTierLabel(tier, locale);

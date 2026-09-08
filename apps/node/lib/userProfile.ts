@@ -37,10 +37,22 @@ function normalizeUrl(url: string): string {
   return url.trim().replace(/\/$/, "").toLowerCase();
 }
 
+/** Treat localhost / 127.0.0.1 and implicit ports as the same origin. */
+function canonicalNodeOrigin(url: string): string {
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname === "127.0.0.1" ? "localhost" : parsed.hostname.toLowerCase();
+    const port = parsed.port || (parsed.protocol === "https:" ? "443" : "80");
+    return `${parsed.protocol}//${host}:${port}`;
+  } catch {
+    return normalizeUrl(url);
+  }
+}
+
 /** Profile data lives on the account's home node only. */
 export function isHomeNodeToken(user: AuthUser): boolean {
   if (!user.homeNodeUrl) return true;
-  return normalizeUrl(user.homeNodeUrl) === normalizeUrl(NODE_URL);
+  return canonicalNodeOrigin(user.homeNodeUrl) === canonicalNodeOrigin(NODE_URL);
 }
 
 export async function requireHomeUser(

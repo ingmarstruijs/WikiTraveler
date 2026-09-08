@@ -130,9 +130,27 @@ async function pushFavoritesNow(): Promise<void> {
   }
 }
 
+function flushPreferencesPush(): Promise<void> {
+  if (pushPrefsTimer) {
+    clearTimeout(pushPrefsTimer);
+    pushPrefsTimer = null;
+  }
+  return pushPreferencesNow();
+}
+
+function flushFavoritesPush(): Promise<void> {
+  if (pushFavsTimer) {
+    clearTimeout(pushFavsTimer);
+    pushFavsTimer = null;
+  }
+  return pushFavoritesNow();
+}
+
 /** Debounced write-through after local preference edits. */
 export function schedulePreferencesPush(): void {
   if (typeof globalThis.localStorage === "undefined" || !readAuthToken()) return;
+  // Stamp immediately so a concurrent pull cannot overwrite unsynced local edits.
+  writeCacheStamp(PREFS_STAMP_KEY, new Date().toISOString());
   if (pushPrefsTimer) clearTimeout(pushPrefsTimer);
   pushPrefsTimer = setTimeout(() => {
     pushPrefsTimer = null;
@@ -143,6 +161,7 @@ export function schedulePreferencesPush(): void {
 /** Debounced write-through after local favorites edits. */
 export function scheduleFavoritesPush(): void {
   if (typeof globalThis.localStorage === "undefined" || !readAuthToken()) return;
+  writeCacheStamp(FAVS_STAMP_KEY, new Date().toISOString());
   if (pushFavsTimer) clearTimeout(pushFavsTimer);
   pushFavsTimer = setTimeout(() => {
     pushFavsTimer = null;
@@ -159,12 +178,17 @@ export async function syncProfileFromServer(): Promise<void> {
   if (syncInFlight) return syncInFlight;
 
   syncInFlight = (async () => {
+    const prefsPushPending = Boolean(pushPrefsTimer);
+    const favsPushPending = Boolean(pushFavsTimer);
+    if (prefsPushPending) await flushPreferencesPush();
+    if (favsPushPending) await flushFavoritesPush();
+
     const me = await fetchJson<{
       preferences?: ServerPreferences;
     }>("/api/auth/me");
     const favs = await fetchJson<ServerFavorites>("/api/auth/favorites");
 
-    if (me?.preferences) {
+    if (me?.preferences && !prefsPushPending) {
       const serverMs = stampMs(me.preferences.updatedAt);
       const cacheMs = stampMs(readCacheStamp(PREFS_STAMP_KEY));
       const serverEmpty =
@@ -180,12 +204,17 @@ export async function syncProfileFromServer(): Promise<void> {
         await pushPreferencesNow();
       } else if (cacheMs > serverMs && localHas) {
         await pushPreferencesNow();
+      } else if (!serverEmpty && !localHas) {
+        // Fresh login / empty cache: a default-theme stamp must not block server prefs.
+        applyPreferencesLocally(me.preferences);
       } else if (serverMs >= cacheMs && (!serverEmpty || cacheMs > 0)) {
+        applyPreferencesLocally(me.preferences);
+      } else if (!serverEmpty && cacheMs === 0) {
         applyPreferencesLocally(me.preferences);
       }
     }
 
-    if (favs) {
+    if (favs && !favsPushPending) {
       const serverMs = stampMs(favs.updatedAt);
       const cacheMs = stampMs(readCacheStamp(FAVS_STAMP_KEY));
       const serverEmpty = !favs.places?.length;
@@ -235,12 +264,17 @@ export function startProfileSync(): () => void {
   const onFocus = () => {
     if (document.visibilityState === "visible") run();
   };
+  const onHide = () => {
+    if (pushPrefsTimer) void flushPreferencesPush();
+    if (pushFavsTimer) void flushFavoritesPush();
+  };
   const onPrefsDirty = () => schedulePreferencesPush();
   const onFavsDirty = () => scheduleFavoritesPush();
 
   window.addEventListener(AUTH_CHANGED_EVENT, onAuth);
   document.addEventListener("visibilitychange", onFocus);
   window.addEventListener("focus", onFocus);
+  window.addEventListener("pagehide", onHide);
   window.addEventListener(PREFERENCES_DIRTY_EVENT, onPrefsDirty);
   window.addEventListener(FAVORITES_DIRTY_EVENT, onFavsDirty);
 
