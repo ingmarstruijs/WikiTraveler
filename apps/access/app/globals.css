@@ -3564,20 +3564,20 @@ html.wt-dark .leaflet-control-zoom a {
   justify-content: flex-start;
   gap: 4px;
 }
-.fk-a11y-icons--labeled { gap: 8px 10px; margin-top: 10px; }
+.fk-a11y-icons--labeled { gap: 4px 6px; margin-top: 8px; }
 .fk-a11y-icon-wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; }
 .fk-a11y-icons--labeled .fk-a11y-icon-wrap {
-  align-items: flex-start;
-  flex: 0 0 4.5rem;
-  width: 4.5rem;
-  max-width: 4.5rem;
-  gap: 4px;
+  align-items: center;
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 3.1rem;
+  gap: 2px;
 }
 .fk-a11y-icon { width: 28px; height: 28px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; }
 .fk-a11y-icon--mobility, .fk-a11y-icon--entrance { background: #dcfce7; color: #166534; }
 .fk-a11y-icon--parking, .fk-a11y-icon--sensory { background: #ede9fe; color: #5b21b6; }
 .fk-a11y-icon--hearing { background: #dbeafe; color: #1d4ed8; }
-.fk-a11y-icon-label { font-size: 10px; line-height: 1.2; text-align: left; width: 100%; color: var(--wt-text-muted); }
+.fk-a11y-icon-label { font-size: 10px; line-height: 1.15; text-align: center; width: 100%; color: var(--wt-text-muted); }
 .fk-a11y-icon-more { font-size: 11px; color: var(--wt-text-muted); align-self: center; }
 .fk-boolean-toggle { display: flex; flex-wrap: wrap; gap: 6px; }
 .fk-boolean-toggle button { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--wt-border); background: var(--wt-bg); font-size: 12px; font-weight: 600; cursor: pointer; }
@@ -4025,20 +4025,20 @@ html.wt-dark .leaflet-control-zoom a {
 .fk-map-locate-btn:disabled { opacity: .6; }
 .fk-map-loading-spinner--sm { width: 18px; height: 18px; border-width: 2px; }
 .fk-a11y-icons { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: flex-start; gap: 4px; }
-.fk-a11y-icons--labeled { gap: 8px 10px; margin-top: 10px; }
+.fk-a11y-icons--labeled { gap: 4px 6px; margin-top: 8px; }
 .fk-a11y-icon-wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
 .fk-a11y-icons--labeled .fk-a11y-icon-wrap {
-  align-items: flex-start;
-  flex: 0 0 4.5rem;
-  width: 4.5rem;
-  max-width: 4.5rem;
-  gap: 4px;
+  align-items: center;
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 3.1rem;
+  gap: 2px;
 }
 .fk-a11y-icon { width: 30px; height: 30px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; }
 .fk-a11y-icon--entrance, .fk-a11y-icon--mobility { background: color-mix(in srgb, #16a34a 16%, transparent); color: #166534; }
 .fk-a11y-icon--parking, .fk-a11y-icon--sensory { background: color-mix(in srgb, var(--wt-primary) 14%, transparent); color: var(--wt-primary); }
 .fk-a11y-icon--hearing { background: color-mix(in srgb, #2563eb 14%, transparent); color: #1d4ed8; }
-.fk-a11y-icon-label { font-size: 9px; line-height: 1.2; text-align: left; width: 100%; color: var(--wt-text-muted); }
+.fk-a11y-icon-label { font-size: 9px; line-height: 1.15; text-align: center; width: 100%; color: var(--wt-text-muted); }
 .fk-a11y-icon-more { font-size: 11px; color: var(--wt-text-muted); align-self: center; }
 
 .fk-property-sheet-intro .fk-a11y-icons--labeled {

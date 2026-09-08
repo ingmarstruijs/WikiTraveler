@@ -206,9 +206,15 @@ export function PropertyDiscoveryView({
       setSelectedPin(pin);
       setSelectedId(pin?.id ?? null);
       patchMapBrowseSession({ selectedPin: pin });
-      if (pin) scrollListToId(pin.id);
+      if (pin) {
+        scrollListToId(pin.id);
+        if (!desktopSplit) {
+          setMapFocusTarget({ lat: pin.lat, lon: pin.lon });
+          setMapFocusNonce((n) => n + 1);
+        }
+      }
     },
-    [scrollListToId]
+    [scrollListToId, desktopSplit]
   );
 
   const closeMapPreview = useCallback(() => {

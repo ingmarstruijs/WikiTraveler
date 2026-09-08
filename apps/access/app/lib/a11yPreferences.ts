@@ -90,6 +90,25 @@ export function featuresFromPrefs(
 }
 
 /**
+ * Apply profile chips (minus session overrides) onto a filter object.
+ * Used so a remount / URL without `features` does not drop profile prefs.
+ */
+export function withProfileFeatures<T extends { features: string[] }>(
+  filters: T,
+  prefs: readonly string[],
+  overridesOff: readonly string[] = []
+): T {
+  return {
+    ...filters,
+    features: featuresFromPrefs(
+      prefs,
+      extrasFromFeatures(filters.features, prefs),
+      overridesOff
+    ),
+  };
+}
+
+/**
  * True when the traveler started a typed / funnel search.
  * Profile preference chips alone must not count — those stay on during map browse
  * so “Search this area” still appears after pan/zoom.

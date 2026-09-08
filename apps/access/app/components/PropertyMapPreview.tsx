@@ -8,6 +8,7 @@ import { fetchPropertyAccessibility } from "../lib/accessApi";
 import { propertyHref } from "../lib/propertyHref";
 import { auditHref } from "../lib/auditHref";
 import { saveAccessReturn, type AccessReturnState } from "../lib/navigationReturn";
+import { patchMapBrowseSession } from "../lib/mapBrowseSession";
 import { readAuthToken } from "../lib/authStorage";
 import { canContribute, roleFromToken } from "../lib/userRole";
 import { readSavedPlaces } from "../lib/savedPlaces";
@@ -113,7 +114,7 @@ export function PropertyMapPreview({
 
   function rememberReturn() {
     if (returnState) saveAccessReturn(returnState);
-    onClose();
+    patchMapBrowseSession({ selectedPin: pin });
   }
 
   return (

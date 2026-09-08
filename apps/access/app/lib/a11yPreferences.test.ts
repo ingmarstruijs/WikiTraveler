@@ -4,6 +4,7 @@ import {
   featuresFromPrefs,
   hasExplicitSearch,
   overridesFromFeatures,
+  withProfileFeatures,
 } from "./a11yPreferences";
 
 describe("featuresFromPrefs", () => {
@@ -47,6 +48,16 @@ describe("hasExplicitSearch", () => {
     ).toBe(false);
   });
 
+  it("does not treat URL profile features as a search while prefs hydrate", () => {
+    expect(
+      hasExplicitSearch(
+        "",
+        { ...emptyFilters, features: ["step_free_entrance", "parking_accessible"] },
+        ["step_free_entrance", "parking_accessible"]
+      )
+    ).toBe(false);
+  });
+
   it("treats extra funnel features, query, audited, or accessible-room as a search", () => {
     expect(
       hasExplicitSearch("", { ...emptyFilters, features: ["ramp_present", "automatic_door"] }, [
@@ -57,5 +68,32 @@ describe("hasExplicitSearch", () => {
     expect(hasExplicitSearch("", { ...emptyFilters, audited: true }, [])).toBe(true);
     expect(hasExplicitSearch("", { ...emptyFilters, hasAccessibleRoom: true }, [])).toBe(true);
     expect(hasExplicitSearch("", { ...emptyFilters, hasAccessibleRoom: null }, [])).toBe(false);
+  });
+});
+
+describe("withProfileFeatures", () => {
+  const emptyFilters = {
+    features: [] as string[],
+    audited: null as boolean | null,
+    hasAccessibleRoom: false,
+  };
+
+  it("fills empty URL filters from profile prefs", () => {
+    expect(
+      withProfileFeatures(
+        { ...emptyFilters, features: [] },
+        ["step_free_entrance", "parking_accessible"]
+      ).features
+    ).toEqual(["step_free_entrance", "parking_accessible"]);
+  });
+
+  it("keeps a session override that turned a pref off", () => {
+    expect(
+      withProfileFeatures(
+        { ...emptyFilters, features: [] },
+        ["step_free_entrance", "parking_accessible"],
+        ["parking_accessible"]
+      ).features
+    ).toEqual(["step_free_entrance"]);
   });
 });
