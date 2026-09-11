@@ -7,15 +7,20 @@ const { limitMock } = vi.hoisted(() => ({
 
 vi.mock("@upstash/ratelimit", () => ({
   Ratelimit: Object.assign(
-    vi.fn().mockImplementation(() => ({
-      limit: limitMock,
-    })),
+    // Vitest 4: `new` mocks must be a function/class (arrow functions are not constructors).
+    vi.fn().mockImplementation(function Ratelimit() {
+      return {
+        limit: limitMock,
+      };
+    }),
     { slidingWindow: vi.fn(() => ({})) }
   ),
 }));
 
 vi.mock("@upstash/redis", () => ({
-  Redis: vi.fn().mockImplementation(() => ({})),
+  Redis: vi.fn().mockImplementation(function Redis() {
+    return {};
+  }),
 }));
 
 describe("proxy rate limiting", () => {
