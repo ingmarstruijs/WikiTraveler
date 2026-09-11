@@ -10,8 +10,8 @@ Today `@wikitraveler/sdk` talks to a node with an optional **user JWT** (`POST /
 
 This RFC proposes making the SDK a first-class **sidecar client** for product teams:
 
-1. **Service credentials** for integrators (scoped API keys or equivalent) — not human login.
-2. **Public (or service-auth) reads** for accessibility facts and resolve — writes stay user/auditor JWT.
+1. **Service credentials on a hub/issuer** → short-lived `integrator_read` JWTs that **data nodes verify cross-node** (same pattern as traveler home JWTs) — not human login, not one API key per country.
+2. **Authenticated reads** for accessibility facts and resolve — writes stay user/auditor JWT; optional public GET remains opt-in.
 3. **Hub-style resolve** in the SDK (same mental model as Access/Lens): find the data node, fail honestly when uncovered.
 4. **Widget as a shippable product surface** (trust tiers, empty/coverage states, a11y, deep-link to Access).
 5. **DX** that matches reality (auth model, errors, agency-demo happy path).
@@ -59,22 +59,26 @@ Cold-start of *audit data* is a separate product risk (community). This RFC unbl
 | Caller | Auth | Used for |
 |--------|------|----------|
 | Traveler / auditor (Access, Lens, SDK `submitAudit`) | User JWT (`POST /api/auth/login`) | Identity, favorites, audits, signals |
-| Agency server / trusted backend | **Service credential** (API key or client id+secret → short-lived token) | Server-side fetches, minting browser tokens |
+| Agency server / trusted backend | **Issuer credentials** → short-lived `integrator_read` JWT | Resolve + read facts on any accepting data node; mint browser tokens |
 | Browser widget on partner site | Short-lived **read token** minted by partner backend *or* allowlisted origin + rate limit for selected public GETs | `getAccessibility`, resolve, health |
 | Anonymous internet | Optional **public GET** subset only if operators opt in + strict rate limits | Marketing demos; not the default for production nodes |
 
-**v1 recommendation:**  
+**v1 recommendation (agencies are multi-country by default):**  
 
-- Introduce **node-issued API keys** (hashed at rest, prefix visible once, scopes e.g. `read:accessibility`, `read:resolve`).  
-- Partner backend calls node with `Authorization: Bearer wt_…` or `X-WikiTraveler-Key`.  
-- For browser SDK: partner backend exchanges key → **short-lived RS256 JWT** (`role: integrator_read`, `aud: sdk`, TTL minutes) so the key never ships to the page.  
-- Keep user JWT for writes.
+- Agencies register once at a **hub / home-style issuer** (canonical EU node or dedicated integrator registry on that node) — not once per country.
+- Issuer stores **client credentials** (API key or client id+secret, hashed at rest, scopes e.g. `read:accessibility`, `read:resolve`).
+- Partner BFF exchanges credentials → **short-lived RS256 JWT** (`role: integrator_read`, `aud: sdk`, issuer = hub node URL, TTL minutes).
+- **Data nodes accept that JWT the same way they already accept foreign traveler JWTs** — fetch issuer public key, verify signature, allow agreed GET routes only (no audit write).
+- SDK flow: resolve place → data-node URL → `Authorization: Bearer <integrator_read JWT>` on that node.
+- Keep user JWT for traveler/auditor writes.
+
+**Optional fallback (single-region / lab):** a data node may also mint local-only API keys for partners that only ever hit that node. Not the agency happy path.
 
 **Deprecated for SDK docs:** treating `POST /api/auth/token` (passphrase) or a shared “agency user” password as the integration path.
 
 ### B. API surface changes (node)
 
-**Reads to open under service auth (and optionally public GET):**
+**Reads allowed with `integrator_read` JWT (and optionally public GET):**
 
 - `GET /api/properties/:id/accessibility`
 - `GET /api/health` (already public-ish — keep)
@@ -90,22 +94,24 @@ Cold-start of *audit data* is a separate product risk (community). This RFC unbl
 ### C. SDK client
 
 ```ts
-// Server (Node/edge) — key never in the browser
-const wt = new WikiTraveler({
-  nodeUrl: process.env.WT_NODE_URL!,
+// Partner BFF — credentials never in the browser
+const session = await mintIntegratorReadToken({
+  issuerUrl: process.env.WT_ISSUER_URL!, // hub / home node
   apiKey: process.env.WT_API_KEY!,
 });
 
-// Browser — short-lived token from partner BFF
+// Browser or server — one token works after resolve on any accepting data node
 const wt = new WikiTraveler({
-  hubOrNodeUrl: "https://node-eu.wikitraveler.org", // or hub resolve base
-  token: readTokenFromPageBootstrap,
+  issuerUrl: process.env.WT_ISSUER_URL!,
+  token: session.accessToken,
 });
+const node = await wt.resolveDataNode({ lat, lon });
+const facts = await wt.getAccessibility(propertyId, { nodeUrl: node.url });
 ```
 
 Add:
 
-- `createReadToken()` / document partner BFF pattern (may live as small server helper, not only browser SDK)
+- `mintIntegratorReadToken` / document partner BFF pattern
 - `resolveDataNode({ lat, lon } | { propertyId } | { externalId })`
 - Typed errors: `401`, `403`, `404`, `422 uncovered`, rate-limit
 - Fix README so auth is never optional for production reads unless public GET is explicitly enabled
@@ -114,13 +120,13 @@ Add:
 
 SDK follows the same story as Access/Lens:
 
-- Bootstrap / configured **home or hub entry** for peer directory
+- Bootstrap / configured **issuer (hub/home)** for peer directory + credential mint
 - Resolve geographic or property ownership → **data node**
-- Fetch facts from data node with service/read token accepted by that node (trust story TBD: key issued per node vs mesh-wide integrator trust)
+- Fetch facts from data node with the **same** short-lived `integrator_read` JWT (cross-node verify via issuer pubkey)
 
-**v1 pragmatic path:** API keys are **per data node** (operator issues key on the node agencies will call). Resolve returns the node URL; partner holds keys per region *or* only integrates one region first.
+This is deliberately **not** “one API key per country.” Multi-country agencies are the default customer; v1 must match that. Per-node local keys remain a lab/single-region escape hatch only.
 
-**v2 follow-on:** hub-mediated read tokens that data nodes accept (closer to traveler JWT cross-node verify) — requires clearer mesh trust for integrator principals.
+**Rejected as primary v1:** requiring agencies to hold and rotate N keys for N regional nodes.
 
 ### E. Widget product bar
 
@@ -134,9 +140,9 @@ Minimum before calling the widget “agency-ready”:
 
 ### F. DX / demo
 
-- `apps/agency-demo`: env-based API key, BFF mint token, then browser widget
-- README: three patterns — server fetch, BFF+widget, ESM
-- Operator docs: how to mint/revoke keys, scopes, CORS for partner origins
+- `apps/agency-demo`: issuer credentials in env, BFF mints `integrator_read` JWT, then browser widget against resolved data nodes
+- README: three patterns — BFF+widget, server fetch with integrator JWT, ESM
+- Operator docs: which node is the **issuer**, how data nodes trust it, revoke, CORS for partner origins
 
 ---
 
@@ -144,13 +150,13 @@ Minimum before calling the widget “agency-ready”:
 
 | Milestone | Deliverable |
 |-----------|-------------|
-| **M0** | Accept RFC; tracking issue; no protocol bump required for key table alone |
-| **M1** | Prisma `ApiKey` (or equivalent) + admin/CLI mint/revoke; hash-at-rest; scopes |
-| **M2** | Node accepts service auth on agreed GET routes; user JWT still works; rate limits |
-| **M3** | Short-lived read token exchange endpoint for BFFs |
-| **M4** | SDK + README + agency-demo wired to M1–M3; remove “login as user” as happy path |
-| **M5** | Widget coverage/trust UX + a11y checklist; optional public GET flag for demo nodes |
-| **M6** | Cross-node integrator tokens / hub-minted reads (only if M1–M5 prove demand) |
+| **M0** | Accept RFC; tracking issue |
+| **M1** | Integrator client credentials on **issuer** node (hash-at-rest, scopes, mint/revoke Admin/CLI) |
+| **M2** | Issuer: exchange credentials → short-lived `integrator_read` RS256 JWT; data nodes verify foreign integrator JWTs on agreed GETs (reuse pubkey fetch path); rate limits |
+| **M3** | SDK resolve + read with one token; README + agency-demo BFF happy path; drop “login as user” |
+| **M4** | Widget coverage/trust UX + a11y checklist; optional public GET flag for demo nodes |
+| **M5** | Operator docs: which node is issuer, CORS for partner origins, revoke story |
+| **M6** | Follow-ons: external-id batch lookup, photo URL auth hardening, multi-issuer / branded hubs |
 
 ## Highest-impact risks
 
@@ -160,32 +166,36 @@ Minimum before calling the widget “agency-ready”:
 | **S2** | “Public GET” becomes default → abuse | Opt-in per node; tight defaults; CDN/WAF notes in ops docs |
 | **S3** | Partner ships username/password in JS anyway | Docs + demo BFF; lint/warn in SDK if password config appears |
 | **S4** | Service auth bypasses auditor trust storytelling | Reads still expose **tiers**; writes unchanged |
-| **S5** | Per-node keys painful for multi-region agencies | Document; M6 hub tokens only after need is real |
+| **S5** | Compromised issuer → read access across many data nodes | Short TTL; revoke client credentials; rate limits per client on issuer + data nodes; audit logs; optional allowlist of issuer URLs on data nodes |
 | **S6** | CORS mistakes when adding partner origins | Stay on RFC-0002 allowlist model; never `*` |
+| **S7** | Data-node operators refuse foreign integrator JWTs | Document trust: same mechanism as traveler home JWTs; opt-out flag if a sovereign node wants local-only reads |
 
 ## Alternatives considered
 
 | Alternative | Why not (for now) |
 |-------------|-------------------|
 | Shared “agency” user account | Still a human credential; rotation/audit nightmare |
+| **API key per regional data node as primary** | Agencies are multi-country by default — N keys / N rotations fails immediately |
 | mTLS between agency and node | High ops cost for early partners |
 | Fully public mesh reads, no keys | Abuse + no operator control |
 | OAuth2 Authorization Code for every agency staff user | Wrong problem; we need app-to-app read |
-| Home-node reverse-proxy of all agency reads | Same timeout/photo issues rejected in RFC-0002 |
+| Home-node reverse-proxy of all agency reads | Same timeout/photo issues rejected in RFC-0002; prefer direct data-node fetch with cross-node JWT |
 
 ## Open questions
 
-1. Key minting UX: Node Admin only, CLI, or both?
-2. Should photo URLs on accessibility payloads require the same service auth as JSON (hotlink risk)?
-3. External-id lookup (`booking:…`) as first-class resolve input for OTAs — ship with M4 or later?
-4. Does gossip need to advertise “integrator read” capability, or is docs + env enough for v1?
+1. Credential minting UX on issuer: Node Admin only, CLI, or both?
+2. Should photo URLs on accessibility payloads require the same auth as JSON (hotlink risk)?
+3. External-id lookup (`booking:…`) as first-class resolve input for OTAs — ship with M3/M4 or later?
+4. Must every public data node accept the canonical issuer, or can operators disable foreign `integrator_read`?
+5. One canonical issuer for v1 (`node-eu` / project hub) vs multiple branded issuers from day one?
 
 ## Success criteria
 
-- An agency can show trust-tiered facts on a listing page **without** creating a traveler user.
+- An agency can show trust-tiered facts for hotels in **multiple countries** with **one** issuer credential + short-lived tokens.
+- No per-country API key required for the happy path.
 - A browser widget runs with a **short-lived** token only.
 - README and `agency-demo` match production auth.
-- Operators can revoke a partner key without rotating `JWT_SECRET` or deleting humans.
+- Operators can revoke a partner credential without rotating human passwords or `JWT_SECRET`.
 
 ## References
 
