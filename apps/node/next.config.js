@@ -9,8 +9,9 @@ const nextConfig = {
       process.env.WIKITRAVELER_VERSION ?? rootPkg.version,
   },
   transpilePackages: ["@wikitraveler/ui"],
-  // Required for Docker standalone output — copies only what's needed to run
-  output: "standalone",
+  // Docker/self-host need standalone; Vercel + Next 16.3 + adapter breaks on
+  // missing next-server.js.nft.json (vercel/next.js#96646).
+  output: process.env.VERCEL ? undefined : "standalone",
   // pnpm stores Prisma engines outside the default trace path
   outputFileTracingIncludes: {
     "/*": [

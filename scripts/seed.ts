@@ -4,20 +4,23 @@
  * Usage: pnpm db:seed
  */
 
-import { PrismaClient } from "@prisma/client";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { gunzipSync } from "zlib";
 import { importExportPayload, type ExportPayload } from "../apps/node/lib/nodeDataTransfer";
 import { commitNodeBbox, recordIngestComplete } from "../apps/node/lib/nodeSettings";
 import { fetchOverpassData, ingestOverpassResult } from "../apps/node/lib/overpass";
+import { prisma } from "../apps/node/lib/prisma";
 
-const prisma = new PrismaClient();
 const NODE_ID = process.env.NODE_ID ?? "seed-script";
 const EINDHOVEN_BBOX: [number, number, number, number] = [51.39, 5.42, 51.49, 5.52];
 const SAMPLE = join(__dirname, "..", "apps", "node", "public", "samples", "eindhoven.json.gz");
 
 async function main() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL is required for db:seed");
+  }
+
   console.log("🌱 WikiTraveler seed starting…");
 
   if (existsSync(SAMPLE)) {
@@ -30,7 +33,6 @@ async function main() {
     await recordIngestComplete(result.propertiesUpserted);
     const count = await prisma.property.count();
     console.log(`✨ Seed complete — ${count} properties (${result.propertiesUpserted} imported).`);
-    await prisma.$disconnect();
     return;
   }
 
@@ -40,7 +42,6 @@ async function main() {
   if (!BBOX) {
     console.log("ℹ️  No sample file and no region configured — skipping OSM seed.");
     console.log("   Run pnpm node:build-sample or pnpm node:region --preset eindhoven");
-    await prisma.$disconnect();
     return;
   }
 
@@ -57,11 +58,13 @@ async function main() {
     console.error(`❌ No sample at ${SAMPLE} and no fixture at ${fixturePath}`);
     if (process.env.REQUIRE_OSM_FIXTURE === "true") process.exit(1);
   }
-
-  await prisma.$disconnect();
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect().catch(() => undefined);
+  });
