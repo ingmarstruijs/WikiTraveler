@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 
 - Bump `next` to `16.3.3` in Node and Access for critical Dependabot RCE advisories (Windows-hosted servers / Image Optimization AVIF)
-- Skip `output: "standalone"` on Vercel (Next 16.3 adapter ENOENT on `next-server.js.nft.json`; Docker still uses standalone)
+- Skip `output: "standalone"` on Vercel (Next 16.3 adapter ENOENT on `next-server.js.nft.json`; Docker still uses standalone) and opt out of immutable static assets so Preview Comments can deploy
 - Access profile sync no longer resurrects cleared accessibility preferences from an older server snapshot ([ACCESS-UX.md](docs/ACCESS-UX.md))
 - Access in-app Back from property detail restores the discovery map pins, camera, selected pin sheet, and profile filters ([ACCESS-UX.md](docs/ACCESS-UX.md))
 - Access map pin selection on mobile pans the pin into view above the preview bottom sheet ([ACCESS-UX.md](docs/ACCESS-UX.md))
