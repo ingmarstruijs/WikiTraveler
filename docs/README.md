@@ -17,7 +17,7 @@ Single entry point for the project. Pick the path that matches your role — eac
 | **Ship or consume a release** | [Releases](./RELEASES.md) → [Changelog](../CHANGELOG.md) |
 | **Test federation / gossip** | [Gossip dev lab](./GOSSIP-DEV.md) · [Federation E2E plan](./FEDERATION-E2E.md) |
 | **Meet accessibility requirements** | [Accessibility checklist](./ACCESSIBILITY.md) · [Conformance report](./CONFORMANCE.md) |
-| **Read the origin story** | [Story](./story/README.md) · [I picture. I conduct. Agents build.](./story/i-picture-i-conduct-agents-build.md) |
+| **Read the origin story** | [Story](./story/README.md) · [The hotel said “accessible.” That wasn’t enough.](./story/the-hotel-said-accessible-that-wasnt-enough.md) |
 
 ---
 

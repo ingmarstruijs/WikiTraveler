@@ -1,6 +1,6 @@
-# I picture. I conduct. Agents build.
+# The hotel said “accessible.” That wasn’t enough.
 
-### A relative told me how miserable booking travel with a wheelchair still is. I designed for journey, scale, and feasibility — then got sucked into an accidental product once coding stopped being the bottleneck.
+### A relative told me how miserable booking travel with a wheelchair still is. Curiosity and a UX brain did the rest — then I got sucked into an accidental product once coding stopped being the bottleneck.
 
 ---
 
@@ -703,9 +703,9 @@ And if you want to help make the data real — welcome.
 
 ### LinkedIn
 
-The hotel was “accessible.” Nobody could tell me what that meant.
+The hotel said “accessible.” That wasn’t enough.
 
-I’m a UX engineer. When Maurice — my cousin-in-law, who uses a wheelchair — described how miserable booking a trip with a wheelchair still is, my head did what UX heads do: map the journey, the trust breaks, the scalable shape, the feasible build. The old blocker was implementation bandwidth and rusty coding fluency. Strong AI models changed that. I picture. I conduct. Agents build. I got sucked into a side project that began behaving like an accidental product: federated mesh, browser sidecar, agency SDK.
+I’m a UX engineer. When Maurice — my cousin-in-law, who uses a wheelchair — described how miserable booking a trip with a wheelchair still is, curiosity and a UX brain did the rest. The old blocker was implementation bandwidth and rusty coding fluency. Strong AI models changed that. I got sucked into a side project that began behaving like an accidental product: federated mesh, browser sidecar, agency SDK.
 
 I wrote up what I learned — including how the system grew in messy acts, the Amadeus → OpenStreetMap pivot, and why reliable data matters more than clever code:
 
@@ -722,7 +722,7 @@ Access (registration off): https://access.wikitraveler.org
 
 ### Medium (subtitle + deck)
 
-**Subtitle:** I picture. I conduct. Agents build. — after a relative told me how miserable booking with a wheelchair still is.
+**Subtitle:** A relative told me how miserable booking travel with a wheelchair still is. Curiosity and a UX brain did the rest — then I got sucked into an accidental product once coding stopped being the bottleneck.
 
 **Deck / intro blurb:**  
 I’m not a distributed-systems engineer by trade — I do UX and engineering for work. After a conversation with Maurice about booking accessible stays, I started a sidecar-style open project on top of travel platforms. This is the honest story of what got built, what got thrown away, and why community trust matters more than the code.
