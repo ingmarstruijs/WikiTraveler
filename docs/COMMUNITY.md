@@ -9,7 +9,7 @@ WikiTraveler is built for a **federated mesh** — independent operators, shared
 | Role | What you do | Primary docs |
 |------|-------------|--------------|
 | **Traveler** | Browse accessibility facts via **hub Access** (canonical `access.wikitraveler.org`) or agency widgets | Prefer the public hub; regional Access is optional branding |
-| **Auditor** | Submit on-site verified audits | [apps/README.md](../apps/README.md) Flow 2 |
+| **Auditor** | Submit on-site verified audits | [AUDITOR-ONBOARDING.md](./AUDITOR-ONBOARDING.md) · [apps/README.md](../apps/README.md) Flow 2 |
 | **Node operator** | Run a sovereign regional node (API + data); allow trusted hub origins | [OPERATORS.md](./OPERATORS.md) |
 | **Hub operator** | Run canonical / backup / branded Access; uptime for travelers | [OPERATORS.md](./OPERATORS.md#audiences) · [VERCEL.md](./VERCEL.md) |
 | **Client maintainer** | Customize Access, Lens, SDK integrations | [DEVELOPMENT.md](./DEVELOPMENT.md) · [LENS.md](./LENS.md) |
@@ -43,6 +43,19 @@ Operators are **not** required to run the latest version immediately. The projec
 **Good first contributions:** docs fixes, i18n strings (`packages/i18n`), test coverage, operator runbook improvements, **global region presets** (cities/countries outside the current catalog — see [LOCAL.md](./LOCAL.md#region-presets-global-catalog)). Look for issues labeled `good first issue` or `help wanted`.
 
 **Needs design discussion first:** gossip protocol shape changes, Prisma breaking migrations, auth model changes (use the RFC template).
+
+---
+
+## Contributing as an auditor
+
+Public Access signup may be **off** during controlled tests. That is intentional — trust is not ambient.
+
+1. Read [AUDITOR-ONBOARDING.md](./AUDITOR-ONBOARDING.md).
+2. Reach out via GitHub (issue/discussion) with region + independence context.
+3. A maintainer creates your home-node account, sets `AUDITOR`, and walks you through Access + a first triage audit.
+4. Prefer on-site facts and photos; never promote AI guesses to verified truth.
+
+Hotel-inspection firms: same pipeline — bring accessibility into visits you already make; keep verification independent of the property’s sales desk.
 
 ---
 
@@ -101,6 +114,7 @@ Operators and integrators should attribute WikiTraveler data per CC-BY when repu
 
 | Goal | Link |
 |------|------|
+| Become an auditor | [AUDITOR-ONBOARDING.md](./AUDITOR-ONBOARDING.md) |
 | Set up dev environment | [DEVELOPMENT.md](./DEVELOPMENT.md) |
 | Deploy a node | [OPERATORS.md](./OPERATORS.md) |
 | Bootstrap peers | [PUBLIC-PEERS.md](./PUBLIC-PEERS.md) |

@@ -149,7 +149,13 @@ Operators should pull GHCR tags and Release assets, not clone `main` ([OPERATORS
 
 Commercial accessible-travel products (e.g. paid AMS-style mapping + marketplace) will densify *some* cities with proprietary measurements. An open sidecar that stays empty loses by comparison — not on ideology, on usefulness.
 
-**Direction:** Stay community/open (no clone of paid mapper payroll as the core model). Treat **real audits in real regions** as the primary success metric: progressive triage→deep field packs, onboarding auditors/firms already on-site, independent confirmation (`VERIFIED`/`CONFIRMED`), honest empty coverage. Measure success by corroborated facts and regional coverage, not pageviews alone.
+**Direction:** Stay community/open (no clone of paid mapper payroll as the core model). Treat **real audits in real regions** as the primary success metric: progressive triage→deep field packs, onboarding auditors/firms already on-site ([AUDITOR-ONBOARDING.md](./AUDITOR-ONBOARDING.md)), independent confirmation (`VERIFIED`/`CONFIRMED`), honest empty coverage. Measure success by corroborated facts and regional coverage, not pageviews alone.
+
+### Auditor onboarding pipeline
+
+**Status:** Manual while hub Access registration is off — create user → promote `AUDITOR` → walkthrough → first triage audit. Runbook: [AUDITOR-ONBOARDING.md](./AUDITOR-ONBOARDING.md).
+
+**Direction:** Issue template for intake; invite links; in-app first-run; explicit triage vs deep audit mode; tighter signals→assign-auditor loop.
 
 ### Lightweight community space
 

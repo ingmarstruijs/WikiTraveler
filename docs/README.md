@@ -13,7 +13,7 @@ Single entry point for the project. Pick the path that matches your role — eac
 | **Upgrade an existing deployment** | [Upgrade runbook](./UPGRADE.md) |
 | **Release archive** | [Release phases](./RELEASE-PHASES.md) · [Roadmap](./ROADMAP.md) · [Compatibility](./COMPATIBILITY.md) |
 | **Develop features locally** | [Development guide](./DEVELOPMENT.md) → [Local setup](./LOCAL.md) |
-| **Join as a contributor** | [Community](./COMMUNITY.md) → [Contributing](../CONTRIBUTING.md) |
+| **Join as a contributor** | [Community](./COMMUNITY.md) → [Contributing](../CONTRIBUTING.md) · [Auditor onboarding](./AUDITOR-ONBOARDING.md) |
 | **Ship or consume a release** | [Releases](./RELEASES.md) → [Changelog](../CHANGELOG.md) |
 | **Test federation / gossip** | [Gossip dev lab](./GOSSIP-DEV.md) · [Federation E2E plan](./FEDERATION-E2E.md) |
 | **Meet accessibility requirements** | [Accessibility checklist](./ACCESSIBILITY.md) · [Conformance report](./CONFORMANCE.md) |
@@ -61,6 +61,7 @@ Single entry point for the project. Pick the path that matches your role — eac
 | Doc | Purpose |
 |-----|---------|
 | [COMMUNITY.md](./COMMUNITY.md) | Roles, mesh growth, communication norms |
+| [AUDITOR-ONBOARDING.md](./AUDITOR-ONBOARDING.md) | Maintainer + auditor pipeline while Access signup is controlled |
 | [PUBLIC-PEERS.md](./PUBLIC-PEERS.md) | Opt-in public bootstrap peers |
 | [../CONTRIBUTING.md](../CONTRIBUTING.md) | How to open issues and PRs |
 | [../CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) | Expected behaviour |
