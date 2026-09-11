@@ -37,6 +37,11 @@ type ServerFavorites = {
 let syncInFlight: Promise<void> | null = null;
 let pushPrefsTimer: ReturnType<typeof setTimeout> | null = null;
 let pushFavsTimer: ReturnType<typeof setTimeout> | null = null;
+let prefsPushInFlight = false;
+let favsPushInFlight = false;
+/** True after a local preference edit until a successful push completes. */
+let localPrefsEdited = false;
+let localFavsEdited = false;
 let started = false;
 
 function isThemeMode(value: unknown): value is ThemeMode {
@@ -108,25 +113,37 @@ function applyFavoritesLocally(data: ServerFavorites) {
 }
 
 async function pushPreferencesNow(): Promise<void> {
-  const a11yPreferences = readA11yPreferences();
-  const theme = readAccessThemePreference();
-  const data = await fetchJson<{ preferences: ServerPreferences }>("/api/auth/preferences", {
-    method: "PUT",
-    body: JSON.stringify({ a11yPreferences, theme }),
-  });
-  if (data?.preferences?.updatedAt) {
-    writeCacheStamp(PREFS_STAMP_KEY, data.preferences.updatedAt);
+  prefsPushInFlight = true;
+  try {
+    const a11yPreferences = readA11yPreferences();
+    const theme = readAccessThemePreference();
+    const data = await fetchJson<{ preferences: ServerPreferences }>("/api/auth/preferences", {
+      method: "PUT",
+      body: JSON.stringify({ a11yPreferences, theme }),
+    });
+    if (data?.preferences?.updatedAt) {
+      writeCacheStamp(PREFS_STAMP_KEY, data.preferences.updatedAt);
+      localPrefsEdited = false;
+    }
+  } finally {
+    prefsPushInFlight = false;
   }
 }
 
 async function pushFavoritesNow(): Promise<void> {
-  const places = readSavedPlaces();
-  const data = await fetchJson<ServerFavorites>("/api/auth/favorites", {
-    method: "PUT",
-    body: JSON.stringify({ places }),
-  });
-  if (data?.updatedAt) {
-    writeCacheStamp(FAVS_STAMP_KEY, data.updatedAt);
+  favsPushInFlight = true;
+  try {
+    const places = readSavedPlaces();
+    const data = await fetchJson<ServerFavorites>("/api/auth/favorites", {
+      method: "PUT",
+      body: JSON.stringify({ places }),
+    });
+    if (data?.updatedAt) {
+      writeCacheStamp(FAVS_STAMP_KEY, data.updatedAt);
+      localFavsEdited = false;
+    }
+  } finally {
+    favsPushInFlight = false;
   }
 }
 
@@ -149,6 +166,7 @@ function flushFavoritesPush(): Promise<void> {
 /** Debounced write-through after local preference edits. */
 export function schedulePreferencesPush(): void {
   if (typeof globalThis.localStorage === "undefined" || !readAuthToken()) return;
+  localPrefsEdited = true;
   // Stamp immediately so a concurrent pull cannot overwrite unsynced local edits.
   writeCacheStamp(PREFS_STAMP_KEY, new Date().toISOString());
   if (pushPrefsTimer) clearTimeout(pushPrefsTimer);
@@ -161,6 +179,7 @@ export function schedulePreferencesPush(): void {
 /** Debounced write-through after local favorites edits. */
 export function scheduleFavoritesPush(): void {
   if (typeof globalThis.localStorage === "undefined" || !readAuthToken()) return;
+  localFavsEdited = true;
   writeCacheStamp(FAVS_STAMP_KEY, new Date().toISOString());
   if (pushFavsTimer) clearTimeout(pushFavsTimer);
   pushFavsTimer = setTimeout(() => {
@@ -178,8 +197,8 @@ export async function syncProfileFromServer(): Promise<void> {
   if (syncInFlight) return syncInFlight;
 
   syncInFlight = (async () => {
-    const prefsPushPending = Boolean(pushPrefsTimer);
-    const favsPushPending = Boolean(pushFavsTimer);
+    const prefsPushPending = Boolean(pushPrefsTimer) || prefsPushInFlight;
+    const favsPushPending = Boolean(pushFavsTimer) || favsPushInFlight;
     if (prefsPushPending) await flushPreferencesPush();
     if (favsPushPending) await flushFavoritesPush();
 
@@ -188,7 +207,7 @@ export async function syncProfileFromServer(): Promise<void> {
     }>("/api/auth/me");
     const favs = await fetchJson<ServerFavorites>("/api/auth/favorites");
 
-    if (me?.preferences && !prefsPushPending) {
+    if (me?.preferences) {
       const serverMs = stampMs(me.preferences.updatedAt);
       const cacheMs = stampMs(readCacheStamp(PREFS_STAMP_KEY));
       const serverEmpty =
@@ -202,19 +221,19 @@ export async function syncProfileFromServer(): Promise<void> {
       // (migration stamp) even if updatedAt is non-zero.
       if (serverEmpty && localHas && (cacheMs === 0 || cacheMs >= serverMs)) {
         await pushPreferencesNow();
-      } else if (cacheMs > serverMs && localHas) {
+      } else if (cacheMs > serverMs && (localHas || localPrefsEdited)) {
+        // Local wins — including intentional clears (empty a11y after profile edit).
         await pushPreferencesNow();
-      } else if (!serverEmpty && !localHas) {
-        // Fresh login / empty cache: a default-theme stamp must not block server prefs.
-        applyPreferencesLocally(me.preferences);
-      } else if (serverMs >= cacheMs && (!serverEmpty || cacheMs > 0)) {
+      } else if (serverMs > cacheMs) {
         applyPreferencesLocally(me.preferences);
       } else if (!serverEmpty && cacheMs === 0) {
         applyPreferencesLocally(me.preferences);
       }
+      // Equal stamps, or a newer empty stamp without a local edit: no-op
+      // (prevents older /me snapshots from resurrecting cleared prefs).
     }
 
-    if (favs && !favsPushPending) {
+    if (favs) {
       const serverMs = stampMs(favs.updatedAt);
       const cacheMs = stampMs(readCacheStamp(FAVS_STAMP_KEY));
       const serverEmpty = !favs.places?.length;
@@ -222,9 +241,9 @@ export async function syncProfileFromServer(): Promise<void> {
 
       if (serverEmpty && localPlaces.length > 0 && (cacheMs === 0 || cacheMs >= serverMs)) {
         await pushFavoritesNow();
-      } else if (cacheMs > serverMs && localPlaces.length > 0) {
+      } else if (cacheMs > serverMs && (localPlaces.length > 0 || localFavsEdited)) {
         await pushFavoritesNow();
-      } else if (serverMs >= cacheMs && (!serverEmpty || cacheMs > 0)) {
+      } else if (serverMs > cacheMs) {
         applyFavoritesLocally(favs);
       } else if (!serverEmpty && cacheMs === 0) {
         applyFavoritesLocally(favs);
