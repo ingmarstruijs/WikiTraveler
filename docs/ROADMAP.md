@@ -91,9 +91,9 @@ Promotion needs ≥3 distinct auditors (`evaluateConfirmed` in `@wikitraveler/co
 
 ### SDK for agencies
 
-UMD/ESM builds and `apps/agency-demo` exist; partners still need a published package and copy-paste integration docs.
+UMD/ESM builds and `apps/agency-demo` exist; partners still need a published package and copy-paste integration docs. Today the SDK still assumes a **user JWT** for node reads — the wrong shape for agencies ([RFC-0003](./rfcs/0003-agency-sdk-service-auth.md), Proposed).
 
-**Direction:** Versioned npm package + CDN examples pinned to tags; locale/tier display consistent with Access; accessibility embedding checklist stays next to the widget docs ([ACCESSIBILITY.md](./ACCESSIBILITY.md)).
+**Direction:** Land RFC-0003 milestones (service API keys, short-lived browser read tokens, public/service GETs, hub resolve, widget trust/coverage UX); versioned npm + CDN examples pinned to tags; locale/tier display consistent with Access; accessibility embedding checklist next to the widget docs ([ACCESSIBILITY.md](./ACCESSIBILITY.md)).
 
 ---
 
