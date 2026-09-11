@@ -14,24 +14,21 @@ That question came from Maurice.
 
 Maurice is my cousin-in-law. He uses a wheelchair. We talked at the funeral of my uncle Jaap. The kind of conversation that sits between grief and ordinary life, where people suddenly tell you the real stuff: booking travel is exhausting when accessibility information is missing, outdated, contradictory, or written by someone who has never pushed a chair through a bathroom doorway.
 
-When a UX engineer hears a problem like that, the head does overtime.
+When a UX engineer hears a problem like that, the head does overtime. You don’t live Maurice’s life. You still have to stand in his shoes long enough to feel the booking flow break: sitting with the tab open, in the chair. Will the entrance actually work? Is the “accessible” room reachable when the lift isn’t? Can you turn in the bathroom, or do you find out the sink blocks the transfer only after you’ve paid and traveled? Search says accessible. The photo omits the doorway. A review says “wheelchair-friendly” like “cozy” — atmosphere, not evidence. Too often: *you won’t know until you’re there.*
 
-Not “which framework?” first.
-More like: What’s the user journey? Where does trust break? What would scale? What’s technically feasible? What could *I* actually realize — including with programming knowledge that’s… let’s say vintage?
-
-That last constraint used to kill projects like this.
-
-It doesn’t, not in the same way, when strong AI models can implement against a picture you can already hold in your head. The picture is the hard part. The agents type. You’re the conductor — continuously bridging **user → product/value → technique**.
-
-I got sucked in anyway. First the data model. Then the sidecar. Then the mesh. Then the monorepo. Then the parts that make a side project start behaving like an accidental product.
-
-I understood what he meant immediately. Not because I live his life — I don’t — but because I do UX and engineering for work. I’ve learned a boringly useful habit there: when people struggle, the system is often lying about complexity. It pretends the workflow is simple. It hides the missing data. It optimizes for the median user and calls the rest an edge case.
+When people struggle like that, the system is often lying about complexity. It pretends the workflow is simple. It hides the missing data. It optimizes for the median user and calls the rest an edge case.
 
 Accessibility information for hotels, apartments, and other stays is not an edge case. It’s a trust problem dressed up as a content problem.
+
+That picture has to come first. Only then do the product and engineering questions get real room — what creates value, what scales without lying, what’s feasible to build without up-to-date programming knowledge.
+
+Strong AI models change the tempo: they can implement against a picture you can already hold in your head. The picture is the hard part. The agents type. You’re the conductor — continuously bridging **user → product/value → technique**.
 
 So I did what people with dangerous curiosity always do.
 
 I started building.
+
+I got sucked in anyway. First the data model. Then the sidecar. Then the mesh. Then the monorepo. Then the parts that make a side project start behaving like an accidental product.
 
 And then it got out of hand — in the useful way.
 
@@ -41,6 +38,8 @@ This piece is mainly for people who do **UX and product work** and are figuring 
 Along the way it should also make sense if you care about **disability and travel access**, **open source commons**, or **shipping weird infrastructure as a side project**.
 
 Different readers can take different exits. Same story.
+
+One vocabulary note before we go on, because “UX” gets abused into meaning “someone made the buttons blue.” **User experience (UX)** is the whole lived path through a product: goals, confusion, trust, dead ends, what happens when the data is wrong. **Usability** is a chunk of that — can someone complete the task without fighting the interface? **UI** is the visible layer: screens, controls, layout. Related; not the same. Product sense asks whether we’re solving the right problem at all. When I say UX in this piece, I mostly mean the *experience of trusting a stay* — journey and information architecture first, pixels second.
 
 ---
 
@@ -63,14 +62,17 @@ There *are* dedicated accessible-travel sites. They’re not nothing. Examples p
 - [Wheelchair Travel](https://wheelchairtravel.org/) — strong advocacy and trip storytelling; hotel detail often as narrative posts, not a living inventory
 - [AccessibleGO Hotels](https://accessiblego.com/hotels) — a specialized hotel catalog for accessible stays
 - [Mobility Hotels](https://mobilityhotels.com/) — another specialized accessible-hotel booking / directory surface
+- [Wheel the World](https://wheeltheworld.com/) — closest cousin on *data shape*: proprietary **Accessibility Mapping System (AMS)**, trained on-site mappers, 200+ measurements + photos per property, traveler accessibility profiles, and a booking marketplace. They say listings are **not hotel self-report** ([their write-up on roll-in showers / trust](https://blog.wheeltheworld.com/accessible-hotels-roll-in-showers-at-hotels-everything-you-need-to-know/)). Hotels can also buy into **Accessibility Verified**. Where coverage is thin, the product often flips to concierge (“leave your email, we’ll plan with you”) instead of an empty-but-honest commons.
 
 What I keep seeing in that category, though:
 
-1. **Small scope** — a curated slice of hotels, not the messy long tail of stays people actually book  
-2. **Freshness is hard** — accessibility changes when a bathroom is renovated; directories drift  
-3. **A parallel booking world** — a special site for a special trip  
+1. **Small or curated scope** — mapped inventory where someone paid to send a mapper, not the messy long tail of stays people actually book  
+2. **Freshness is hard** — accessibility changes when a bathroom is renovated; directories and one-shot surveys drift  
+3. **A parallel booking world** — a special site (or concierge) for a special trip, instead of facts beside Booking/Expedia  
 
-That last point is the UX failure mode I care about most.
+Wheel the World proves the *measurement + photo + profile-match* product works when you fund professional mapping. WikiTraveler’s bet stays different on purpose: same hunger for verified structure, but as an **open sidecar commons** — not a proprietary marketplace that owns the booking.
+
+That choice has a cost. Commercial AMS mapping will fill *some* cities with dense, paid truth. An empty open map doesn’t look principled next to that — it looks unfinished. Staying community-owned doesn’t make data optional; it makes **getting real audits into the commons the whole game**. Progressive depth beats cloning 200 paid points on day one (triage facts first, deeper packs where people show up). But without people showing up, the sidecar is a story about rails.
 
 Travelers who need reliable accessibility information usually don’t want a segregated travel internet. They want to book **the same way everyone else does** — on Booking, Expedia, an agency site, a hotel brand page — with trustworthy facts available *there*. Not a second passport. Not a special portal. Not “go use the disability website.”
 
@@ -103,7 +105,7 @@ WikiTraveler is trying to become the accessibility truth layer that Booking, Hot
 
 I do UX and engineering for work.
 
-That means I spend a lot of time on how complex tools feel to real people: flows, information structure, trust, whether something is usable under pressure. I’ve also been poking at AI-assisted building — not because the model should own the product, but because implementation used to be the tax on having a clear system in your head.
+That means I spend a lot of time on how complex tools feel to real people: flows, information structure, trust, whether something is usable under pressure — usability inside a broader experience, with UI as one of the instruments. I’ve also been poking at AI-assisted building — not because the model should own the product, but because implementation used to be the tax on having a clear system in your head.
 
 I can prototype. I’m not allergic to code. My programming knowledge is uneven and, in places, outdated. Historically that would have been enough to stop a build like this:
 
@@ -123,56 +125,24 @@ I can prototype. I’m not allergic to code. My programming knowledge is uneven 
 
 Which is exactly what happened.
 
-The unpopular opinion I want to plant early:
+The unpopular opinion worth planting early:
 
 **Outdated coding skills are less of a blocker than people think — if you can hold the system in your head like a board on the wall.**
 
 Journeys. Trust boundaries. Failure modes. What creates value. What’s feasible. What must stay human.
 
-AI didn’t give me that board.
-AI didn’t give me taste.
-AI didn’t give me the original problem from Maurice.
+AI doesn’t invent that board.
+AI doesn’t invent taste.
+AI doesn’t invent the original problem — Maurice did.
 
-It gave me **hands at the tempo of thought**.
+What it can offer is **hands at the tempo of thought**.
 
-The agents make a lot of the parts.
-I picture the system.
-I conduct.
-The job is the bridge: **user ↔ product/value ↔ technique** — over and over, every time the mesh invents a new way to lie.
+Agents can assemble a lot of the parts.
+Someone still has to hold the picture.
+Someone still has to conduct.
+The real job is the bridge: **user ↔ product/value ↔ technique** — over and over, every time a system invents a new way to lie.
 
 And throughput, it turns out, is a hell of a drug.
-
----
-
-## The accidental origin story, compressed
-
-If you only remember one emotional beat from this article, make it this:
-
-Maurice was honest about how miserable booking a trip with a wheelchair still is.
-I thought: *that’s an interesting systems problem.*
-I noticed the EAA timing.
-I decided the solution should be open and community-maintained, not trapped inside one corporate database.
-I first reached for a big travel API (Amadeus). Then the **Amadeus for Developers** self-service portal got decommissioned — what’s left is an **Enterprise API Portal** (request access, talk to a consultant, pick a commercial offer). Not a baseline a side project can casually depend on. I ripped that dependency out and landed on OpenStreetMap as something I could actually own — then started wiring that into something auditors could enrich.
-I built a mobile/desktop web app so travelers and auditors could actually use it.
-I built a browser extension so the data could appear *on top of* the websites people already use.
-I realized “one server” was the wrong shape for a worldwide commons.
-I invented (and then repeatedly reinvented) federation.
-I looked at what I’d built and whispered: *oh no.*
-
-The letter I later sent Maurice is still the cleanest product brief I’ve written for the project. Roughly:
-
-> Finding up-to-date accessibility information for hotels and other stays is hard.
-> I wanted an open, community-maintained system that acts as a sidecar on existing platforms.
-> Using open map data as a starting point, I designed a federated mesh that keeps, enriches, and distributes accessibility truth.
-> Travelers browse it.
-> Auditors feed it with real observations and photos.
-> A browser extension brings the community data back into the booking flow.
-> The whole thing is on GitHub, and it’s running in a test setup.
-> Please be honest. Tell me if it solves the wrong problem.
-
-That last sentence matters more than the architecture diagram.
-
-Because the architecture can be beautiful and still miss Maurice.
 
 ---
 
@@ -197,8 +167,8 @@ What held:
 - Lens as the browser overlay
 - open protocol / open data instincts (MIT code, CC-BY mesh data)
 
-The interesting part isn’t how much I rewrote the manifesto.
-It’s how little I had to.
+The interesting part isn’t how many times the manifesto got rewritten.
+It’s how much of the early shape survived contact with reality.
 
 ---
 
@@ -345,7 +315,7 @@ docs/          → operators, federation, RFCs, community
 ```
 
 This is not “I love monorepos.”
-This is “I kept creating things that needed to share truth definitions, and then I got tired of lying to myself with copy-paste.”
+This is “shared truth definitions kept accumulating until copy-paste stopped being honest.”
 
 A monorepo forces a useful discipline for vibe-built systems:
 
@@ -441,7 +411,7 @@ That’s the system as it stands around **v0.5.x**: not finished, but shaped. Si
 
 ## UX is still the center of gravity
 
-Because I care about UX as much as plumbing, I keep dragging the project back to journeys.
+The project keeps getting dragged back to journeys — the lived path through trust and coverage, not just screens.
 
 ### Traveler journey
 
@@ -487,26 +457,26 @@ Some of it is fair.
 Some of it is people defending their identity as “real engineers” against a scary new productivity curve.
 Some of it is warnings I agree with: if you can’t read diffs, you will ship haunted houses.
 
-My experience is less ideological and more practical.
+The experience is less ideological and more practical.
 
-I can imagine a system from a handful of ideas.
-I can hold the user model, the trust model, and the deployment model in my head.
-I can tell when an AI suggestion is locally clever and globally stupid.
-I still need help turning that mental picture into thousands of coherent lines across apps, packages, tests, docs, and CI.
+You can imagine a system from a handful of ideas.
+You can hold the user model, the trust model, and the deployment model in your head.
+You can tell when an AI suggestion is locally clever and globally stupid.
+You still need help turning that mental picture into thousands of coherent lines across apps, packages, tests, docs, and CI.
 
-So I collaborate with agents.
+So you collaborate with agents.
 
 Hard.
 
-I describe intent.
+Intent gets described.
 The agent explores the monorepo.
-We argue via diffs.
-I redirect when the system drifts.
-We fix security findings.
-We write operator docs.
-We discover that yesterday’s registry idea was a trap.
-We rename Field Kit to Access — because travelers aren’t a “kit.”
-We ship another release candidate that is somehow both more serious and more unfinished.
+You argue via diffs.
+You redirect when the system drifts.
+Security findings get fixed.
+Operator docs get written.
+Yesterday’s registry idea turns out to be a trap.
+Field Kit becomes Access — because travelers aren’t a “kit.”
+Another release candidate ships that is somehow both more serious and more unfinished.
 
 The scarce skill isn’t coding speed.
 It’s knowing what *not* to ship when agents can generate almost anything.
@@ -535,6 +505,18 @@ People who go on-site and create verified evidence: structured facts, photos, no
 
 Without auditors, the mesh is a fancy mirror of OSM tags and AI guesses.
 
+And here’s the worry that won’t polish away: **if verified data never arrives at meaningful density, the whole thing doesn’t fail loudly — it just never becomes useful.** Travelers open the map, see thin baseline tags and empty trust tiers, and correctly conclude the product isn’t ready. Auditors don’t show up because nobody’s using it. Integrators wait for coverage. Coverage waits for auditors. Classic commons cold start — except the cost of being wrong is a bathroom doorway, not a missing restaurant review.
+
+Commercial players with paid mappers raise the stakes. They will own denser rooms in the cities they can afford to map. The open bet only works if community — and firms already walking hotels — fill enough places that booking-beside-the-commons feels real. Not later, as a nice adoption metric. As the product.
+
+OSM gets us *inventory and a few signals*. It does not get Maurice a trustworthy stay. AI guesses can help prioritize what to check; they must not fake confidence. The scarce resource was always going to be people on the ground — and registration being off while this stays a controlled test makes the bootstrap even more deliberate (and slower).
+
+So the bet isn’t “build the mesh and data magically appears.” The bet is: make the rails honest enough that when someone *does* audit — traveler, independent auditor, or a firm already walking hotels — the evidence has somewhere trustworthy to live, and Lens/SDK can put it where booking decisions happen. Empty regions should say they’re empty. That’s UX integrity. It doesn’t invent a community. It does make every real audit count twice: once for Maurice, once against the empty-commons failure mode.
+
+If you’re reading this and you already inspect hotels, travel with accessibility needs, or organize local access knowledge: you’re not a nice-to-have. You’re the difference between infrastructure and a demo.
+
+Public signup on Access is off on purpose while this stays a controlled test — but that doesn’t mean the door is closed. If you want to help fill the map, reach out via GitHub: accounts get created, roles get set, and I’ll walk people through Access, audits, and how the trust model works. Full support for the humans who actually bring the data. The mesh without that handoff is just code.
+
 ### 3. Hotel owners — and firms that already audit hotels
 You’re often already on-site for brand standards, safety, quality, OTA readiness, or mystery shopping. Accessibility facts are usually a thin afterthought — or missing.
 
@@ -560,10 +542,10 @@ People who can help evolve the toolkit: Access UX, Lens behavior, gossip hardeni
 Because a federated system that handles identity, peer fetches, uploads, and public clients will attract the wrong kind of curiosity eventually.
 Better to invite the right kind first.
 
-I need all of them.
+The commons needs all of them.
 
-Not as “users of my side project.”
-As co-owners of a commons — which is where it stops being only mine and starts behaving like an accidental product.
+Not as “users of a side project.”
+As co-owners — which is where something stops being only one person’s build and starts behaving like an accidental product.
 
 ---
 
@@ -596,27 +578,25 @@ Especially from people who look at federation and say: “cute, now show me the 
 
 ---
 
-## What I learned (the self-reflective part, without the TED Talk polish)
+## What this built taught (without the TED Talk polish)
 
 ### 1. A clear mental model beats a perfect initial stack
-I flew left to right across the design. Amadeus-until-self-service-died, OSM, central registry, peer mesh, Field Kit, Access, hub routing — some of the best instincts arrived as workarounds. The surviving ideas — sidecar, commons, trust tiers, honest coverage — were less “designed on day one” and more “what remained after reality edited the plan.”
+The design moved left to right. Amadeus-until-self-service-died, OSM, central registry, peer mesh, Field Kit, Access, hub routing — some of the best instincts arrived as workarounds. The surviving ideas — sidecar, commons, trust tiers, honest coverage — were less “designed on day one” and more “what remained after reality edited the plan.”
 
-### 2. AI multiplies both your strengths and your confusion
-If you can specify a system, agents help you instantiate it.
-If you can’t decide what the system is, agents help you generate a beautiful labyrinth.
+### 2. Agents make wrong paths ship fast — so killing them becomes the work
+Locally coherent ideas are easy to generate now. The useful skill isn’t producing more surface area; it’s noticing when a path fights the product and deleting it before it hardens into “the product.”
 
 ### 3. Renames are architecture
-Field Kit → Access wasn’t cosmetics. It changed who the product claimed to serve.
+Naming isn’t cosmetics. A rename forces a clearer claim about who the system is for and what it is allowed to become — and that clarity is what lets the next design decisions land.
 
 ### 4. Security work is community work
 SSRF guards, dependency pins, trusted CORS for hub clients — these are how you respect operators and travelers you haven’t met yet.
 
 ### 5. Docs are part of the UX
-Operator guides, RFCs, upgrade runbooks, community roles: if only I understand the mesh, it isn’t a mesh. It’s a science project with a domain name.
+Operator guides, RFCs, upgrade runbooks, community roles: if only one person understands the mesh, it isn’t a mesh. It’s a science project with a domain name.
 
-### 6. The emotional origin still matters
-I can talk about gossip protocol 2 and viewport-scoped map pins all day.
-None of that matters if Maurice still can’t tell whether a stay will work.
+### 6. Code without coverage is still vapor
+Nodes can ship forever. If verified facts don’t accumulate in real regions, WikiTraveler remains a well-documented empty room. That risk is real. Naming it is part of taking the problem seriously.
 
 ---
 
@@ -637,8 +617,8 @@ Accessibility for stays is just an unusually concrete version of that pattern, w
 Also, if you do UX or product work and you’ve been told your technical knowledge is “too outdated” for modern building: maybe.
 Or maybe your advantage is exactly that you still think in journeys, trust, and system boundaries — and now the implementation bottleneck is negotiable.
 
-I’m not saying everyone should vibe-build a federated mesh.
-I’m saying I accidentally did, I learned a ridiculous amount, and the half-finished acts are both evidence and comedy.
+Not everyone should vibe-build a federated mesh.
+This one happened accidentally. The half-finished acts are both evidence and comedy.
 
 ---
 
@@ -646,9 +626,9 @@ I’m saying I accidentally did, I learned a ridiculous amount, and the half-fin
 
 WikiTraveler is still a side project that grew teeth.
 
-It is also, increasingly, an accidental product: releases, compatibility policy, operator docs, and a community-shaped hole waiting to be filled with real audits.
+It is also, increasingly, an accidental product: releases, compatibility policy, operator docs, and a community-shaped hole waiting to be filled with real audits — or, if that hole stays empty, a toolkit that never earns the name “product.”
 
-I don’t need applause for shipping code with agents.
+Shipping code with agents isn’t the point.
 
 If this resonated, the useful next steps are simple:
 
@@ -674,7 +654,7 @@ Human test: would this have helped someone like Maurice the last time they tried
 
 Shortest summary:
 
-**I tried to fix what Maurice described — trustworthy accessibility facts for stays — with open data, a sidecar UX strategy, and AI-accelerated building. I ended up with a monorepo, a federated mesh, a browser extension, an SDK, too many architectural U-turns, and a much clearer respect for how hard that information is.**
+**The goal was what Maurice described — trustworthy accessibility facts for stays — via open data, a sidecar UX strategy, and AI-accelerated building. What exists now is a monorepo, a federated mesh, a browser extension, an SDK, too many architectural U-turns, and a clearer respect for how hard that information is.**
 
 That’s the project.  
 That’s the lesson.  
