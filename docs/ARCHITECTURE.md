@@ -6,35 +6,98 @@ WikiTraveler is a federated truth layer for accessibility data — a mesh of ind
 
 ---
 
-## System Overview
+## System overview (simple)
+
+In one sentence: **clients never hold the truth; regional nodes do — and they gossip.**
+
+```mermaid
+flowchart LR
+  subgraph sources["Sources"]
+    OSM["OpenStreetMap<br/>baseline"]
+    Audit["Field audits<br/>+ photos"]
+  end
+
+  subgraph mesh["Node mesh = truth"]
+    Home["Home node<br/>identity · JWT · resolve"]
+    Data["Data node(s)<br/>regional facts"]
+  end
+
+  subgraph clients["Clients (apps & integrations)"]
+    Access["Access<br/>PWA"]
+    Lens["Lens<br/>browser sidecar"]
+    SDK["Agency SDK"]
+  end
+
+  OSM --> Data
+  Audit --> Data
+  Home <-->|"gossip"| Data
+  Access -->|"login"| Home
+  Access -->|"search · map · audit"| Data
+  Lens -->|"resolve + facts"| Home
+  Lens --> Data
+  SDK --> Data
+  Lens -.->|"overlay"| OTA["Booking / Expedia / …"]
+```
+
+| Piece | Job |
+|-------|-----|
+| **Data node** | Owns properties/facts for a geographic region |
+| **Home node** | Registration, JWT, “which data node for this place?” |
+| **Access** | Traveler + auditor app |
+| **Lens** | Sidecar UX on existing booking sites |
+| **SDK** | Embed/fetch the same facts in agency products |
+
+**Trust tiers (short):** `OFFICIAL` (OSM/Wikidata) → `AI_GUESS` (guide only) → `VERIFIED` (field audit) → `CONFIRMED` (≥3 independent auditors). Higher wins on merge.
+
+### Product surfaces (screenshots)
+
+<p float="left">
+  <img src="./assets/screenshots/access-mobile.png" alt="Access mobile: map + audited property sheet" width="220" />
+  <img src="./assets/screenshots/access-desktop.jpg" alt="Access desktop: map, list, property card" width="320" />
+</p>
+
+<p float="left">
+  <img src="./assets/screenshots/lens.png" alt="Lens extension: scores and audit photos for a property" width="280" />
+  <img src="./assets/screenshots/node-admin.png" alt="Node admin: stats, tiers, OSM vs field audit" width="360" />
+</p>
+
+| Screenshot | What it shows |
+|------------|---------------|
+| Access (mobile / desktop) | Search/map, audited stay, start audit |
+| Lens | Sidecar scores + photos while browsing elsewhere |
+| Node admin | Regional inventory: mostly OSM today; audits still scarce — the community gap |
+
+---
+
+## System overview (detailed)
 
 ```mermaid
 flowchart TB
   subgraph clients["Clients (no mesh truth)"]
     Hub["Hub Access<br/>access.wikitraveler.org"]
     Brand["Branded Access<br/>optional"]
-    Lens["Lens<br/>Chrome MV3"]
-    SDK["Agency SDK"]
+    LensExt["Lens<br/>Chrome MV3"]
+    AgencySDK["Agency SDK"]
   end
 
-  subgraph mesh["Node mesh (holds truth)"]
-    Home["Home node<br/>JWT · register · resolve"]
+  subgraph meshDetailed["Node mesh (holds truth)"]
+    HomeNode["Home node<br/>JWT · register · resolve"]
     DataA["Data node A<br/>regional bbox"]
     DataB["Data node B<br/>regional bbox"]
   end
 
-  Hub -->|"login / resolve"| Home
-  Brand -->|"login / resolve"| Home
+  Hub -->|"login / resolve"| HomeNode
+  Brand -->|"login / resolve"| HomeNode
   Hub -->|"search · map · audit<br/>trusted Origin"| DataA
   Hub -->|"trusted Origin"| DataB
   Brand -->|"trusted Origin"| DataA
-  Lens -->|"NODE_FETCH via SW<br/>home + resolve"| Home
-  Lens -->|"facts on listing"| DataA
-  SDK --> DataA
+  LensExt -->|"NODE_FETCH via SW<br/>home + resolve"| HomeNode
+  LensExt -->|"facts on listing"| DataA
+  AgencySDK --> DataA
 
-  Home <-->|"gossip pull + signed push"| DataA
+  HomeNode <-->|"gossip pull + signed push"| DataA
   DataA <-->|"gossip"| DataB
-  Home <-->|"gossip"| DataB
+  HomeNode <-->|"gossip"| DataB
 ```
 
 | Role | What it is |

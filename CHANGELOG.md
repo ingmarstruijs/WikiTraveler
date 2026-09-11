@@ -10,14 +10,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Bump `next` to `16.3.3` in Node and Access for critical Dependabot RCE advisories (Windows-hosted servers / Image Optimization AVIF)
+- Skip `output: "standalone"` on Vercel (Next 16.3 adapter ENOENT on `next-server.js.nft.json`; Docker still uses standalone) and opt out of immutable static assets so Preview Comments can deploy
+- Access profile sync no longer resurrects cleared accessibility preferences from an older server snapshot ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access in-app Back from property detail restores the discovery map pins, camera, selected pin sheet, and profile filters ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access map pin selection on mobile pans the pin into view above the preview bottom sheet ([ACCESS-UX.md](docs/ACCESS-UX.md))
+
 ### Changed
 
 - Access property detail accessibility icons sit closer together on mobile and desktop ([ACCESS-UX.md](docs/ACCESS-UX.md))
-
-### Fixed
-
-- Access in-app Back from property detail restores the discovery map pins, camera, selected pin sheet, and profile filters ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access map pin selection on mobile pans the pin into view above the preview bottom sheet ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Dev dependency: Vitest `3.2.x` → `4.1.11` (with Upstash mock constructor fixes for Vitest 4)
 
 ## [0.5.2] - 2026-09-08
 

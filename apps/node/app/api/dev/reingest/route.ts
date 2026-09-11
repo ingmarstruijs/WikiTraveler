@@ -51,8 +51,9 @@ export async function POST(req: NextRequest) {
     join(process.cwd(), "scripts", "fixtures", fixtureName),
     join(process.cwd(), "..", "..", "scripts", "fixtures", fixtureName),
   ];
-  const fixturePath = fixtureCandidates.find((p) => existsSync(p)) ?? fixtureCandidates[1]!;
-  const haveFixture = existsSync(fixturePath);
+  const fixturePath =
+    fixtureCandidates.find((p) => existsSync(/*turbopackIgnore: true*/ p)) ?? fixtureCandidates[1]!;
+  const haveFixture = existsSync(/*turbopackIgnore: true*/ fixturePath);
 
   // Without a fixture we'd have to hit the live Overpass API. Don't do that
   // implicitly — it requires a valid bbox query and network access. Fail with

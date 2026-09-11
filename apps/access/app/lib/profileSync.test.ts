@@ -13,7 +13,11 @@ vi.mock("./accessApi", () => ({
 import { writeA11yPreferences, readA11yPreferences } from "./a11yPreferences";
 import { readSavedPlaces, writeSavedPlaces } from "./savedPlaces";
 import { readAccessThemePreference } from "./themePreference";
-import { scheduleFavoritesPush, syncProfileFromServer } from "./profileSync";
+import {
+  scheduleFavoritesPush,
+  schedulePreferencesPush,
+  syncProfileFromServer,
+} from "./profileSync";
 import { writeUserScoped } from "./userScopedStorage";
 
 const mem = new Map<string, string>();
@@ -88,9 +92,7 @@ describe("syncProfileFromServer", () => {
     expect(readSavedPlaces()[0]?.id).toBe("p1");
   });
 
-  it("hydrates a11y prefs and theme on a fresh device even if a default-theme stamp is newer", async () => {
-    writeUserScoped("wt_prefs_updated_at", "2026-09-08T12:00:00.000Z");
-
+  it("hydrates a11y prefs and theme when the local prefs stamp is still empty", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async (input: RequestInfo | URL) => {
@@ -114,6 +116,33 @@ describe("syncProfileFromServer", () => {
     await syncProfileFromServer();
     expect(readA11yPreferences()).toEqual(["elevator_present", "ramp_present"]);
     expect(readAccessThemePreference()).toBe("dark");
+  });
+
+  it("does not resurrect older server prefs over a newer empty local stamp", async () => {
+    writeUserScoped("wt_prefs_updated_at", "2026-09-08T12:00:00.000Z");
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url.endsWith("/api/auth/me")) {
+          return jsonResponse({
+            preferences: {
+              a11yPreferences: ["elevator_present", "ramp_present"],
+              theme: "dark",
+              updatedAt: "2026-06-01T00:00:00.000Z",
+            },
+          });
+        }
+        if (url.includes("/api/auth/favorites")) {
+          return jsonResponse({ places: [], updatedAt: "2026-01-01T00:00:00.000Z" });
+        }
+        return jsonResponse({}, false);
+      })
+    );
+
+    await syncProfileFromServer();
+    expect(readA11yPreferences()).toEqual([]);
   });
 
   it("pushes local favorites when server is empty even if updatedAt is non-zero", async () => {
@@ -220,5 +249,47 @@ describe("syncProfileFromServer", () => {
     await syncProfileFromServer();
     expect(putBodies.some((body) => body.includes("local-new"))).toBe(true);
     expect(readSavedPlaces().map((p) => p.id)).toEqual(["local-new"]);
+  });
+
+  it("pushes cleared a11y preferences and does not resurrect older server prefs", async () => {
+    writeA11yPreferences([], { skipSync: true });
+    schedulePreferencesPush();
+
+    const putBodies: string[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input);
+        if (url.endsWith("/api/auth/me")) {
+          return jsonResponse({
+            preferences: {
+              a11yPreferences: ["step_free_entrance", "accessible_bathroom"],
+              theme: null,
+              updatedAt: "2026-09-01T00:00:00.000Z",
+            },
+          });
+        }
+        if (url.includes("/api/auth/preferences") && init?.method === "PUT") {
+          putBodies.push(String(init.body));
+          const body = JSON.parse(String(init.body)) as { a11yPreferences: string[] };
+          return jsonResponse({
+            preferences: {
+              a11yPreferences: body.a11yPreferences,
+              theme: null,
+              updatedAt: "2026-09-11T18:00:00.000Z",
+            },
+          });
+        }
+        if (url.includes("/api/auth/favorites")) {
+          return jsonResponse({ places: [], updatedAt: "2026-01-01T00:00:00.000Z" });
+        }
+        return jsonResponse({}, false);
+      })
+    );
+
+    await syncProfileFromServer();
+    expect(putBodies.length).toBeGreaterThan(0);
+    expect(JSON.parse(putBodies[0]!).a11yPreferences).toEqual([]);
+    expect(readA11yPreferences()).toEqual([]);
   });
 });
