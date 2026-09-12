@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- RFC-0003 M1–M2: issuer `IntegratorClient` credentials (Admin API + `pnpm node:integrator`), `POST /api/auth/integrator/token` → short-lived `integrator_read` JWT, and read access on accessibility GET + peers resolve ([RFC-0003](docs/rfcs/0003-agency-sdk-service-auth.md), [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89))
+
 ### Fixed
 
 - Bump `next` to `16.3.3` in Node and Access for critical Dependabot RCE advisories (Windows-hosted servers / Image Optimization AVIF)

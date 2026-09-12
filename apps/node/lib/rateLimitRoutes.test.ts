@@ -6,6 +6,10 @@ describe("getRateLimitProfile", () => {
     expect(getRateLimitProfile("/api/auth/login", "POST")).toBe("auth");
   });
 
+  it("matches POST /api/auth/integrator/token as auth", () => {
+    expect(getRateLimitProfile("/api/auth/integrator/token", "POST")).toBe("auth");
+  });
+
   it("matches POST /api/auth/register as auth", () => {
     expect(getRateLimitProfile("/api/auth/register", "POST")).toBe("auth");
   });

@@ -36,7 +36,7 @@ Single entry point for the project. Pick the path that matches your role — eac
 | [RELEASE-PHASES.md](./RELEASE-PHASES.md) | Archived phase 0–6 ledger + remaining maintainer publish todos |
 | [ROADMAP.md](./ROADMAP.md) | Public priorities (maintainer publish todos, features, quality, community, strategy, performance) |
 | [COMPATIBILITY.md](./COMPATIBILITY.md) | N/N-1 mesh and protocol compatibility matrix |
-| [rfcs/](./rfcs/README.md) | RFC process; [RFC-0002](./rfcs/0002-global-hub-access.md) hub Access (Accepted); [RFC-0003](./rfcs/0003-agency-sdk-service-auth.md) agency SDK (Proposed) |
+| [rfcs/](./rfcs/README.md) | RFC process; [RFC-0002](./rfcs/0002-global-hub-access.md) hub Access (Accepted); [RFC-0003](./rfcs/0003-agency-sdk-service-auth.md) agency SDK (Accepted — [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89)) |
 
 ### For developers (build & test)
 
@@ -48,7 +48,7 @@ Single entry point for the project. Pick the path that matches your role — eac
 | [FEDERATION-E2E.md](./FEDERATION-E2E.md) | Gossip/federation E2E tiers A–D (kernel, topology, hub Access, photos) |
 | [FEDERATED-AUTH.md](./FEDERATED-AUTH.md) | Register on one node; browse/audit peers with RS256 JWT |
 | [RFC-0002](./rfcs/0002-global-hub-access.md) | Global hub Access/Lens, mesh CORS trust, viewport map (M0–M5 shipped; M6 follow-ons) |
-| [RFC-0003](./rfcs/0003-agency-sdk-service-auth.md) | Agency SDK: service auth, read/write split, hub resolve, widget bar (Proposed) |
+| [RFC-0003](./rfcs/0003-agency-sdk-service-auth.md) | Agency SDK: service auth, read/write split, hub resolve, widget bar (Accepted — [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89)) |
 | [PUBLIC-PEERS.md](./PUBLIC-PEERS.md) | Voluntary bootstrap peer directory |
 | [LENS.md](./LENS.md) | Chrome extension distribution (Release zip / Store) |
 | [apps/README.md](../apps/README.md) | End-to-end flow walkthroughs (SDK, Access, Lens) |

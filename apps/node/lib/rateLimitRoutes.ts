@@ -1,6 +1,6 @@
 export type RateLimitProfile = "auth" | "audit" | "signal";
 
-const AUTH_ROUTE = /^\/api\/auth\/(login|register)$/;
+const AUTH_ROUTE = /^\/api\/auth\/(login|register|integrator\/token)$/;
 const AUDIT_ROUTE = /^\/api\/properties\/[^/]+\/accessibility$/;
 const SIGNAL_ROUTE = /^\/api\/properties\/[^/]+\/signals$/;
 
