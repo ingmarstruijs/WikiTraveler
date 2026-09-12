@@ -1,6 +1,6 @@
 # RFC-0003: Agency SDK — service auth, public reads, hub resolve
 
-**Status:** Accepted — **M0 done**; M1–M2 in progress (`rfc/accepted`; tracking [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89))  
+**Status:** Accepted — **M0–M5 shipping** (`rfc/accepted`; tracking [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89))  
 **Area:** Agency SDK / node API auth / trusted client reads / peer resolve  
 **Related:** [RFC-0002](./0002-global-hub-access.md) · [packages/sdk](../../packages/sdk/README.md) · [ARCHITECTURE.md](../ARCHITECTURE.md) · [FEDERATED-AUTH.md](../FEDERATED-AUTH.md) · [SECURITY.md](../../SECURITY.md) · [ROADMAP.md](../ROADMAP.md)
 
@@ -151,11 +151,11 @@ Minimum before calling the widget “agency-ready”:
 | Milestone | Deliverable |
 |-----------|-------------|
 | **M0** | Accept RFC; tracking issue — **done** ([#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89)) |
-| **M1** | Integrator client credentials on **issuer** node (hash-at-rest, scopes, mint/revoke Admin/CLI) — **shipping** |
-| **M2** | Issuer: exchange credentials → short-lived `integrator_read` RS256 JWT; data nodes verify foreign integrator JWTs on agreed GETs (reuse pubkey fetch path); rate limits — **shipping** |
-| **M3** | SDK resolve + read with one token; README + agency-demo BFF happy path; drop “login as user” |
-| **M4** | Widget coverage/trust UX + a11y checklist; optional public GET flag for demo nodes |
-| **M5** | Operator docs: which node is issuer, CORS for partner origins, revoke story |
+| **M1** | Integrator client credentials on **issuer** node (hash-at-rest, scopes, mint/revoke Admin/CLI) — **done** |
+| **M2** | Issuer: exchange credentials → short-lived `integrator_read` RS256 JWT; data nodes verify foreign integrator JWTs on agreed GETs (reuse pubkey fetch path); rate limits — **done** |
+| **M3** | SDK resolve + read with one token; README + agency-demo BFF happy path; drop “login as user” — **shipping** |
+| **M4** | Widget coverage/trust UX + a11y checklist; optional public GET flag for demo nodes — **shipping** |
+| **M5** | Operator docs: which node is issuer, CORS for partner origins, revoke story — **shipping** |
 | **M6** | Follow-ons: external-id batch lookup, photo URL auth hardening, multi-issuer / branded hubs |
 
 ## Highest-impact risks

@@ -221,14 +221,14 @@
     <section class="wt-card" aria-labelledby="search-heading">
       <h2 id="search-heading">Search hotels</h2>
       <p class="section-hint">
-        Log in via the panel on the right, then search your WikiTraveler node. Pick a listing to preview how accessibility data appears on a booking page.
+        Connect via the BFF panel (integrator token — no traveler password), then search your WikiTraveler node. Pick a listing to preview how accessibility data appears on a booking page.
       </p>
       <div class="search-row">
         <label for="hotel-search" class="wt-sr-only">Search hotels by name or city</label>
         <input id="hotel-search" class="wt-input" type="search" placeholder="Name, city, or property ID…" autocomplete="off" disabled />
         <button type="button" class="wt-btn-primary" id="btn-search" onclick="runSearch()" disabled>Search</button>
       </div>
-      <p id="search-status" class="search-status" role="status">Sign in to search listings.</p>
+      <p id="search-status" class="search-status" role="status">Connect with integrator credentials to search.</p>
       <div id="search-results" class="search-results" role="listbox" aria-label="Search results"></div>
     </section>
 
@@ -243,30 +243,28 @@
   <!-- Right: node config + SDK -->
   <aside class="sidebar">
     <section class="wt-card">
-      <h2>Node configuration</h2>
+      <h2>Issuer / BFF</h2>
       <p class="wt-text-muted" style="margin-bottom:10px">
-        Point the SDK at your WikiTraveler node. You can also pass <code>?node=URL&amp;id=PROPERTY_ID</code> in the address bar.
+        Demo BFF mints a short-lived <code>integrator_read</code> JWT from env credentials (RFC-0003). No traveler username/password.
+        Pass <code>?id=PROPERTY_ID&amp;node=URL</code> in the address bar.
       </p>
       <div class="node-config">
-        <label for="node-url-input" class="wt-sr-only">WikiTraveler node URL</label>
+        <label for="node-url-input" class="wt-sr-only">Issuer / data node URL</label>
         <input id="node-url-input" class="wt-input" type="url" placeholder="http://localhost:3000" aria-describedby="node-status" />
-        <button type="button" class="wt-btn-primary" onclick="applyNodeUrl()">Connect</button>
+        <button type="button" class="wt-btn-primary" id="btn-connect" onclick="connectBff()">Connect</button>
       </div>
 
       <div id="login-area">
-        <div class="login-grid">
-          <label for="login-username" class="wt-sr-only">Username</label>
-          <input id="login-username" class="wt-input" type="text" placeholder="Username" autocomplete="username" />
-          <label for="login-password" class="wt-sr-only">Password</label>
-          <input id="login-password" class="wt-input" type="password" placeholder="Password" autocomplete="current-password" />
-          <button type="button" class="btn-login wt-btn-primary" id="btn-login" onclick="doLogin()">Log in</button>
-        </div>
+        <p class="wt-text-muted" style="font-size:12px;line-height:1.5">
+          Set <code>WT_CLIENT_ID</code> / <code>WT_CLIENT_SECRET</code> when starting <code>pnpm dev:agency-demo</code>
+          (<code>pnpm node:integrator create --name "Agency demo"</code>).
+        </p>
         <p id="login-error" class="auth-status" role="alert" style="color:var(--wt-error,#f87171);display:none"></p>
       </div>
       <div id="logged-in-area" style="display:none">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
           <span id="logged-in-label" class="auth-status" style="color:var(--wt-success,#059669)"></span>
-          <button type="button" class="btn-logout" onclick="doLogout()">Log out</button>
+          <button type="button" class="btn-logout" onclick="doLogout()">Disconnect</button>
         </div>
       </div>
       <p id="node-status" class="wt-text-muted" style="margin-top:10px"></p>
@@ -386,13 +384,56 @@
   syncNavNodeLink();
 
   let authToken = null;
-  let authUsername = null;
+  let accessUrl = "https://access.wikitraveler.org";
   let searchResults = [];
   let selectedProperty = null;
   let searchTimer = null;
 
   function authHeaders() {
     return authToken ? { Authorization: `Bearer ${authToken}` } : {};
+  }
+
+  async function connectBff() {
+    const errEl = document.getElementById("login-error");
+    const btn = document.getElementById("btn-connect");
+    errEl.style.display = "none";
+    const raw = document.getElementById("node-url-input").value;
+    const val = normalizeNodeUrl(raw);
+    if (!val) {
+      errEl.textContent = "Invalid issuer URL — use http or https.";
+      errEl.style.display = "block";
+      return;
+    }
+    document.getElementById("node-url-input").value = val;
+    currentNodeUrl = val;
+    syncNavNodeLink();
+    btn.disabled = true;
+    btn.textContent = "Connecting…";
+    try {
+      const res = await fetch("/bff/token", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        errEl.textContent = data.message || "Could not mint integrator token.";
+        errEl.style.display = "block";
+        return;
+      }
+      authToken = data.accessToken;
+      const cfg = await fetch("/bff/config").then((r) => r.json()).catch(() => ({}));
+      if (cfg.accessUrl) accessUrl = cfg.accessUrl;
+      document.getElementById("login-area").style.display = "none";
+      document.getElementById("logged-in-area").style.display = "block";
+      document.getElementById("logged-in-label").textContent = `Integrator token (${data.expiresIn || 900}s TTL)`;
+      document.getElementById("node-status").textContent = `Issuer ${val}`;
+      setSearchEnabled(true);
+      setSearchStatus("Ready — search for a hotel or paste a property ID");
+      await loadInitialProperty();
+    } catch (e) {
+      errEl.textContent = `BFF error: ${e.message}`;
+      errEl.style.display = "block";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Connect";
+    }
   }
 
   function syncNavNodeLink() {
@@ -538,7 +579,7 @@
 
   async function runSearch() {
     if (!authToken) {
-      setSearchStatus("Sign in to search listings.");
+      setSearchStatus("Connect with an integrator token to search.");
       return;
     }
 
@@ -595,65 +636,19 @@
     await runSearch();
   }
 
-  async function doLogin() {
-    const username = document.getElementById("login-username").value.trim();
-    const password = document.getElementById("login-password").value;
-    const errEl = document.getElementById("login-error");
-    const btn = document.getElementById("btn-login");
-
-    errEl.style.display = "none";
-    if (!username || !password) {
-      errEl.textContent = "Username and password are required.";
-      errEl.style.display = "block";
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = "Logging in…";
-    try {
-      const res = await fetch(`${currentNodeUrl}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        errEl.textContent = data.message || "Login failed.";
-        errEl.style.display = "block";
-        return;
-      }
-      authToken = data.token;
-      authUsername = data.username ?? username;
-      document.getElementById("login-area").style.display = "none";
-      document.getElementById("logged-in-area").style.display = "block";
-      document.getElementById("logged-in-label").textContent = `Logged in as ${authUsername}`;
-      setSearchEnabled(true);
-      setSearchStatus("Ready — search for a hotel");
-      await loadInitialProperty();
-    } catch (e) {
-      errEl.textContent = `Could not reach node: ${e.message}`;
-      errEl.style.display = "block";
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Log in";
-    }
-  }
-
   function doLogout() {
     authToken = null;
-    authUsername = null;
     searchResults = [];
     selectedProperty = null;
     PROPERTY_ID = "";
     document.getElementById("login-area").style.display = "block";
     document.getElementById("logged-in-area").style.display = "none";
-    document.getElementById("login-password").value = "";
     document.getElementById("search-results").innerHTML = "";
     document.getElementById("wt-widget").innerHTML = '<p class="wt-text-muted" style="font-style:italic">Select a hotel to load the widget.</p>';
     document.getElementById("raw-output").innerHTML = '<span class="wt-text-muted">Select a hotel…</span>';
     renderHotelDetail(null);
     setSearchEnabled(false);
-    setSearchStatus("Sign in to search listings.");
+    setSearchStatus("Connect with integrator credentials to search.");
     updateSnippets();
   }
 
@@ -661,8 +656,12 @@
     const el = document.getElementById("wt-widget");
     if (!el || !PROPERTY_ID || !authToken) return;
     el.dataset.nodeUrl = currentNodeUrl;
+    el.dataset.issuerUrl = currentNodeUrl;
     el.dataset.propertyId = PROPERTY_ID;
     el.dataset.token = authToken;
+    el.dataset.accessUrl = accessUrl;
+    if (selectedProperty?.lat != null) el.dataset.lat = String(selectedProperty.lat);
+    if (selectedProperty?.lon != null) el.dataset.lon = String(selectedProperty.lon);
     if (window.WikiTraveler?.mountWidget) WikiTraveler.mountWidget(el);
   }
 
@@ -674,7 +673,9 @@
     }
     output.innerHTML = '<span class="wt-text-muted">Fetching…</span>';
     try {
-      const client = new WikiTraveler.WikiTraveler({ nodeUrl: currentNodeUrl, token: authToken });
+      const Client = window.WikiTraveler?.WikiTraveler;
+      if (!Client) throw new Error("SDK not loaded");
+      const client = new Client({ issuerUrl: currentNodeUrl, nodeUrl: currentNodeUrl, token: authToken });
       const data = await client.getAccessibility(PROPERTY_ID);
       output.textContent = JSON.stringify(data, null, 2);
     } catch (e) {
@@ -683,56 +684,47 @@
   }
 
   function applyNodeUrl() {
-    const raw = document.getElementById("node-url-input").value;
-    const val = normalizeNodeUrl(raw);
-    if (!val) {
-      document.getElementById("node-status").textContent =
-        "Invalid node URL — use an http or https address.";
-      return;
-    }
-    document.getElementById("node-url-input").value = val;
-    currentNodeUrl = val;
-    syncNavNodeLink();
-    document.getElementById("node-status").textContent = authToken
-      ? `Connected to ${val}`
-      : `Node set to ${val} — please log in`;
-    if (!authToken) return;
-    loadInitialProperty();
+    connectBff();
   }
 
   function updateSnippets() {
     const id = PROPERTY_ID || "PROPERTY_ID";
-    const widgetSnippet = `<!-- Pattern 1: Drop-in Widget (CDN, no build step) -->
+    const widgetSnippet = `<!-- Pattern 1: Drop-in Widget — token from your BFF (never a password) -->
 <script src="https://cdn.wikitraveler.org/wikitraveler.umd.js"><\/script>
 
 <div id="wt-widget"
      data-wt-widget
      data-property-id="${id}"
-     data-node-url="${currentNodeUrl}"
-     data-token="YOUR_JWT_TOKEN">
-</div>`;
+     data-issuer-url="${currentNodeUrl}"
+     data-token="SHORT_LIVED_INTEGRATOR_JWT"
+     data-access-url="${accessUrl}">
+</div>
+<script>WikiTraveler.mountWidget("#wt-widget");<\/script>`;
 
-    const fetchSnippet = `<!-- Pattern 2: Raw JSON fetch -->
-<script src="https://cdn.wikitraveler.org/wikitraveler.umd.js"><\/script>
-<script>
-  const wt = new WikiTraveler.WikiTraveler({
-    nodeUrl: "${currentNodeUrl}",
-    token: "YOUR_JWT_TOKEN",
-  });
-  const data = await wt.getAccessibility("${id}");
-  console.log(data.facts);
-<\/script>`;
+    const fetchSnippet = `<!-- Pattern 2: Server / BFF mint + resolve + read -->
+import { mintIntegratorReadToken, WikiTraveler } from "@wikitraveler/sdk";
+
+const { accessToken } = await mintIntegratorReadToken({
+  issuerUrl: "${currentNodeUrl}",
+  clientId: process.env.WT_CLIENT_ID,
+  clientSecret: process.env.WT_CLIENT_SECRET,
+});
+const wt = new WikiTraveler({ issuerUrl: "${currentNodeUrl}", token: accessToken });
+const node = await wt.resolveDataNode({ lat: 51.44, lon: 5.47 });
+const data = await wt.getAccessibility("${id}", { nodeUrl: node.url });`;
 
     const esmSnippet = `import { WikiTraveler, mountWidget } from "@wikitraveler/sdk";
 
-const wt = new WikiTraveler({ nodeUrl: "${currentNodeUrl}", token });
+// accessToken minted on your BFF — not a traveler login
+const wt = new WikiTraveler({ issuerUrl: "${currentNodeUrl}", token: accessToken });
 const data = await wt.getAccessibility("${id}");
 
 mountWidget({
   target: "#wt-widget",
   propertyId: "${id}",
   nodeUrl: "${currentNodeUrl}",
-  token,
+  token: accessToken,
+  accessUrl: "${accessUrl}",
 });`;
 
     document.querySelector("#snippet-widget .code").textContent = widgetSnippet;
@@ -788,12 +780,6 @@ mountWidget({
     });
     document.getElementById("hotel-search").addEventListener("keydown", (e) => {
       if (e.key === "Enter") { e.preventDefault(); runSearch(); }
-    });
-    document.getElementById("login-password").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") doLogin();
-    });
-    document.getElementById("login-username").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") document.getElementById("login-password").focus();
     });
   });
 </script>

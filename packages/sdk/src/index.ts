@@ -1,5 +1,15 @@
-export { WikiTraveler } from "./client";
-export type { WikiTravelerConfig, AccessibilityResponse } from "./client";
+export {
+  WikiTraveler,
+  WikiTravelerError,
+  mintIntegratorReadToken,
+} from "./client";
+export type {
+  WikiTravelerConfig,
+  AccessibilityResponse,
+  ResolveDataNodeInput,
+  ResolveDataNodeResult,
+  AuditPhotoInfo,
+} from "./client";
 export { mountWidget, autoMount } from "./widget";
 export type { WidgetOptions } from "./widget";
 export { Tier, TIER_LABEL, TIER_COLOR, TIER_RANK } from "@wikitraveler/core";

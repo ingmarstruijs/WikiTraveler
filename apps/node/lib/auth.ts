@@ -132,14 +132,20 @@ export async function requireAuth(req: NextRequest): Promise<NextResponse | null
 /**
  * Authenticated read for travelers **or** agency `integrator_read` JWTs (RFC-0003).
  * Optional `requiredScope` checks JWT `scopes` for integrator tokens only.
+ * When `allowPublic` is true and the node has `publicAccessibilityReads`, anonymous GET is allowed.
  */
 export async function requireReadAccess(
   req: NextRequest,
-  requiredScope?: string
+  requiredScope?: string,
+  opts?: { allowPublic?: boolean }
 ): Promise<NextResponse | null> {
   try {
     const auth = req.headers.get("authorization") ?? "";
     if (!auth.startsWith("Bearer ")) {
+      if (opts?.allowPublic) {
+        const { getPublicAccessibilityReads } = await import("@/lib/nodeSettings");
+        if (await getPublicAccessibilityReads()) return null;
+      }
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const payload = await verifyToken(auth.slice(7));

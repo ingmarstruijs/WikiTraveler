@@ -374,10 +374,10 @@ Cron endpoints are protected by `Authorization: Bearer <CRON_SECRET>` (injected 
 | GET | `/api/auth/me` | USER | Current user info |
 | GET | `/api/peers` | — | List active peers |
 | GET | `/api/peers/resolve?lat=&lon=` | USER or `integrator_read` | Best-matching peer for a coordinate (smallest containing bbox) |
-| GET | `/api/properties?q=` | USER | Search properties |
+| GET | `/api/properties?q=` | USER or `integrator_read` | Search properties |
 | POST | `/api/properties` | AUDITOR | Create property |
 | GET | `/api/properties/map?bbox=` | USER | Viewport pins; requires `bbox=` (or Admin `region=1`); may return `BBOX_TOO_LARGE` |
-| GET | `/api/properties/[id]/accessibility` | USER or `integrator_read` | Collapsed facts with tier; includes `claimedByUserId` / `isClaimedByMe` |
+| GET | `/api/properties/[id]/accessibility` | USER, `integrator_read`, or optional public GET | Collapsed facts with tier; includes `claimedByUserId` / `isClaimedByMe` |
 | POST | `/api/properties/[id]/accessibility` | AUDITOR | Submit audit (saves facts, triggers push + vision) |
 | POST | `/api/properties/[id]/claim` | AUDITOR | Claim property for current auditor (`409` if claimed by another; ADMIN may take over) |
 | DELETE | `/api/properties/[id]/claim` | AUDITOR | Clear claim (claimer or ADMIN) |

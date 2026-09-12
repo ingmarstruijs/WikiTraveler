@@ -1,4 +1,4 @@
-import { WikiTraveler } from "./client";
+import { WikiTraveler, WikiTravelerError } from "./client";
 import type { AccessibilityResponse } from "./client";
 import { Tier } from "@wikitraveler/core";
 import { formatFactValue, getFieldLabel, getTierLabel, DEFAULT_LOCALE, type Locale } from "@wikitraveler/i18n";
@@ -6,21 +6,28 @@ import { formatFactValue, getFieldLabel, getTierLabel, DEFAULT_LOCALE, type Loca
 export interface WidgetOptions {
   /** CSS selector OR HTMLElement to mount the widget into. */
   target: string | HTMLElement;
-  /** Amadeus property ID to display. */
+  /** Property ID to display. */
   propertyId: string;
-  /** WikiTraveler node URL. */
+  /** WikiTraveler data-node URL (after resolve, or single-region). */
   nodeUrl: string;
-  /** JWT obtained from POST /api/auth/login. Required for authenticated nodes. */
+  /** Short-lived integrator_read JWT (or human JWT). Prefer BFF mint — RFC-0003. */
   token?: string;
   /** UI locale (default: en). Also read from data-wt-locale on the target element. */
   locale?: Locale;
+  /** Hub Access URL for deep-link (default from client / https://access.wikitraveler.org). */
+  accessUrl?: string;
+  /** Optional lat/lon — when set, resolve data node via issuerUrl first. */
+  lat?: number;
+  lon?: number;
+  /** Issuer / hub URL used with lat/lon resolve. */
+  issuerUrl?: string;
 }
 
 const WIDGET_STYLE_ID = "wt-widget-styles";
 
-/** Injected once for CDN embeds that do not link wikitraveler-ui.css. */
 const WIDGET_CSS = `
 .wt-widget{font-family:var(--wt-font,sans-serif);color:var(--wt-text,#0f172a);font-size:13px;line-height:1.45;min-width:0}
+.wt-widget-heading{font-size:14px;font-weight:700;margin:0 0 8px;color:var(--wt-text,#0f172a)}
 .wt-widget-facts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;max-height:min(480px,60vh);overflow-y:auto;overscroll-behavior:contain}
 .wt-widget-fact{display:flex;flex-direction:column;gap:4px;padding:10px 12px;background:var(--wt-bg-secondary,#f1f5f9);border:1px solid var(--wt-border,#e2e8f0);border-radius:var(--wt-radius-sm,8px)}
 .wt-widget-fact-label{font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--wt-text-muted,#64748b)}
@@ -31,11 +38,13 @@ const WIDGET_CSS = `
 .wt-tier-ai_guess{background:var(--wt-tier-ai-bg,#fef3c7);color:var(--wt-tier-ai-text,#92400e)}
 .wt-tier-verified{background:var(--wt-tier-verified-bg,#d1fae5);color:var(--wt-tier-verified-text,#065f46)}
 .wt-tier-confirmed{background:var(--wt-tier-confirmed-bg,#dbeafe);color:var(--wt-tier-confirmed-text,#1e40af)}
-.wt-widget-empty{color:var(--wt-text-muted,#64748b);font-style:italic;margin:0}
+.wt-widget-empty,.wt-widget-coverage{color:var(--wt-text-muted,#64748b);margin:0 0 8px}
 .wt-widget-attribution{font-size:11px;color:var(--wt-text-muted,#64748b);margin:10px 0 0}
 .wt-widget-attribution a{color:var(--wt-primary,#1d4ed8);text-decoration:none}
 .wt-widget-loading,.wt-widget-error{margin:0;font-size:13px}
 .wt-widget-error{color:var(--wt-danger,#dc2626)}
+.wt-widget-actions{margin:10px 0 0;display:flex;flex-wrap:wrap;gap:8px}
+.wt-widget-actions a{font-size:12px;font-weight:600;color:var(--wt-primary,#1d4ed8);text-decoration:underline}
 .wt-widget-photos{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0;padding:0;list-style:none}
 .wt-widget-photo{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--wt-border,#e2e8f0);cursor:pointer}
 .wt-widget-photo-caption{font-size:10px;color:var(--wt-text-muted,#64748b);margin-top:2px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -70,9 +79,47 @@ function escapeHtml(text: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function renderFacts(data: AccessibilityResponse, locale: Locale): string {
+function accessDetailHref(accessUrl: string, propertyId: string, nodeUrl: string): string {
+  const u = new URL(accessUrl.includes("://") ? accessUrl : `https://${accessUrl}`);
+  // Hub Access property deep-link pattern used across the monorepo
+  u.pathname = `/property/${encodeURIComponent(propertyId)}`;
+  u.searchParams.set("node", nodeUrl);
+  return u.toString();
+}
+
+function shell(
+  body: string,
+  opts: { accessHref?: string; heading?: string }
+): string {
+  const actions = opts.accessHref
+    ? `<p class="wt-widget-actions"><a href="${escapeHtml(opts.accessHref)}" target="_blank" rel="noopener">Open in WikiTraveler Access</a></p>`
+    : "";
+  const heading = opts.heading
+    ? `<h3 class="wt-widget-heading">${escapeHtml(opts.heading)}</h3>`
+    : "";
+  return `
+    <div class="wt-widget" role="region" aria-label="WikiTraveler accessibility data">
+      ${heading}
+      ${body}
+      ${actions}
+      <p class="wt-widget-attribution">
+        Powered by <a href="https://github.com/ingmarstruijs/WikiTraveler">WikiTraveler</a>
+      </p>
+    </div>`;
+}
+
+function renderFacts(
+  data: AccessibilityResponse,
+  locale: Locale,
+  accessUrl: string
+): string {
+  const accessHref = accessDetailHref(accessUrl, data.propertyId, data.nodeUrl);
+
   if (data.facts.length === 0 && !data.auditPhotos?.photos.length) {
-    return `<div class="wt-widget" role="region" aria-label="WikiTraveler accessibility data"><p class="wt-widget-empty">No accessibility data available for this property yet.</p></div>`;
+    return shell(
+      `<p class="wt-widget-empty">No accessibility facts on file yet for this property. Trust tiers appear when audits land.</p>`,
+      { accessHref, heading: "Accessibility" }
+    );
   }
 
   const items = data.facts
@@ -100,32 +147,42 @@ function renderFacts(data: AccessibilityResponse, locale: Locale): string {
         .join("")}</ul>`
     : "";
 
-  return `
-    <div class="wt-widget" role="region" aria-label="WikiTraveler accessibility data">
-      ${items ? `<ul class="wt-widget-facts">${items}</ul>` : ""}
-      ${photoGallery}
-      <p class="wt-widget-attribution">
-        Powered by <a href="https://github.com/wikitraveler">WikiTraveler</a>
-      </p>
-    </div>`;
+  return shell(
+    `${items ? `<ul class="wt-widget-facts">${items}</ul>` : ""}${photoGallery}`,
+    { accessHref, heading: "Accessibility" }
+  );
+}
+
+function renderError(err: unknown, accessUrl: string, propertyId: string, nodeUrl: string): string {
+  const accessHref = propertyId && nodeUrl ? accessDetailHref(accessUrl, propertyId, nodeUrl) : accessUrl;
+  if (err instanceof WikiTravelerError) {
+    if (err.code === "UNCOVERED" || err.status === 422) {
+      return shell(
+        `<p class="wt-widget-coverage">This area isn’t covered by a WikiTraveler data node yet. Facts will appear when a regional node and audits exist.</p>`,
+        { accessHref, heading: "Coverage" }
+      );
+    }
+    if (err.status === 401 || err.status === 403) {
+      return shell(
+        `<p class="wt-widget-error">Could not authorize this read. Agencies need a short-lived integrator token from their BFF (not a traveler password).</p>`,
+        { accessHref, heading: "Accessibility" }
+      );
+    }
+    if (err.status === 404) {
+      return shell(
+        `<p class="wt-widget-coverage">Property not found on this node.</p>`,
+        { accessHref, heading: "Accessibility" }
+      );
+    }
+  }
+  return shell(
+    `<p class="wt-widget-error">Could not load accessibility data. Is the node reachable?</p>`,
+    { accessHref, heading: "Accessibility" }
+  );
 }
 
 /**
  * Mount a pre-styled accessibility widget into a DOM element.
- *
- * Usage (CDN):
- * ```html
- * <div id="wt-widget"
- *      data-property-id="AMADEUS_PROP_ID"
- *      data-node-url="https://my-node.example.com"></div>
- * <script>WikiTraveler.mountWidget('#wt-widget');</script>
- * ```
- *
- * Usage (programmatic):
- * ```js
- * import { mountWidget } from '@wikitraveler/sdk';
- * mountWidget({ target: '#wt-widget', propertyId: 'PROP_123', nodeUrl: 'https://...' });
- * ```
  */
 export async function mountWidget(
   optionsOrSelector: WidgetOptions | string | HTMLElement
@@ -137,6 +194,10 @@ export async function mountWidget(
   let nodeUrl: string | undefined;
   let token: string | undefined;
   let locale: Locale = DEFAULT_LOCALE;
+  let accessUrl: string | undefined;
+  let issuerUrl: string | undefined;
+  let lat: number | undefined;
+  let lon: number | undefined;
 
   if (typeof optionsOrSelector === "string") {
     el = document.querySelector<HTMLElement>(optionsOrSelector);
@@ -151,6 +212,10 @@ export async function mountWidget(
     nodeUrl = optionsOrSelector.nodeUrl;
     token = optionsOrSelector.token;
     locale = optionsOrSelector.locale ?? DEFAULT_LOCALE;
+    accessUrl = optionsOrSelector.accessUrl;
+    issuerUrl = optionsOrSelector.issuerUrl;
+    lat = optionsOrSelector.lat;
+    lon = optionsOrSelector.lon;
   }
 
   if (!el) {
@@ -158,15 +223,18 @@ export async function mountWidget(
     return;
   }
 
-  // If called with only a selector/element, read from data attributes
   propertyId ??= el.dataset.propertyId ?? "";
   nodeUrl ??= el.dataset.nodeUrl ?? "";
   token ??= el.dataset.token;
   locale = (el.dataset.wtLocale as Locale | undefined) ?? locale;
+  accessUrl ??= el.dataset.accessUrl;
+  issuerUrl ??= el.dataset.issuerUrl;
+  if (el.dataset.lat != null) lat = Number(el.dataset.lat);
+  if (el.dataset.lon != null) lon = Number(el.dataset.lon);
 
-  if (!propertyId || !nodeUrl) {
+  if (!propertyId || (!nodeUrl && !issuerUrl)) {
     el.setAttribute("role", "alert");
-    el.innerHTML = `<p class="wt-widget-error">WikiTraveler: missing data-property-id or data-node-url</p>`;
+    el.innerHTML = `<p class="wt-widget-error">WikiTraveler: missing data-property-id or data-node-url / data-issuer-url</p>`;
     return;
   }
 
@@ -175,17 +243,30 @@ export async function mountWidget(
   el.setAttribute("aria-busy", "true");
   el.innerHTML = `<p class="wt-widget-loading wt-text-muted">Loading accessibility data…</p>`;
 
+  const client = new WikiTraveler({
+    nodeUrl: nodeUrl || undefined,
+    issuerUrl: issuerUrl || undefined,
+    token,
+    locale,
+    accessUrl,
+  });
+  const resolvedAccess = client.accessUrl;
+
   try {
-    const client = new WikiTraveler({ nodeUrl, token, locale });
-    const data = await client.getAccessibility(propertyId);
+    let dataNode = nodeUrl || client.defaultNodeUrl || "";
+    if (lat != null && lon != null && !Number.isNaN(lat) && !Number.isNaN(lon)) {
+      const resolved = await client.resolveDataNode({ lat, lon });
+      dataNode = resolved.url;
+    }
+    const data = await client.getAccessibility(propertyId, { nodeUrl: dataNode });
     el.removeAttribute("aria-busy");
     el.removeAttribute("role");
     el.removeAttribute("aria-live");
-    el.innerHTML = renderFacts(data, locale);
+    el.innerHTML = renderFacts(data, locale, resolvedAccess);
   } catch (err) {
     el.removeAttribute("aria-busy");
     el.setAttribute("role", "alert");
-    el.innerHTML = `<p class="wt-widget-error">Could not load accessibility data. Is the node reachable?</p>`;
+    el.innerHTML = renderError(err, resolvedAccess, propertyId, nodeUrl || client.defaultNodeUrl || "");
     console.error("WikiTraveler widget error:", err);
   }
 }

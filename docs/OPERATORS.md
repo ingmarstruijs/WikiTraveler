@@ -42,6 +42,35 @@ Each node is **sovereign**: your `NODE_ID`, keys, region bbox, database, and upg
 
 ---
 
+## Agency SDK / issuer (RFC-0003)
+
+Agencies authenticate as **applications**, not people.
+
+| Role | Who | What |
+|------|-----|------|
+| **Issuer** | Canonical hub/home node (v1: `node-eu` / your project hub) | Stores `IntegratorClient` credentials; `POST /api/auth/integrator/token` |
+| **Data node** | Regional nodes | Verify foreign `integrator_read` JWTs via `/.well-known/pubkey` (same as traveler JWTs) |
+| **Partner BFF** | Agency backend | Holds `clientId`/`clientSecret`; mints short-lived tokens for the browser |
+
+### Setup
+
+1. On the **issuer**: `pnpm node:integrator create --name "Acme Travel"` (or Admin `POST /api/admin/integrators`). Store the plaintext secret once.
+2. Give the partner `clientId` + secret + issuer URL — never put the secret in frontend JS.
+3. On every **data node** that should accept agency reads: allow partner **browser** origins in `CLIENT_ORIGINS` / `CORS_ORIGINS` (same allowlist model as Access/Lens — never `*`).
+4. Partner flow: mint → `resolveDataNode` → `getAccessibility` with the same JWT ([SDK README](../packages/sdk/README.md)).
+
+### Revoke
+
+`pnpm node:integrator revoke --client-id wt_ic_…` or `POST /api/admin/integrators/:clientId/revoke`. Existing JWTs expire (~15m); no need to rotate human passwords or `JWT_SECRET`.
+
+### Optional public GET (demos only)
+
+Admin setting `publicAccessibilityReads` (`PATCH /api/admin/settings`) allows anonymous GET on accessibility + peers resolve. **Default off.** Use for marketing demos with rate limits / WAF — not production agency traffic.
+
+Tracking: [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89) · [RFC-0003](./rfcs/0003-agency-sdk-service-auth.md) · [FEDERATED-AUTH.md](./FEDERATED-AUTH.md).
+
+---
+
 ## Choose a hosting model
 
 | Model | Best for | Guide |
