@@ -156,7 +156,7 @@ Minimum before calling the widget “agency-ready”:
 | **M3** | SDK resolve + read with one token; README + agency-demo BFF happy path; drop “login as user” — **shipping** |
 | **M4** | Widget coverage/trust UX + a11y checklist; optional public GET flag for demo nodes — **shipping** |
 | **M5** | Operator docs: which node is issuer, CORS for partner origins, revoke story — **shipping** |
-| **M6** | Follow-ons: external-id batch lookup, photo URL auth hardening, multi-issuer / branded hubs |
+| **M6** | Follow-ons: external-id batch lookup, photo URL auth hardening, multi-issuer / branded hubs — **separate issue** ([#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92)) |
 
 ## Highest-impact risks
 
