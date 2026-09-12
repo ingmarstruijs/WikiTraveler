@@ -45,59 +45,34 @@ One vocabulary note before we go on, because “UX” gets abused into meaning �
 
 ## The thing that already exists, and why it still fails
 
-Travel platforms are incredible at inventory, pricing, photos of beds with suspiciously perfect pillows, and converting intent into bookings.
+Travel platforms are incredible at inventory, pricing, and converting intent into bookings. They are much worse at accessibility as **structured truth over time**.
 
-They are much worse at modeling accessibility as **structured truth over time**.
+Maurice often gets a vague icon, a sentence that could mean anything, a filter that doesn’t match the bathroom, or a review that says “accessible” without saying *for whom*. Dedicated sites help — but they don’t fix that gap the same way.
 
-What travelers like Maurice often get instead:
+[Wheelchair Travel](https://wheelchairtravel.org/) is strong on advocacy and trip storytelling. Hotel detail often lives in narrative posts, not a living inventory you can trust night after night beside Booking.
 
-- a vague icon
-- a sentence that could mean anything
-- filters that don’t match reality
-- reviews that mention “accessible” without saying *for whom*
-- data that was true once, maybe, in 2019
+[Wheel the World](https://wheeltheworld.com/) is the closest cousin on *data shape*: proprietary AMS, trained mappers, measurements + photos, profiles, and a booking marketplace ([their trust write-up](https://blog.wheeltheworld.com/accessible-hotels-roll-in-showers-at-hotels-everything-you-need-to-know/)). Hotels can buy **Accessibility Verified**. Thin coverage often becomes concierge, not an honest empty map.
 
-There *are* dedicated accessible-travel sites. They’re not nothing. Examples people actually find when they search:
+That last part is the moral snag for me. The mapping work is real and expensive — I don’t begrudge people getting paid to measure bathrooms. What I resent is turning **whether a stay is actually usable** into proprietary inventory you rent through a marketplace and a B2B seal. That information should be a commons: free to read, free to reuse beside Booking, not a moat. Charge for booking, concierge, or ops if you must. Don’t own the facts of the doorway.
 
-- [Wheelchair Travel](https://wheelchairtravel.org/) — strong advocacy and trip storytelling; hotel detail often as narrative posts, not a living inventory
-- [AccessibleGO Hotels](https://accessiblego.com/hotels) — a specialized hotel catalog for accessible stays
-- [Mobility Hotels](https://mobilityhotels.com/) — another specialized accessible-hotel booking / directory surface
-- [Wheel the World](https://wheeltheworld.com/) — closest cousin on *data shape*: proprietary **Accessibility Mapping System (AMS)**, trained on-site mappers, 200+ measurements + photos per property, traveler accessibility profiles, and a booking marketplace. They say listings are **not hotel self-report** ([their write-up on roll-in showers / trust](https://blog.wheeltheworld.com/accessible-hotels-roll-in-showers-at-hotels-everything-you-need-to-know/)). Hotels can also buy into **Accessibility Verified**. Where coverage is thin, the product often flips to concierge (“leave your email, we’ll plan with you”) instead of an empty-but-honest commons.
+Same hunger for verified structure. Different ownership of the truth:
 
-What I keep seeing in that category, though:
+| | Wheel the World | WikiTraveler |
+|--|-----------------|--------------|
+| Data | Proprietary AMS — the moat | Open mesh (CC-BY) — not for sale |
+| Who maps | Paid mappers; hotels can buy “Verified” | Community (+ firms already walking hotels) |
+| Product | Marketplace / concierge | **Sidecar** beside Booking / Expedia |
+| Empty city | “Leave your email” | Say it isn’t covered — then fill it |
 
-1. **Small or curated scope** — mapped inventory where someone paid to send a mapper, not the messy long tail of stays people actually book  
-2. **Freshness is hard** — accessibility changes when a bathroom is renovated; directories and one-shot surveys drift  
-3. **A parallel booking world** — a special site (or concierge) for a special trip, instead of facts beside Booking/Expedia  
+Commercial AMS will densify *some* cities. An empty open map looks unfinished, not principled. Staying community-owned means refusing to monetize the facts — and making **real audits the whole game** instead. Triage first, deeper packs where people show up. Travelers usually don’t want a segregated travel internet; they want trustworthy facts *where they already book*.
 
-Wheel the World proves the *measurement + photo + profile-match* product works when you fund professional mapping. WikiTraveler’s bet stays different on purpose: same hunger for verified structure, but as an **open sidecar commons** — not a proprietary marketplace that owns the booking.
+Europe’s **EAA** (mid‑2025) adds pressure. It does not invent that dataset.
 
-That choice has a cost. Commercial AMS mapping will fill *some* cities with dense, paid truth. An empty open map doesn’t look principled next to that — it looks unfinished. Staying community-owned doesn’t make data optional; it makes **getting real audits into the commons the whole game**. Progressive depth beats cloning 200 paid points on day one (triage facts first, deeper packs where people show up). But without people showing up, the sidecar is a story about rails.
+So the framing became: treat stay accessibility like a commons — **closer to OpenStreetMap than to a proprietary roadmap**. A **sidecar** that rides next to the giants, enriches or contradicts them, and stays useful even if they ignore it.
 
-Travelers who need reliable accessibility information usually don’t want a segregated travel internet. They want to book **the same way everyone else does** — on Booking, Expedia, an agency site, a hotel brand page — with trustworthy facts available *there*. Not a second passport. Not a special portal. Not “go use the disability website.”
+OSM maps **where** things are (plus thin wheelchair tags). WikiTraveler is **can you stay and wash here** — audits, photos, trust tiers — on OSM as `OFFICIAL` baseline. We don’t replace the map. Coarse verified signals (`wheelchair=yes|limited|no`) should be able to **flow back**; bed height, roll-in detail, and multi-auditor confirmation stay with us. Commons beside commons.
 
-Specialty sites can still help. Guides and lived experience matter. But they don’t replace a commons that can sit beside the mainstream booking journey.
-
-Meanwhile, Europe has been raising the stakes. The **European Accessibility Act (EAA)** started mattering in a much more concrete way around mid‑2025. That’s useful political weather. It creates pressure. It does not magically create a community-owned, verifiable, geographically distributed dataset of which bathrooms you can actually use.
-
-So I became slightly obsessed with a different framing:
-
-**What if accessibility data for stays was treated like a commons — closer to OpenStreetMap than to a proprietary feature roadmap?**
-
-Not “please Booking, add better filters.”
-Not “please Amadeus, be the source of truth.”
-Not “please one startup, own the category.”
-Not “please book only on the special accessibility site.”
-
-A **sidecar**.
-
-A system that can ride next to the big platforms, enrich them, contradict them when needed, and remain useful even if the giants ignore it forever.
-
-That idea is the whole project in one metaphor.
-
-WikiTraveler is not trying to replace Booking.com.
-WikiTraveler is not trying to become “yet another accessible-hotels website.”
-WikiTraveler is trying to become the accessibility truth layer that Booking, Hotels.com, agencies, and travelers can *use* — while still booking like everyone else.
+Not another Booking. Not another accessible-hotels site. Not Wheel the World with a different logo. The truth layer beside the booking journey — and neighbourly to the open map it started from.
 
 ---
 
@@ -234,7 +209,8 @@ flowchart LR
     SDK["Agency SDK"]
   end
 
-  OSM --> Data
+  OSM -->|"ingest inventory"| Data
+  Data -.->|"coarse verified tags<br/>(future / careful)"| OSM
   Audit --> Data
   Home <-->|"gossip"| Data
   Access -->|"login"| Home
@@ -346,8 +322,9 @@ OSM didn’t just replace a feed. It pushed the product toward commons thinking:
 - enrich with people who actually visit
 - distribute the result
 - ride beside booking platforms instead of becoming one
+- eventually give **coarse** verified wheelchair signals back to OSM where they belong — and keep stay-depth (photos, measurements, trust tiers) in WikiTraveler
 
-Around the same time I sketched the first **Lens** idea (show facts on top of existing sites) and poked at federation experiments that didn’t all survive. The important leftover: **the data layer should be open and ownable.**
+Around the same time I sketched the first **Lens** idea (show facts on top of existing sites) and poked at federation experiments that didn’t all survive. The important leftover: **the data layer should be open and ownable** — and neighbourly to the commons it already leans on, not a one-way extract.
 
 ### Act II — One node isn’t a world
 
@@ -501,21 +478,13 @@ WikiTraveler only works if several kinds of humans show up:
 People who browse, save, notice gaps, and report when reality disagrees with the map.
 
 ### 2. Auditors
-People who go on-site and create verified evidence: structured facts, photos, notes, judgment.
+People who go on-site and create verified evidence: structured facts, photos, notes, judgment. Without them the mesh is a fancy mirror of OSM tags and AI guesses.
 
-Without auditors, the mesh is a fancy mirror of OSM tags and AI guesses.
+The cold-start risk: **thin verified density doesn’t fail loudly — it just never becomes useful.** Empty tiers → no travelers → no auditors → no coverage. Paid AMS densifies *some* cities; the open bet only works if community (and firms already walking hotels) fill enough places that the sidecar feels real. As the product, not a later metric.
 
-And here’s the worry that won’t polish away: **if verified data never arrives at meaningful density, the whole thing doesn’t fail loudly — it just never becomes useful.** Travelers open the map, see thin baseline tags and empty trust tiers, and correctly conclude the product isn’t ready. Auditors don’t show up because nobody’s using it. Integrators wait for coverage. Coverage waits for auditors. Classic commons cold start — except the cost of being wrong is a bathroom doorway, not a missing restaurant review.
+OSM is inventory, not Maurice’s bathroom. When audits land, coarse tags should be able to flow back to OSM/Wheelmap; stay-depth stays here. Empty regions say they’re empty. Every real audit counts.
 
-Commercial players with paid mappers raise the stakes. They will own denser rooms in the cities they can afford to map. The open bet only works if community — and firms already walking hotels — fill enough places that booking-beside-the-commons feels real. Not later, as a nice adoption metric. As the product.
-
-OSM gets us *inventory and a few signals*. It does not get Maurice a trustworthy stay. AI guesses can help prioritize what to check; they must not fake confidence. The scarce resource was always going to be people on the ground — and registration being off while this stays a controlled test makes the bootstrap even more deliberate (and slower).
-
-So the bet isn’t “build the mesh and data magically appears.” The bet is: make the rails honest enough that when someone *does* audit — traveler, independent auditor, or a firm already walking hotels — the evidence has somewhere trustworthy to live, and Lens/SDK can put it where booking decisions happen. Empty regions should say they’re empty. That’s UX integrity. It doesn’t invent a community. It does make every real audit count twice: once for Maurice, once against the empty-commons failure mode.
-
-If you’re reading this and you already inspect hotels, travel with accessibility needs, or organize local access knowledge: you’re not a nice-to-have. You’re the difference between infrastructure and a demo.
-
-Public signup on Access is off on purpose while this stays a controlled test — but that doesn’t mean the door is closed. If you want to help fill the map, reach out via GitHub: accounts get created, roles get set, and I’ll walk people through Access, audits, and how the trust model works. Full support for the humans who actually bring the data. The mesh without that handoff is just code.
+If you already inspect hotels or travel with access needs: you’re not optional — you’re the difference between infrastructure and a demo. Public signup is off while this is a controlled test; reach out via GitHub and I’ll create accounts, set roles, and walk you through audits.
 
 ### 3. Hotel owners — and firms that already audit hotels
 You’re often already on-site for brand standards, safety, quality, OTA readiness, or mystery shopping. Accessibility facts are usually a thin afterthought — or missing.
@@ -643,6 +612,7 @@ Where help still moves the needle:
 - sharpening the audit flow as more real visits happen
 - growing coverage beyond OSM baseline in real regions
 - hotel owners and professional hotel auditors adding accessibility to visits they already make
+- a careful write-back path for coarse verified wheelchair tags into OpenStreetMap
 - making trust tiers obvious at a glance in Access and Lens
 - getting Lens in front of people who already book on OTAs
 - making the SDK the easy default for agencies that want the commons
@@ -654,7 +624,7 @@ Human test: would this have helped someone like Maurice the last time they tried
 
 Shortest summary:
 
-**The goal was what Maurice described — trustworthy accessibility facts for stays — via open data, a sidecar UX strategy, and AI-accelerated building. What exists now is a monorepo, a federated mesh, a browser extension, an SDK, too many architectural U-turns, and a clearer respect for how hard that information is.**
+**The goal was what Maurice described — trustworthy accessibility facts for stays — via open data (beside OSM, not against it), a sidecar UX strategy instead of a proprietary marketplace, and AI-accelerated building. What exists now is a monorepo, a federated mesh, a browser extension, an SDK, too many architectural U-turns, and a clearer respect for how hard that information is.**
 
 That’s the project.  
 That’s the lesson.  
@@ -687,7 +657,7 @@ The hotel said “accessible.” That wasn’t enough.
 
 I’m a UX engineer. When Maurice — my cousin-in-law, who uses a wheelchair — described how miserable booking a trip with a wheelchair still is, curiosity and a UX brain did the rest. The old blocker was implementation bandwidth and rusty coding fluency. Strong AI models changed that. I got sucked into a side project that began behaving like an accidental product: federated mesh, browser sidecar, agency SDK.
 
-I wrote up what I learned — including how the system grew in messy acts, the Amadeus → OpenStreetMap pivot, and why reliable data matters more than clever code:
+I wrote up what I learned — including how the system grew in messy acts, the Amadeus → OpenStreetMap pivot, why we’re a sidecar commons rather than Wheel the World’s marketplace, and why reliable data matters more than clever code:
 
 [LINK TO ARTICLE]
 
@@ -718,6 +688,8 @@ I’m not a distributed-systems engineer by trade — I do UX and engineering fo
 
 **First comment (recommended for Show HN / discussion):**  
 Family conversation → “accessible hotel info is unreliable” → tried Amadeus → self-service developer portal decommissioned (enterprise-only left) → moved to OpenStreetMap → somehow ended up with a monorepo, gossip mesh, audit PWA, Chrome extension (Lens), and an agency SDK.
+
+Same hunger for verified structure as Wheel the World; different bet: open CC-BY mesh + sidecar beside Booking, not a proprietary AMS marketplace. OSM as baseline (and eventually coarse verified tags back); stay-depth stays in WikiTraveler.
 
 I’m closer to UX/engineering than to “I meant to invent federation.” Happy to talk about trust tiers, sidecar UX, security, or where this is still naive.
 
