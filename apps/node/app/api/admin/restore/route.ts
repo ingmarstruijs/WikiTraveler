@@ -40,6 +40,7 @@ interface BackupFile {
       presetId: string | null; configuredAt: string | null;
       lastIngestAt: string | null;       lastIngestCount: number | null;
       openRegistration?: boolean;
+      publicAccessibilityReads?: boolean;
       auditedReimportPending?: boolean;
       updatedAt: string;
     } | null;
@@ -248,6 +249,7 @@ export async function POST(req: NextRequest) {
           lastIngestAt: nodeSettings.lastIngestAt ? new Date(nodeSettings.lastIngestAt) : null,
           lastIngestCount: nodeSettings.lastIngestCount,
           openRegistration: nodeSettings.openRegistration ?? true,
+          publicAccessibilityReads: nodeSettings.publicAccessibilityReads ?? false,
           auditedReimportPending: nodeSettings.auditedReimportPending ?? false,
           updatedAt: new Date(nodeSettings.updatedAt),
         },
@@ -260,6 +262,7 @@ export async function POST(req: NextRequest) {
           lastIngestAt: nodeSettings.lastIngestAt ? new Date(nodeSettings.lastIngestAt) : null,
           lastIngestCount: nodeSettings.lastIngestCount,
           openRegistration: nodeSettings.openRegistration ?? true,
+          publicAccessibilityReads: nodeSettings.publicAccessibilityReads ?? false,
           auditedReimportPending: nodeSettings.auditedReimportPending ?? false,
           updatedAt: new Date(nodeSettings.updatedAt),
         },

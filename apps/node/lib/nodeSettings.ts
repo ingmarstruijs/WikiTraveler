@@ -15,6 +15,7 @@ export type NodeSettingsDto = {
   lastIngestAt: string | null;
   lastIngestCount: number | null;
   openRegistration: boolean;
+  publicAccessibilityReads: boolean;
   auditedReimportPending: boolean;
   isConfigured: boolean;
 };
@@ -30,6 +31,7 @@ function toDto(row: NodeSettings): NodeSettingsDto {
     lastIngestAt: row.lastIngestAt?.toISOString() ?? null,
     lastIngestCount: row.lastIngestCount,
     openRegistration: row.openRegistration,
+    publicAccessibilityReads: row.publicAccessibilityReads,
     auditedReimportPending: row.auditedReimportPending,
     isConfigured: row.bbox != null && row.configuredAt != null,
   };
@@ -80,6 +82,7 @@ export async function updateNodeSettings(data: {
   lastIngestAt?: Date | null;
   lastIngestCount?: number | null;
   openRegistration?: boolean;
+  publicAccessibilityReads?: boolean;
   auditedReimportPending?: boolean;
 }): Promise<NodeSettingsDto> {
   const row = await prisma.nodeSettings.upsert({
@@ -134,6 +137,11 @@ export async function getLastIngestAt(): Promise<Date | null> {
 export async function getOpenRegistration(): Promise<boolean> {
   const row = await ensureSettings();
   return row.openRegistration;
+}
+
+export async function getPublicAccessibilityReads(): Promise<boolean> {
+  const row = await ensureSettings();
+  return row.publicAccessibilityReads;
 }
 
 export async function setAuditedReimportPending(pending: boolean): Promise<void> {

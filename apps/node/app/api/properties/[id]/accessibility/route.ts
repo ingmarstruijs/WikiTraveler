@@ -58,7 +58,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const authError = await requireReadAccess(req, "read:accessibility");
+  const authError = await requireReadAccess(req, "read:accessibility", { allowPublic: true });
   if (authError) return authError;
 
   const { id } = await params;

@@ -8,6 +8,7 @@ import { discoverRouteCases, routeUrl, type RouteCase } from "@/lib/test/discove
 const { nodeSettingsDefaults, statsDefaults, authMocks } = vi.hoisted(() => ({
   nodeSettingsDefaults: {
     openRegistration: false,
+    publicAccessibilityReads: false,
     bbox: null,
     region: "Test",
     presetId: null,

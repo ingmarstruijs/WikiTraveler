@@ -38,6 +38,7 @@ describe("GET /api/admin/settings", () => {
     adminOk();
     getNodeSettings.mockResolvedValue({
       openRegistration: false,
+      publicAccessibilityReads: false,
       bbox: null,
       region: null,
       presetId: null,
@@ -48,7 +49,10 @@ describe("GET /api/admin/settings", () => {
     });
     const res = await GET(new NextRequest("http://localhost/api/admin/settings"));
     expect(res.status).toBe(200);
-    await expect(res.json()).resolves.toEqual({ openRegistration: false });
+    await expect(res.json()).resolves.toEqual({
+      openRegistration: false,
+      publicAccessibilityReads: false,
+    });
   });
 });
 
@@ -61,6 +65,7 @@ describe("PATCH /api/admin/settings", () => {
   it("updates openRegistration", async () => {
     updateNodeSettings.mockResolvedValue({
       openRegistration: false,
+      publicAccessibilityReads: false,
       bbox: null,
       region: null,
       presetId: null,
@@ -75,8 +80,33 @@ describe("PATCH /api/admin/settings", () => {
     });
     const res = await PATCH(req);
     expect(res.status).toBe(200);
-    await expect(res.json()).resolves.toEqual({ openRegistration: false });
+    await expect(res.json()).resolves.toEqual({
+      openRegistration: false,
+      publicAccessibilityReads: false,
+    });
     expect(updateNodeSettings).toHaveBeenCalledWith({ openRegistration: false });
+  });
+
+  it("updates publicAccessibilityReads", async () => {
+    updateNodeSettings.mockResolvedValue({
+      openRegistration: true,
+      publicAccessibilityReads: true,
+      bbox: null,
+      region: null,
+      presetId: null,
+      configuredAt: null,
+      lastIngestAt: null,
+      lastIngestCount: null,
+      isConfigured: false,
+    });
+    const req = new NextRequest("http://localhost/api/admin/settings", {
+      method: "PATCH",
+      body: JSON.stringify({ publicAccessibilityReads: true }),
+    });
+    const res = await PATCH(req);
+    expect(res.status).toBe(200);
+    await expect(res.json()).resolves.toMatchObject({ publicAccessibilityReads: true });
+    expect(updateNodeSettings).toHaveBeenCalledWith({ publicAccessibilityReads: true });
   });
 
   it("returns 400 when no settings provided", async () => {

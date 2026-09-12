@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
  * (then nearest center). Falls back to this node if nothing matches.
  */
 export async function GET(req: NextRequest) {
-  const authError = await requireReadAccess(req, "read:resolve");
+  const authError = await requireReadAccess(req, "read:resolve", { allowPublic: true });
   if (authError) return authError;
 
   const lat = parseFloat(req.nextUrl.searchParams.get("lat") ?? "");

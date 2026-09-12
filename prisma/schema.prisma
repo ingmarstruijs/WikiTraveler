@@ -225,6 +225,8 @@ model NodeSettings {
   lastIngestAt     DateTime?
   lastIngestCount  Int?
   openRegistration Boolean   @default(true)
+  /// When true, GET accessibility + peers/resolve allow anonymous reads (demo / marketing). Default off.
+  publicAccessibilityReads Boolean @default(false)
   auditedReimportPending Boolean @default(false) // true after region move until audited re-import
   updatedAt        DateTime  @updatedAt
 }

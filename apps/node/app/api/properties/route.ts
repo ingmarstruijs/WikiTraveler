@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAuth, requireRole } from "@/lib/auth";
+import { requireReadAccess, requireRole } from "@/lib/auth";
 import { forwardGeocode } from "@/lib/nominatim";
 import { resolveEffectiveProperties } from "@/lib/propertyMetadata";
 import type { NextRequest } from "next/server";
@@ -10,7 +10,7 @@ import type { Prisma } from "@prisma/client";
 export const dynamic = "force-dynamic";
 // GET /api/properties?q=&feature=&audited=&location=&ids=
 export async function GET(req: NextRequest) {
-  const authError = await requireAuth(req);
+  const authError = await requireReadAccess(req, "read:accessibility");
   if (authError) return authError;
 
   const q = req.nextUrl.searchParams.get("q")?.trim() ?? "";
