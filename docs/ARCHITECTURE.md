@@ -370,13 +370,14 @@ Cron endpoints are protected by `Authorization: Bearer <CRON_SECRET>` (injected 
 | GET | `/.well-known/pubkey` | — | RS256 public key PEM for remote JWT verification |
 | POST | `/api/auth/register` | — | Create user account (role: USER, pending approval) |
 | POST | `/api/auth/login` | — | Login; returns RS256 JWT with `role` claim |
+| POST | `/api/auth/integrator/token` | client credentials | Short-lived `integrator_read` JWT (`aud: sdk`) for agency SDK ([RFC-0003](./rfcs/0003-agency-sdk-service-auth.md)) |
 | GET | `/api/auth/me` | USER | Current user info |
 | GET | `/api/peers` | — | List active peers |
-| GET | `/api/peers/resolve?lat=&lon=` | USER | Best-matching peer for a coordinate (smallest containing bbox) |
+| GET | `/api/peers/resolve?lat=&lon=` | USER or `integrator_read` | Best-matching peer for a coordinate (smallest containing bbox) |
 | GET | `/api/properties?q=` | USER | Search properties |
 | POST | `/api/properties` | AUDITOR | Create property |
 | GET | `/api/properties/map?bbox=` | USER | Viewport pins; requires `bbox=` (or Admin `region=1`); may return `BBOX_TOO_LARGE` |
-| GET | `/api/properties/[id]/accessibility` | USER | Collapsed facts with tier; includes `claimedByUserId` / `isClaimedByMe` |
+| GET | `/api/properties/[id]/accessibility` | USER or `integrator_read` | Collapsed facts with tier; includes `claimedByUserId` / `isClaimedByMe` |
 | POST | `/api/properties/[id]/accessibility` | AUDITOR | Submit audit (saves facts, triggers push + vision) |
 | POST | `/api/properties/[id]/claim` | AUDITOR | Claim property for current auditor (`409` if claimed by another; ADMIN may take over) |
 | DELETE | `/api/properties/[id]/claim` | AUDITOR | Clear claim (claimer or ADMIN) |
@@ -386,6 +387,8 @@ Cron endpoints are protected by `Authorization: Bearer <CRON_SECRET>` (injected 
 | GET | `/api/admin/users` | ADMIN | List all users |
 | PATCH | `/api/admin/users/:username` | ADMIN | Change user role |
 | DELETE | `/api/admin/users/:username` | ADMIN | Delete user |
+| GET/POST | `/api/admin/integrators` | ADMIN | List / create agency integrator clients (secret shown once) |
+| POST | `/api/admin/integrators/:clientId/revoke` | ADMIN | Revoke integrator client |
 | DELETE | `/api/admin/signals/[id]` | ADMIN | Permanently delete a community signal |
 | POST | `/api/admin/signals/cleanup` | ADMIN | Bulk-delete RESOLVED/DISMISSED signals |
 | GET | `/api/admin/backup` | ADMIN | Export full backup JSON |

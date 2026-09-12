@@ -4,7 +4,7 @@ import { NODE_ID, NODE_URL } from "@/lib/nodeInfo";
 import { getNodeBbox, getNodeRegionLabel } from "@/lib/nodeSettings";
 import { containsPoint, parseBbox } from "@/lib/bbox";
 import { pickBestContainingPeer } from "@/lib/peerResolve";
-import { requireAuth } from "@/lib/auth";
+import { requireReadAccess } from "@/lib/auth";
 import type { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
  * (then nearest center). Falls back to this node if nothing matches.
  */
 export async function GET(req: NextRequest) {
-  const authError = await requireAuth(req);
+  const authError = await requireReadAccess(req, "read:resolve");
   if (authError) return authError;
 
   const lat = parseFloat(req.nextUrl.searchParams.get("lat") ?? "");

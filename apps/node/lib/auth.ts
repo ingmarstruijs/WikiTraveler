@@ -101,6 +101,8 @@ export async function verifyToken(token: string): Promise<jwt.JwtPayload> {
  * Extract and verify Bearer token from a Next.js request.
  * Returns null (authorised) or a 401/403 NextResponse.
  * minRole defaults to USER — pass "AUDITOR" or "ADMIN" to enforce higher access.
+ * Integrator (`integrator_read`) tokens are never enough for requireRole — use
+ * {@link requireReadAccess} for agency/SDK read paths (RFC-0003).
  */
 export async function requireRole(req: NextRequest, minRole: Role = "USER"): Promise<NextResponse | null> {
   try {
@@ -110,6 +112,9 @@ export async function requireRole(req: NextRequest, minRole: Role = "USER"): Pro
     }
     const payload = await verifyToken(auth.slice(7));
     const role = (payload.role as string | undefined)?.toUpperCase() ?? "USER";
+    if (role === "INTEGRATOR_READ") {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
     if ((ROLE_RANK[role] ?? 0) < (ROLE_RANK[minRole] ?? 0)) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
@@ -119,9 +124,50 @@ export async function requireRole(req: NextRequest, minRole: Role = "USER"): Pro
   }
 }
 
-/** Convenience alias — any authenticated user */
+/** Convenience alias — any authenticated human user (not integrator_read) */
 export async function requireAuth(req: NextRequest): Promise<NextResponse | null> {
   return requireRole(req, "USER");
+}
+
+/**
+ * Authenticated read for travelers **or** agency `integrator_read` JWTs (RFC-0003).
+ * Optional `requiredScope` checks JWT `scopes` for integrator tokens only.
+ */
+export async function requireReadAccess(
+  req: NextRequest,
+  requiredScope?: string
+): Promise<NextResponse | null> {
+  try {
+    const auth = req.headers.get("authorization") ?? "";
+    if (!auth.startsWith("Bearer ")) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    const payload = await verifyToken(auth.slice(7));
+    const role = (payload.role as string | undefined)?.toUpperCase() ?? "USER";
+
+    if (role === "INTEGRATOR_READ") {
+      const aud = payload.aud;
+      if (aud != null && aud !== "sdk" && !(Array.isArray(aud) && aud.includes("sdk"))) {
+        return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+      }
+      if (requiredScope) {
+        const scopes = Array.isArray(payload.scopes)
+          ? (payload.scopes as string[])
+          : [];
+        if (!scopes.includes(requiredScope)) {
+          return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+        }
+      }
+      return null;
+    }
+
+    if ((ROLE_RANK[role] ?? 0) < ROLE_RANK.USER) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+    return null;
+  } catch {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
 }
 
 export interface AuthUser {

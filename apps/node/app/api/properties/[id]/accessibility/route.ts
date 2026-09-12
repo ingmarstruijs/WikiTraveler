@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { requireAuth, requireRole, getAuthUser, auditorId } from "@/lib/auth";
+import { requireReadAccess, requireRole, getAuthUser, auditorId } from "@/lib/auth";
 import { evaluateMeshTruth, factKey } from "@wikitraveler/core";
 import { NODE_ID, NODE_URL } from "@/lib/nodeInfo";
 import { runAiAnalysis } from "@/lib/aiAnalyze";
@@ -58,7 +58,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const authError = await requireAuth(req);
+  const authError = await requireReadAccess(req, "read:accessibility");
   if (authError) return authError;
 
   const { id } = await params;

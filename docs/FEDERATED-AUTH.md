@@ -1,5 +1,18 @@
 # Federated authentication (cross-node)
 
+## Agency / SDK integrator tokens (RFC-0003)
+
+Agencies must **not** use traveler username/password for reads.
+
+1. On the **issuer** (hub/home node): create an `IntegratorClient` via Admin `POST /api/admin/integrators` or `pnpm node:integrator create --name "…"`.
+2. Partner BFF exchanges `clientId` + `clientSecret` at `POST /api/auth/integrator/token` → short-lived RS256 JWT (`role: integrator_read`, `aud: sdk`, ~15m).
+3. Call data-node `GET /api/properties/:id/accessibility` and `GET /api/peers/resolve` with `Authorization: Bearer <token>`. Foreign nodes verify via `/.well-known/pubkey` like traveler JWTs.
+4. Revoke: `POST /api/admin/integrators/:clientId/revoke` or `pnpm node:integrator revoke --client-id …`.
+
+Writes (audits, favorites, admin) still require a human user JWT.
+
+---
+
 ## Short answer
 
 **Yes — with RS256 node keys.** A traveler or auditor registers / logs in on **hub Access → home node A**, receives a JWT that embeds `homeNodeUrl`, and can browse (and auditors can audit) **properties on peer node B** without re-registering on B. B verifies the token by fetching `A/.well-known/pubkey`.

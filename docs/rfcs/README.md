@@ -31,6 +31,6 @@ As of the Phase 6 cut there are **no known public production nodes**. Protocol b
 |-----|-------|--------|
 | [0001](./0001-gossip-protocol-2.md) | Gossip protocol version 2 | Accepted |
 | [0002](./0002-global-hub-access.md) | Global hub Access & Lens (federation invisible) | Accepted — M0–M5 done ([#51](https://github.com/ingmarstruijs/WikiTraveler/issues/51), PRs [#50](https://github.com/ingmarstruijs/WikiTraveler/pull/50)–[#55](https://github.com/ingmarstruijs/WikiTraveler/pull/55)) |
-| [0003](./0003-agency-sdk-service-auth.md) | Agency SDK — service auth, public reads, hub resolve | Proposed |
+| [0003](./0003-agency-sdk-service-auth.md) | Agency SDK — service auth, public reads, hub resolve | Accepted — M0 done ([#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89)); M1–M2 in progress |
 
 Accepted RFCs live as `docs/rfcs/NNNN-slug.md` after acceptance.

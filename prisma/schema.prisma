@@ -358,6 +358,28 @@ model User {
   favorites              Favorite[]
 }
 
+// ---------------------------------------------------------------------------
+// Agency / SDK integrator clients (RFC-0003) — issuer-node credentials
+// ---------------------------------------------------------------------------
+/// Application credentials for agencies. Secrets are hashed at rest; plaintext
+/// is shown once at create. Exchange via POST /api/auth/integrator/token for a
+/// short-lived `integrator_read` JWT (aud=sdk) that data nodes verify like
+/// foreign traveler JWTs.
+model IntegratorClient {
+  id         String    @id @default(cuid())
+  clientId   String    @unique
+  name       String
+  secretHash String
+  /// e.g. read:accessibility, read:resolve
+  scopes     String[]  @default(["read:accessibility", "read:resolve"])
+  revokedAt  DateTime?
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([revokedAt])
+}
+
 /// Traveler favorites (Access Saved) — stored on the home node; localStorage is cache only.
 model Favorite {
   id         String   @id @default(cuid())
