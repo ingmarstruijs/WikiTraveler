@@ -39,6 +39,7 @@ const { nodeSettingsDefaults, statsDefaults, authMocks } = vi.hoisted(() => ({
     requireRole: vi.fn().mockResolvedValue(null),
     requireNodeAuth: vi.fn().mockResolvedValue(null),
     requireAuth: vi.fn().mockResolvedValue(null),
+    requireReadAccess: vi.fn().mockResolvedValue(null),
     getAuthUser: vi.fn().mockResolvedValue({
       username: "testuser",
       role: "ADMIN",
@@ -169,6 +170,7 @@ function resetAuthMocks() {
   authMocks.requireRole.mockResolvedValue(null);
   authMocks.requireNodeAuth.mockResolvedValue(null);
   authMocks.requireAuth.mockResolvedValue(null);
+  authMocks.requireReadAccess.mockResolvedValue(null);
   authMocks.getAuthUser.mockResolvedValue({
     username: "testuser",
     role: "ADMIN",

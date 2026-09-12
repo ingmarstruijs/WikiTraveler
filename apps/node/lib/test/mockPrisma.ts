@@ -16,6 +16,7 @@ const MODELS = [
   "communitySignal",
   "user",
   "favorite",
+  "integratorClient",
   "nodePeer",
   "gossipSnapshot",
 ] as const;
