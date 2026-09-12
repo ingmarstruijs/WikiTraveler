@@ -12,6 +12,7 @@ Open an RFC issue (template: **RFC**) if your change:
 - Raises `GOSSIP_PROTOCOL_VERSION` or `MIN_SUPPORTED_GOSSIP_PROTOCOL`
 - Changes how Access/Lens resolve peers or verify cross-node tokens
 - Changes production CORS / trusted client-origin policy for hub Access or Lens
+- Changes how agencies / the SDK authenticate to nodes (API keys, public reads, integrator tokens)
 
 ## Process
 
@@ -30,5 +31,6 @@ As of the Phase 6 cut there are **no known public production nodes**. Protocol b
 |-----|-------|--------|
 | [0001](./0001-gossip-protocol-2.md) | Gossip protocol version 2 | Accepted |
 | [0002](./0002-global-hub-access.md) | Global hub Access & Lens (federation invisible) | Accepted — M0–M5 done ([#51](https://github.com/ingmarstruijs/WikiTraveler/issues/51), PRs [#50](https://github.com/ingmarstruijs/WikiTraveler/pull/50)–[#55](https://github.com/ingmarstruijs/WikiTraveler/pull/55)) |
+| [0003](./0003-agency-sdk-service-auth.md) | Agency SDK — service auth, public reads, hub resolve | Proposed |
 
 Accepted RFCs live as `docs/rfcs/NNNN-slug.md` after acceptance.

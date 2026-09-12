@@ -91,9 +91,9 @@ Promotion needs ≥3 distinct auditors (`evaluateConfirmed` in `@wikitraveler/co
 
 ### SDK for agencies
 
-UMD/ESM builds and `apps/agency-demo` exist; partners still need a published package and copy-paste integration docs.
+UMD/ESM builds and `apps/agency-demo` exist; partners still need a published package and copy-paste integration docs. Today the SDK still assumes a **user JWT** for node reads — the wrong shape for agencies ([RFC-0003](./rfcs/0003-agency-sdk-service-auth.md), Proposed).
 
-**Direction:** Versioned npm package + CDN examples pinned to tags; locale/tier display consistent with Access; accessibility embedding checklist stays next to the widget docs ([ACCESSIBILITY.md](./ACCESSIBILITY.md)).
+**Direction:** Land RFC-0003 milestones (service API keys, short-lived browser read tokens, public/service GETs, hub resolve, widget trust/coverage UX); versioned npm + CDN examples pinned to tags; locale/tier display consistent with Access; accessibility embedding checklist next to the widget docs ([ACCESSIBILITY.md](./ACCESSIBILITY.md)).
 
 ---
 
@@ -145,6 +145,18 @@ Operators should pull GHCR tags and Release assets, not clone `main` ([OPERATORS
 
 **Direction:** Tag issues `good first issue` / `help wanted` in practice; translator checklist for new locales (beyond en/nl/de/fr); operator help remains the path for non-code participation ([COMMUNITY.md](./COMMUNITY.md)).
 
+### Verified coverage (existential, not optional)
+
+Commercial accessible-travel products (e.g. paid AMS-style mapping + marketplace) will densify *some* cities with proprietary measurements. An open sidecar that stays empty loses by comparison — not on ideology, on usefulness.
+
+**Direction:** Stay community/open (no clone of paid mapper payroll as the core model). Treat **real audits in real regions** as the primary success metric: progressive triage→deep field packs, onboarding auditors/firms already on-site ([AUDITOR-ONBOARDING.md](./AUDITOR-ONBOARDING.md)), independent confirmation (`VERIFIED`/`CONFIRMED`), honest empty coverage. Measure success by corroborated facts and regional coverage, not pageviews alone.
+
+### Auditor onboarding pipeline
+
+**Status:** Manual while hub Access registration is off — create user → promote `AUDITOR` → walkthrough → first triage audit. Runbook: [AUDITOR-ONBOARDING.md](./AUDITOR-ONBOARDING.md).
+
+**Direction:** Issue template for intake; invite links; in-app first-run; explicit triage vs deep audit mode; tighter signals→assign-auditor loop.
+
 ### Lightweight community space
 
 Docs mention Matrix/Discord “when established.”
@@ -171,7 +183,7 @@ OSM ingest is powerful but CLI-first and Vercel-hostile.
 
 WikiTraveler is a federated **truth layer**, not a booking engine.
 
-**Direction:** Keep SDK/Lens read-first for travelers; deepen auditor tools without turning Access into an ops console; measure success by corroborated facts and regional coverage, not pageviews alone.
+**Direction:** Keep SDK/Lens read-first for travelers; deepen auditor tools without turning Access into an ops console; prioritize filling the commons (see Community → Verified coverage) over marketplace feature parity with commercial AMS players.
 
 ### Documentation accuracy after major stack bumps
 

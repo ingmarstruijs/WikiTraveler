@@ -13,7 +13,7 @@ Single entry point for the project. Pick the path that matches your role — eac
 | **Upgrade an existing deployment** | [Upgrade runbook](./UPGRADE.md) |
 | **Release archive** | [Release phases](./RELEASE-PHASES.md) · [Roadmap](./ROADMAP.md) · [Compatibility](./COMPATIBILITY.md) |
 | **Develop features locally** | [Development guide](./DEVELOPMENT.md) → [Local setup](./LOCAL.md) |
-| **Join as a contributor** | [Community](./COMMUNITY.md) → [Contributing](../CONTRIBUTING.md) |
+| **Join as a contributor** | [Community](./COMMUNITY.md) → [Contributing](../CONTRIBUTING.md) · [Auditor onboarding](./AUDITOR-ONBOARDING.md) |
 | **Ship or consume a release** | [Releases](./RELEASES.md) → [Changelog](../CHANGELOG.md) |
 | **Test federation / gossip** | [Gossip dev lab](./GOSSIP-DEV.md) · [Federation E2E plan](./FEDERATION-E2E.md) |
 | **Meet accessibility requirements** | [Accessibility checklist](./ACCESSIBILITY.md) · [Conformance report](./CONFORMANCE.md) |
@@ -36,7 +36,7 @@ Single entry point for the project. Pick the path that matches your role — eac
 | [RELEASE-PHASES.md](./RELEASE-PHASES.md) | Archived phase 0–6 ledger + remaining maintainer publish todos |
 | [ROADMAP.md](./ROADMAP.md) | Public priorities (maintainer publish todos, features, quality, community, strategy, performance) |
 | [COMPATIBILITY.md](./COMPATIBILITY.md) | N/N-1 mesh and protocol compatibility matrix |
-| [rfcs/](./rfcs/README.md) | RFC process; [RFC-0002](./rfcs/0002-global-hub-access.md) global hub Access (Accepted — M0–M5) |
+| [rfcs/](./rfcs/README.md) | RFC process; [RFC-0002](./rfcs/0002-global-hub-access.md) hub Access (Accepted); [RFC-0003](./rfcs/0003-agency-sdk-service-auth.md) agency SDK (Proposed) |
 
 ### For developers (build & test)
 
@@ -48,6 +48,7 @@ Single entry point for the project. Pick the path that matches your role — eac
 | [FEDERATION-E2E.md](./FEDERATION-E2E.md) | Gossip/federation E2E tiers A–D (kernel, topology, hub Access, photos) |
 | [FEDERATED-AUTH.md](./FEDERATED-AUTH.md) | Register on one node; browse/audit peers with RS256 JWT |
 | [RFC-0002](./rfcs/0002-global-hub-access.md) | Global hub Access/Lens, mesh CORS trust, viewport map (M0–M5 shipped; M6 follow-ons) |
+| [RFC-0003](./rfcs/0003-agency-sdk-service-auth.md) | Agency SDK: service auth, read/write split, hub resolve, widget bar (Proposed) |
 | [PUBLIC-PEERS.md](./PUBLIC-PEERS.md) | Voluntary bootstrap peer directory |
 | [LENS.md](./LENS.md) | Chrome extension distribution (Release zip / Store) |
 | [apps/README.md](../apps/README.md) | End-to-end flow walkthroughs (SDK, Access, Lens) |
@@ -60,6 +61,7 @@ Single entry point for the project. Pick the path that matches your role — eac
 | Doc | Purpose |
 |-----|---------|
 | [COMMUNITY.md](./COMMUNITY.md) | Roles, mesh growth, communication norms |
+| [AUDITOR-ONBOARDING.md](./AUDITOR-ONBOARDING.md) | Maintainer + auditor pipeline while Access signup is controlled |
 | [PUBLIC-PEERS.md](./PUBLIC-PEERS.md) | Opt-in public bootstrap peers |
 | [../CONTRIBUTING.md](../CONTRIBUTING.md) | How to open issues and PRs |
 | [../CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) | Expected behaviour |
