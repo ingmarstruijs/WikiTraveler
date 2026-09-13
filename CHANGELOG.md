@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Lens node status renders connection text with DOM text nodes instead of `innerHTML`, so a typed node URL or node-info fields cannot be interpreted as HTML ([LENS.md](docs/LENS.md))
 - Bump `next` to `16.3.3` in Node and Access for critical Dependabot RCE advisories (Windows-hosted servers / Image Optimization AVIF)
 - Skip `output: "standalone"` on Vercel (Next 16.3 adapter ENOENT on `next-server.js.nft.json`; Docker still uses standalone) and opt out of immutable static assets so Preview Comments can deploy
 - Access profile sync no longer resurrects cleared accessibility preferences from an older server snapshot ([ACCESS-UX.md](docs/ACCESS-UX.md))

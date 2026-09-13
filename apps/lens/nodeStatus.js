@@ -71,15 +71,32 @@ async function checkNodeHealth(nodeUrl, locale = "en") {
 function applyNodeStatusEl(el, result) {
   if (!el) return;
   el.className = `node-status node-status--${result.state}`;
-  let body = `<span class="node-status-line">${result.message}</span>`;
+
+  const dot = document.createElement("span");
+  dot.className = "node-status-dot";
+  dot.setAttribute("aria-hidden", "true");
+
+  const body = document.createElement("span");
+  body.className = "node-status-body";
+
+  const line = document.createElement("span");
+  line.className = "node-status-line";
+  line.textContent = result.message ?? "";
+  body.append(line);
+
   if (result.regionsLine) {
-    body += `<span class="node-status-regions">${result.regionsLine}</span>`;
+    const regions = document.createElement("span");
+    regions.className = "node-status-regions";
+    regions.textContent = result.regionsLine;
+    body.append(regions);
   }
-  el.innerHTML =
-    `<span class="node-status-dot" aria-hidden="true"></span><span class="node-status-body">${body}</span>`;
+
+  el.replaceChildren(dot, body);
+
   const titleParts = [result.nodeUrl ?? result.url, result.regionsLine].filter(Boolean);
   if (titleParts.length > 0) el.title = titleParts.join(" · ");
   else if (result.nodeId) el.title = result.nodeId;
+  else el.removeAttribute("title");
 }
 
 function setNodeStatusChecking(el, locale = "en") {
