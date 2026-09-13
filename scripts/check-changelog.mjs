@@ -45,6 +45,7 @@ if (changed.length === 0) {
 
 const TRIGGER_PREFIXES = [
   "apps/access/",
+  "apps/www/",
   "apps/lens/",
   "apps/node/app/",
   "packages/i18n/",

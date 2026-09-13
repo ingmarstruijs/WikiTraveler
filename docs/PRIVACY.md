@@ -2,18 +2,21 @@
 
 WikiTraveler is open-source. **The operator of the node you connect to is the data controller** for that node.
 
-The live policy (Chrome Web Store URL) is:
+Canonical policy (Chrome Web Store URL):
 
-**https://node-eu.wikitraveler.org/privacy**
+**https://www.wikitraveler.org/privacy**
 
-The same article is served at `/privacy` on every Node and on Access (`https://access.wikitraveler.org/privacy`), without login.
+The same article is also served (no login) at:
 
-Source in the repo: [`packages/ui/src/PrivacyPolicyArticle.tsx`](../packages/ui/src/PrivacyPolicyArticle.tsx).
+- `https://node-eu.wikitraveler.org/privacy`
+- `https://access.wikitraveler.org/privacy`
+
+Source: [`packages/ui/src/PrivacyPolicyArticle.tsx`](../packages/ui/src/PrivacyPolicyArticle.tsx). Site: [WWW.md](./WWW.md).
 
 ## Operator notes
 
 - You are responsible for how you host photos, AI providers, and peer federation.
-- Point Lens / Store listings at your node’s `/privacy` if you are not the project hub.
+- Third-party node operators may keep a local `/privacy` copy or link to the canonical URL.
 - Security reports: [SECURITY.md](../SECURITY.md) — not a public GitHub issue.
 
-Related: [LENS.md](./LENS.md) · [OPERATORS.md](./OPERATORS.md)
+Related: [LENS.md](./LENS.md) · [OPERATORS.md](./OPERATORS.md) · [WWW.md](./WWW.md)

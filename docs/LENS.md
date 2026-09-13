@@ -29,7 +29,7 @@ Do **not** rely on Booking.com’s origin being allowlisted — it never should 
 
 1. Build/tag a release so the Lens zip is attached to the GitHub Release.
 2. Create/update the Web Store listing:
-   - Privacy policy URL: **https://node-eu.wikitraveler.org/privacy** (public Node `/privacy`; also on Access).
+   - Privacy policy URL: **https://www.wikitraveler.org/privacy** (canonical; Node and Access serve copies at `/privacy`).
    - Screenshots and promo tiles in [`docs/assets/chrome-web-store/`](./assets/chrome-web-store/) (1280×800 screenshots, 440×280 small promo, 1400×560 marquee). Regenerate with `python scripts/compose-cws-assets.py`.
    - Single purpose: community-verified accessibility facts on booking sites (popup + listing tooltips).
    - Justify optional HTTPS host access: reach the user-configured WikiTraveler node and mesh peers only via the service worker.

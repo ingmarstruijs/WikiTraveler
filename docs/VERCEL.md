@@ -2,11 +2,12 @@
 
 **Docs:** [Hub](./README.md) · [Operators](./OPERATORS.md) · [Upgrade](./UPGRADE.md) · [Docker](./DOCKER.md)
 
-Deploy the **node** (API + dashboard) and optionally **WikiTraveler Access** as separate Vercel projects. The node needs hosted PostgreSQL. Access is a frontend client — the **canonical hub** is `https://access.wikitraveler.org`; regional/branded Access is optional ([RFC-0002](./rfcs/0002-global-hub-access.md)).
+Deploy the **node** (API + dashboard) and optionally **WikiTraveler Access** as separate Vercel projects. The node needs hosted PostgreSQL. Access is a frontend client — the **canonical hub** is `https://access.wikitraveler.org`; regional/branded Access is optional ([RFC-0002](./rfcs/0002-global-hub-access.md)). The public project site is a third project: [WWW.md](./WWW.md).
 
 ```
-https://node.example.com              → Node (API + dashboard) — regional truth
+https://www.wikitraveler.org          → Public site (pitch, story, canonical privacy)
 https://access.wikitraveler.org       → Canonical hub Access (project / hub operators)
+https://node.example.com              → Node (API + dashboard) — regional truth
 https://audit.example.com             → Optional branded Access (same app, different origin)
 ```
 

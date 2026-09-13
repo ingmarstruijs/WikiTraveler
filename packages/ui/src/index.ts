@@ -29,4 +29,4 @@ export { LocalePicker } from "./LocalePicker";
 export { ProseFactValue } from "./ProseFactValue";
 export type { ProseFactValueProps } from "./ProseFactValue";
 export type { SearchFeature, SearchSuggestion } from "./PropertySearchBar";
-export { PrivacyPolicyArticle, PRIVACY_POLICY_UPDATED } from "./PrivacyPolicyArticle";
+export { PrivacyPolicyArticle, PRIVACY_POLICY_UPDATED, CANONICAL_PRIVACY_URL } from "./PrivacyPolicyArticle";

@@ -16,11 +16,11 @@ const link: CSSProperties = { color: "var(--wt-primary)" };
 
 const ISSUES_URL = "https://github.com/ingmarstruijs/WikiTraveler/issues";
 const SECURITY_URL = "https://github.com/ingmarstruijs/WikiTraveler/blob/main/SECURITY.md";
-const HUB_PRIVACY = "https://node-eu.wikitraveler.org/privacy";
+export const CANONICAL_PRIVACY_URL = "https://www.wikitraveler.org/privacy";
 
 export const PRIVACY_POLICY_UPDATED = "13 September 2026";
 
-/** Public privacy policy (English). Served at `/privacy` on Node and Access. */
+/** Public privacy policy (English). Canonical URL is www; Node and Access serve copies. */
 export function PrivacyPolicyArticle() {
   return (
     <article>
@@ -28,11 +28,19 @@ export function PrivacyPolicyArticle() {
       <p style={lead}>
         WikiTraveler is open-source software for community-verified stay accessibility facts.
         The <strong>operator of the WikiTraveler node you connect to</strong> is the data controller
-        for that node. The project hub used in this listing is{" "}
-        <a href={HUB_PRIVACY} style={link}>
+        for that node. The project hub is{" "}
+        <a href="https://node-eu.wikitraveler.org" style={link}>
           node-eu.wikitraveler.org
         </a>{" "}
-        (Access: access.wikitraveler.org).
+        (Access:{" "}
+        <a href="https://access.wikitraveler.org" style={link}>
+          access.wikitraveler.org
+        </a>
+        ). The canonical policy URL is{" "}
+        <a href={CANONICAL_PRIVACY_URL} style={link}>
+          {CANONICAL_PRIVACY_URL}
+        </a>
+        ; Node and Access serve the same article at <code>/privacy</code>.
       </p>
 
       <section style={section}>
@@ -150,8 +158,8 @@ export function PrivacyPolicyArticle() {
         <p style={p}>
           Material changes will be published on this page with an updated date. Chrome Web Store
           listings point at{" "}
-          <a href={HUB_PRIVACY} style={link}>
-            {HUB_PRIVACY}
+          <a href={CANONICAL_PRIVACY_URL} style={link}>
+            {CANONICAL_PRIVACY_URL}
           </a>
           .
         </p>

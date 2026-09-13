@@ -12,7 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Public privacy policy at `/privacy` on Node and Access (no login); Lens options link to the connected node’s policy ([PRIVACY.md](docs/PRIVACY.md), [LENS.md](docs/LENS.md))
+- Public site at [www.wikitraveler.org](https://www.wikitraveler.org): pitch, origin story, and canonical privacy policy (`apps/www`, [WWW.md](docs/WWW.md))
+- Public privacy policy at `/privacy` on Node and Access (copies); Lens options and the Chrome Web Store use `https://www.wikitraveler.org/privacy` ([PRIVACY.md](docs/PRIVACY.md), [LENS.md](docs/LENS.md))
 - Chrome Web Store listing assets (1280×800 screenshots, small promo, marquee) in `docs/assets/chrome-web-store/` ([LENS.md](docs/LENS.md))
 - RFC-0003 M3–M5: SDK `mintIntegratorReadToken` / `resolveDataNode` / typed errors, agency-demo BFF (no traveler login), widget coverage/trust/Access deep-link UX, optional `publicAccessibilityReads`, operator issuer/CORS/revoke docs ([RFC-0003](docs/rfcs/0003-agency-sdk-service-auth.md), [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89))
 - RFC-0003 M1–M2: issuer `IntegratorClient` credentials (Admin API + `pnpm node:integrator`), `POST /api/auth/integrator/token` → short-lived `integrator_read` JWT, and read access on accessibility GET + peers resolve ([RFC-0003](docs/rfcs/0003-agency-sdk-service-auth.md), [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89))

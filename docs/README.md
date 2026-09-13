@@ -17,7 +17,8 @@ Single entry point for the project. Pick the path that matches your role — eac
 | **Ship or consume a release** | [Releases](./RELEASES.md) → [Changelog](../CHANGELOG.md) |
 | **Test federation / gossip** | [Gossip dev lab](./GOSSIP-DEV.md) · [Federation E2E plan](./FEDERATION-E2E.md) |
 | **Meet accessibility requirements** | [Accessibility checklist](./ACCESSIBILITY.md) · [Conformance report](./CONFORMANCE.md) |
-| **Read the origin story** | [Story](./story/README.md) · [The hotel said “accessible.” That wasn’t enough.](./story/the-hotel-said-accessible-that-wasnt-enough.md) |
+| **Read the origin story** | [Story](./story/README.md) · live: [www.wikitraveler.org/story](https://www.wikitraveler.org/story) |
+| **Deploy the public website** | [WWW.md](./WWW.md) |
 
 ---
 
@@ -74,7 +75,8 @@ Single entry point for the project. Pick the path that matches your role — eac
 | Doc | Purpose |
 |-----|---------|
 | [ACCESSIBILITY.md](./ACCESSIBILITY.md) | WCAG developer checklist |
-| [PRIVACY.md](./PRIVACY.md) | Public privacy policy (`/privacy`, Chrome Web Store URL) |
+| [PRIVACY.md](./PRIVACY.md) | Public privacy policy (`www` canonical; Node/Access copies) |
+| [WWW.md](./WWW.md) | Public site `www.wikitraveler.org` (Vercel + Cloudflare DNS) |
 | [CONFORMANCE.md](./CONFORMANCE.md) | Formal accessibility conformance statement |
 
 ---
@@ -86,6 +88,7 @@ wikitraveler/
 ├── apps/
 │   ├── node/            # API + dashboard (deployment unit)
 │   ├── access/          # Mobile PWA client
+│   ├── www/             # Public site (www.wikitraveler.org)
 │   ├── lens/            # Chrome extension
 │   └── agency-demo/     # SDK integration demo
 ├── packages/
@@ -109,6 +112,7 @@ wikitraveler/
 |------|---------|
 | Local node | `pnpm dev` → http://localhost:3000 |
 | WikiTraveler Access | `pnpm dev:access` → http://localhost:3001 |
+| Public site | `pnpm dev:www` → http://localhost:3002 |
 | Fresh local DB | `pnpm db:setup` |
 | Apply migrations | `pnpm db:migrate` / `pnpm db:deploy` (production) |
 | Build everything | `pnpm build` |
