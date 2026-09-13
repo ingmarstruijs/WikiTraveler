@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Origin story Mermaid architecture diagram renders on `/story` instead of a raw code fence ([WWW.md](docs/WWW.md))
 - Lens node status renders connection text with DOM text nodes instead of `innerHTML`, so a typed node URL or node-info fields cannot be interpreted as HTML ([LENS.md](docs/LENS.md))
 - Bump `next` to `16.3.3` in Node and Access for critical Dependabot RCE advisories (Windows-hosted servers / Image Optimization AVIF)
 - Skip `output: "standalone"` on Vercel (Next 16.3 adapter ENOENT on `next-server.js.nft.json`; Docker still uses standalone) and opt out of immutable static assets so Preview Comments can deploy
@@ -29,6 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Public www homepage uses the marketing layout: hero with Access screenshot, trust-tier cards, how-it-works, ecosystem, and contribution CTA; type matches Access (`--wt-font`); header GitHub/Access links open in a new tab with an external-link icon ([WWW.md](docs/WWW.md))
 - Access property detail accessibility icons sit closer together on mobile and desktop ([ACCESS-UX.md](docs/ACCESS-UX.md))
 - Dev dependency: Vitest `3.2.x` → `4.1.11` (with Upstash mock constructor fixes for Vitest 4)
 

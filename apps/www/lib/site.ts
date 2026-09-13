@@ -13,4 +13,6 @@ export const LINKS = {
   contributing: "https://github.com/ingmarstruijs/WikiTraveler/blob/main/CONTRIBUTING.md",
   lensRelease: "https://github.com/ingmarstruijs/WikiTraveler/releases/latest",
   changelog: "https://github.com/ingmarstruijs/WikiTraveler/blob/main/CHANGELOG.md",
+  sdk: "https://www.npmjs.com/package/@wikitraveler/sdk",
+  issues: "https://github.com/ingmarstruijs/WikiTraveler/issues",
 } as const;

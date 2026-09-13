@@ -13,8 +13,8 @@ App: [`apps/www`](../apps/www). Local: `pnpm dev:www` → http://localhost:3002
 
 | Path | Content |
 |------|---------|
-| `/` | Pitch + links |
-| `/story` | Renders [`docs/story/the-hotel-said-accessible-that-wasnt-enough.md`](./story/the-hotel-said-accessible-that-wasnt-enough.md) |
+| `/` | Marketing homepage (hero, trust tiers, how it works, ecosystem) |
+| `/story` | Renders [`docs/story/the-hotel-said-accessible-that-wasnt-enough.md`](./story/the-hotel-said-accessible-that-wasnt-enough.md), including the Mermaid architecture diagram |
 | `/privacy` | Canonical privacy policy (Node and Access keep copies at `/privacy`) |
 
 ## Vercel project
