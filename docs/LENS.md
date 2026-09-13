@@ -28,8 +28,12 @@ Do **not** rely on Booking.com’s origin being allowlisted — it never should 
 ## Chrome Web Store checklist (maintainers)
 
 1. Build/tag a release so the Lens zip is attached to the GitHub Release.
-2. Create/update the Web Store listing (privacy policy, screenshots, single purpose). Justify optional HTTPS host access: reach user-configured WikiTraveler nodes and mesh peers only via the service worker.
-3. Upload the zip; set visibility (unlisted → public when ready).
+2. Create/update the Web Store listing:
+   - Privacy policy URL: **https://node-eu.wikitraveler.org/privacy** (public Node `/privacy`; also on Access).
+   - Screenshots and promo tiles in [`docs/assets/chrome-web-store/`](./assets/chrome-web-store/) (1280×800 screenshots, 440×280 small promo, 1400×560 marquee). Regenerate with `python scripts/compose-cws-assets.py`.
+   - Single purpose: community-verified accessibility facts on booking sites (popup + listing tooltips).
+   - Justify optional HTTPS host access: reach the user-configured WikiTraveler node and mesh peers only via the service worker.
+3. Upload the Release zip; set visibility (unlisted → public when ready).
 4. Link the store URL from [README](../README.md) and this page when live; publish the extension ID so node operators can add `chrome-extension://…` to `CLIENT_ORIGINS`.
 5. Host permissions must match production OTAs + any first-party `wt-property-id` sites you support.
 

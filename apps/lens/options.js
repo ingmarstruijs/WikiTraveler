@@ -115,6 +115,8 @@ function applyOptionsStaticLabels(locale) {
   loginBtn.textContent = wtT("ui.signIn", locale);
   registerBtn.textContent = wtT("ui.authCreateAccount", locale);
   logoutBtn.textContent = wtT("ui.signOut", locale);
+  const privacyLink = document.getElementById("privacy-link");
+  if (privacyLink) privacyLink.textContent = wtT("ui.lensPrivacyLink", locale);
 }
 
 async function bootstrap() {
@@ -130,6 +132,10 @@ async function bootstrap() {
       renderAuthState(items.wtUsername);
       refreshNodeStatus(items.nodeUrl);
       refreshRegistrationAvailability(items.nodeUrl);
+      const privacyLink = document.getElementById("privacy-link");
+      if (privacyLink && items.nodeUrl) {
+        privacyLink.href = `${String(items.nodeUrl).replace(/\/$/, "")}/privacy`;
+      }
     }
   );
 }
@@ -157,6 +163,8 @@ saveBtn.addEventListener("click", async () => {
 
   chrome.storage.sync.set({ nodeUrl: url }, async () => {
     invalidateCache();
+    const privacyLink = document.getElementById("privacy-link");
+    if (privacyLink) privacyLink.href = `${url}/privacy`;
     const result = await refreshNodeStatus(url);
     await refreshRegistrationAvailability(url);
     if (result.state === "online") {

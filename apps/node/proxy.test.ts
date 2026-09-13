@@ -105,6 +105,13 @@ describe("proxy dashboard role gate", () => {
     const res = await proxy(dashboardRequest("/properties/p1", token));
     expect(res?.status).toBe(200);
   });
+
+  it("allows the public privacy policy without a token", async () => {
+    const { proxy } = await import("./proxy");
+    const res = await proxy(dashboardRequest("/privacy"));
+    expect(res?.status).toBe(200);
+    expect(res?.headers.get("location")).toBeNull();
+  });
 });
 
 describe("proxy API CORS", () => {

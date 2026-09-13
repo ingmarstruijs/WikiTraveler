@@ -52,7 +52,7 @@ This report documents conformance against **WCAG 2.1 Level AA**, the web baselin
 | --- | --- |
 | Static code review | All in-scope surfaces |
 | axe-core automated tests | Representative HTML patterns (`pnpm test:a11y`) |
-| Lighthouse accessibility (≥ 90) | Node `/accessibility`, `/login`, `/`; WikiTraveler Access `/login`, `/audit/[id]` (CI) |
+| Lighthouse accessibility (≥ 90) | Node `/accessibility`, `/privacy`, `/login`, `/`; WikiTraveler Access `/login`, `/privacy`, `/audit/[id]` (CI) |
 | Manual checklist | Keyboard, screen reader, 200% zoom (per release — see [ACCESSIBILITY.md](./ACCESSIBILITY.md)) |
 
 ---
@@ -160,6 +160,7 @@ EN 301 549 Clause 9 adopts WCAG 2.1 Level AA for web content. WikiTraveler web s
 | 12.1–12.2 | WCAG 2.1 robust | See §4.4 |
 | 12.1.2 (docs) | Product documentation accessibility | [ACCESSIBILITY.md](./ACCESSIBILITY.md), this report |
 | 12.2.4 (public statement) | Accessibility statement published | Node `/accessibility` (public, no login) |
+| — | Privacy policy published | Node and Access `/privacy` (public, no login); hub URL in [PRIVACY.md](./PRIVACY.md) |
 
 Non-web clauses (hardware, closed products) are **Not Applicable**.
 

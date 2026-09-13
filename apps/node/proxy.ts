@@ -9,7 +9,7 @@ import { createUpstashRedis } from "@/lib/upstashRedis";
 
 // Paths that don't require a login cookie
 const SKIP_PREFIXES = ["/_next/", "/api/", "/.well-known/"];
-const SKIP_EXACT = new Set(["/login", "/register", "/setup", "/accessibility", "/favicon.ico"]);
+const SKIP_EXACT = new Set(["/login", "/register", "/setup", "/accessibility", "/privacy", "/favicon.ico"]);
 
 // Rate limiters — created once per cold start; null when Upstash is not configured.
 // Graceful degradation: if env vars are absent, rate limiting is simply skipped.

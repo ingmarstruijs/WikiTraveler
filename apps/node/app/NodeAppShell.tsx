@@ -112,6 +112,10 @@ export function NodeAppShell({
           color: "var(--wt-text-muted)",
         }}
       >
+        <Link href="/privacy" style={{ color: "var(--wt-primary)", textDecoration: "none" }}>
+          {t("ui.navPrivacyPolicy")}
+        </Link>
+        {" · "}
         <Link href="/accessibility" style={{ color: "var(--wt-primary)", textDecoration: "none" }}>
           {t("ui.navAccessibilityStatement")}
         </Link>

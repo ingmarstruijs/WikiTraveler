@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { ThemeToggle, LocalePicker, useLocale } from "@wikitraveler/ui";
 import { DISPLAY_ENV_NODE_URL, toDisplayNodeUrl } from "../lib/accessApi";
 import { clearAuth } from "../lib/authStorage";
@@ -196,6 +197,10 @@ export function ProfileTab({
             <LocalePicker compact />
           </div>
         </section>
+
+        <p className="fk-settings-theme-hint" style={{ textAlign: "center", marginTop: 8, marginBottom: 24 }}>
+          <Link href="/privacy" style={{ color: "var(--wt-primary)" }}>{t("ui.navPrivacyPolicy")}</Link>
+        </p>
       </div>
     </div>
   );

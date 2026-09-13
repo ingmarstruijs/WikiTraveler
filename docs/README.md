@@ -74,6 +74,7 @@ Single entry point for the project. Pick the path that matches your role — eac
 | Doc | Purpose |
 |-----|---------|
 | [ACCESSIBILITY.md](./ACCESSIBILITY.md) | WCAG developer checklist |
+| [PRIVACY.md](./PRIVACY.md) | Public privacy policy (`/privacy`, Chrome Web Store URL) |
 | [CONFORMANCE.md](./CONFORMANCE.md) | Formal accessibility conformance statement |
 
 ---
