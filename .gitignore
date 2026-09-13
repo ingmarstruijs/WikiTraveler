@@ -9,6 +9,12 @@ dist
 .lighthouseci
 lighthouse-ci-artifacts
 
+# Generated marketing-site assets (copied from docs at build)
+apps/www/public/screenshots/
+apps/www/content/story.md
+
+
+
 # OSM / Geofabrik runtime caches (Overpass tiles, PBF downloads, geojson uploads)
 .cache/
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Suspense } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@wikitraveler/ui";
 import { AuthCard, AuthCardLayout } from "../AuthCardLayout";
@@ -178,6 +179,11 @@ function LoginForm() {
           </button>
         </form>
       </AuthCard>
+      <p style={{ textAlign: "center", marginTop: 16, fontSize: 13 }}>
+        <Link href="/privacy" style={{ color: "var(--wt-primary)" }}>{t("ui.navPrivacyPolicy")}</Link>
+        {" · "}
+        <Link href="/accessibility" style={{ color: "var(--wt-primary)" }}>{t("ui.navAccessibilityStatement")}</Link>
+      </p>
     </AuthCardLayout>
   );
 }

@@ -21,6 +21,10 @@ describe("access proxy", () => {
     expect(proxy(request("/icons/icon-192.png"))?.status).toBe(200);
   });
 
+  it("allows the public privacy policy without a token", () => {
+    expect(proxy(request("/privacy"))?.status).toBe(200);
+  });
+
   it("redirects USER from audit routes to property detail", () => {
     const token = fakeJwt({ sub: "traveler", role: "USER" });
     const res = proxy(request("/audit/prop-123", token));

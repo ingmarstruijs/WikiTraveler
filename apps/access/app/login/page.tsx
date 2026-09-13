@@ -176,6 +176,9 @@ function LoginForm() {
             </p>
           )}
         </div>
+        <p style={{ textAlign: "center", fontSize: 13, marginTop: 16 }}>
+          <Link href="/privacy" style={{ color: "var(--wt-primary)" }}>{t("ui.navPrivacyPolicy")}</Link>
+        </p>
       </div>
     </div>
   );

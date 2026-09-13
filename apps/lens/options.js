@@ -115,6 +115,8 @@ function applyOptionsStaticLabels(locale) {
   loginBtn.textContent = wtT("ui.signIn", locale);
   registerBtn.textContent = wtT("ui.authCreateAccount", locale);
   logoutBtn.textContent = wtT("ui.signOut", locale);
+  const privacyLink = document.getElementById("privacy-link");
+  if (privacyLink) privacyLink.textContent = wtT("ui.lensPrivacyLink", locale);
 }
 
 async function bootstrap() {

@@ -8,6 +8,7 @@ const WORKSPACE_PACKAGES = [
   "package.json",
   "apps/node/package.json",
   "apps/access/package.json",
+  "apps/www/package.json",
   "apps/lens/package.json",
   "packages/core/package.json",
   "packages/ui/package.json",

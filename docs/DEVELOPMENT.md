@@ -63,7 +63,8 @@ pnpm --filter @wikitraveler/access test
 |----------|---------|-----|
 | 1 | `pnpm dev` | http://localhost:3000 — node |
 | 2 | `pnpm dev:access` | http://localhost:3001 — Access |
-| 3 | `pnpm dev:agency-demo` | http://localhost:4000/apps/agency-demo/ |
+| 3 | `pnpm dev:www` | http://localhost:3002 — public site |
+| 4 | `pnpm dev:agency-demo` | http://localhost:4000/apps/agency-demo/ |
 
 After pulling schema changes on an existing DB: `pnpm db:migrate` (not `db:setup`).
 
@@ -77,6 +78,7 @@ After pulling schema changes on an existing DB: `pnpm db:migrate` (not `db:setup
 |--------|-------------|
 | `pnpm dev` | Node dev server |
 | `pnpm dev:access` | Access dev server |
+| `pnpm dev:www` | Public site (`www`) |
 | `pnpm dev:agency-demo` | SDK build + static demo |
 | `pnpm build` | Production build all packages |
 | `pnpm lint` | Lint all workspaces |

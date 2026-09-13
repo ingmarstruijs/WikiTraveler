@@ -18,9 +18,11 @@ module.exports = {
       numberOfRuns: 1,
       url: [
         "http://localhost:3000/accessibility",
+        "http://localhost:3000/privacy",
         "http://localhost:3000/login",
         "http://localhost:3000/",
         "http://localhost:3001/login",
+        "http://localhost:3001/privacy",
         `http://localhost:3001/audit/${propertyId}`,
       ],
       puppeteerScript: "./scripts/lhci-auth.cjs",

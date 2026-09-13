@@ -12,11 +12,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Public site at [www.wikitraveler.org](https://www.wikitraveler.org): pitch, origin story, and canonical privacy policy (`apps/www`, [WWW.md](docs/WWW.md))
+- Public privacy policy at `/privacy` on Node and Access (copies); Lens options and the Chrome Web Store use `https://www.wikitraveler.org/privacy` ([PRIVACY.md](docs/PRIVACY.md), [LENS.md](docs/LENS.md))
+- Chrome Web Store listing assets (1280×800 screenshots, small promo, marquee) in `docs/assets/chrome-web-store/` ([LENS.md](docs/LENS.md))
 - RFC-0003 M3–M5: SDK `mintIntegratorReadToken` / `resolveDataNode` / typed errors, agency-demo BFF (no traveler login), widget coverage/trust/Access deep-link UX, optional `publicAccessibilityReads`, operator issuer/CORS/revoke docs ([RFC-0003](docs/rfcs/0003-agency-sdk-service-auth.md), [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89))
 - RFC-0003 M1–M2: issuer `IntegratorClient` credentials (Admin API + `pnpm node:integrator`), `POST /api/auth/integrator/token` → short-lived `integrator_read` JWT, and read access on accessibility GET + peers resolve ([RFC-0003](docs/rfcs/0003-agency-sdk-service-auth.md), [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89))
 
 ### Fixed
 
+- Origin story Mermaid architecture diagram renders on `/story` instead of a raw code fence ([WWW.md](docs/WWW.md))
+- Lens node status renders connection text with DOM text nodes instead of `innerHTML`, so a typed node URL or node-info fields cannot be interpreted as HTML ([LENS.md](docs/LENS.md))
 - Bump `next` to `16.3.3` in Node and Access for critical Dependabot RCE advisories (Windows-hosted servers / Image Optimization AVIF)
 - Skip `output: "standalone"` on Vercel (Next 16.3 adapter ENOENT on `next-server.js.nft.json`; Docker still uses standalone) and opt out of immutable static assets so Preview Comments can deploy
 - Access profile sync no longer resurrects cleared accessibility preferences from an older server snapshot ([ACCESS-UX.md](docs/ACCESS-UX.md))
@@ -25,6 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Public www homepage uses the marketing layout: hero with Access screenshot, trust-tier cards, how-it-works, ecosystem, and contribution CTA; type matches Access (`--wt-font`); header GitHub/Access links open in a new tab with an external-link icon ([WWW.md](docs/WWW.md))
 - Access property detail accessibility icons sit closer together on mobile and desktop ([ACCESS-UX.md](docs/ACCESS-UX.md))
 - Dev dependency: Vitest `3.2.x` → `4.1.11` (with Upstash mock constructor fixes for Vitest 4)
 

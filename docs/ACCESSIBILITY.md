@@ -29,6 +29,7 @@ WikiTraveler targets **WCAG 2.1 Level AA** via EN 301 549 for all user-facing su
 - Tier badges: text labels + improved contrast (Official tier)
 - Dynamic page titles on node property pages and WikiTraveler Access audit routes
 - Public accessibility statement at `/accessibility`
+- Public privacy policy at `/privacy` (Node and Access; Chrome Web Store URL)
 
 ## Automated tests
 
@@ -38,7 +39,7 @@ pnpm lighthouse:ci      # Lighthouse accessibility ≥ 90 (requires running node
 ```
 
 - **axe-core** — login forms, map list, SDK table, agency tabs, Lens table (`apps/node/lib/a11yStatic.test.ts`)
-- **Lighthouse** — `/accessibility`, `/login`, node home, WikiTraveler Access login + property detail (`.github/workflows/a11y.yml`)
+- **Lighthouse** — `/accessibility`, `/privacy`, `/login`, node home, WikiTraveler Access login + privacy + property detail (`.github/workflows/a11y.yml`)
 - Run `pnpm lighthouse:prepare` then `pnpm lighthouse:ci` to provision CI auth cookies (see `scripts/prepare-lighthouse.ts`)
 
 Formal conformance report: [docs/CONFORMANCE.md](./CONFORMANCE.md) (EN 301 549 / WCAG 2.1 AA).
