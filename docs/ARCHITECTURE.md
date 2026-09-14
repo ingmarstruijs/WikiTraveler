@@ -377,7 +377,8 @@ Cron endpoints are protected by `Authorization: Bearer <CRON_SECRET>` (injected 
 | GET | `/api/properties?q=` | USER or `integrator_read` | Search properties |
 | POST | `/api/properties` | AUDITOR | Create property |
 | GET | `/api/properties/map?bbox=` | USER | Viewport pins; requires `bbox=` (or Admin `region=1`); may return `BBOX_TOO_LARGE` |
-| GET | `/api/properties/[id]/accessibility` | USER, `integrator_read`, or optional public GET | Collapsed facts with tier; includes `claimedByUserId` / `isClaimedByMe` |
+| GET | `/api/properties/[id]/accessibility` | USER, `integrator_read`, or optional public GET | Collapsed facts with tier; photo `url`s are signed `/api/photos/:id` links |
+| GET | `/api/photos/[id]` | Signed query or USER / `integrator_read` | Audit photo bytes — [FEDERATED-AUTH.md](./FEDERATED-AUTH.md#audit-photo-urls) |
 | POST | `/api/properties/[id]/accessibility` | AUDITOR | Submit audit (saves facts, triggers push + vision) |
 | POST | `/api/properties/[id]/claim` | AUDITOR | Claim property for current auditor (`409` if claimed by another; ADMIN may take over) |
 | DELETE | `/api/properties/[id]/claim` | AUDITOR | Clear claim (claimer or ADMIN) |
@@ -413,7 +414,7 @@ Cron endpoints are protected by `Authorization: Bearer <CRON_SECRET>` (injected 
 | Gossip | HTTP pull + signed push | Cron safety net + real-time push after each audit |
 | Push signing | RSA-SHA256 (HTTP Signatures) | Stateless, no PKI authority; keys via `/.well-known/pubkey` |
 | AI provider | OpenAI GPT-4o | Best-in-class vision + JSON mode; swappable via ai-agent |
-| Photo storage | base64 in DB (demo) / R2 or Supabase (prod) | Object storage recommended for production — [LOCAL.md](./LOCAL.md) · [DOCKER.md](./DOCKER.md) |
+| Photo storage | base64 in DB (demo) / R2 or Supabase (prod) | Object storage for production; client URLs are signed node links — [FEDERATED-AUTH.md](./FEDERATED-AUTH.md#audit-photo-urls) |
 | Extension | Chrome MV3 vanilla JS | Background `NODE_FETCH`; load unpacked or Release zip — [LENS.md](./LENS.md) |
 | SDK bundling | tsup (esbuild) | Fast, dual CJS+ESM+UMD from one config; npm on tag when enabled |
 | Monorepo | pnpm workspaces | Fast installs, strict isolation |

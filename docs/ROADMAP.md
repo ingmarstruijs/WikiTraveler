@@ -91,7 +91,7 @@ Promotion needs ≥3 distinct auditors (`evaluateConfirmed` in `@wikitraveler/co
 
 ### SDK for agencies
 
-UMD/ESM builds and `apps/agency-demo` (BFF mint) exist. Agency reads use **issuer credentials → `integrator_read` JWT** ([RFC-0003](./rfcs/0003-agency-sdk-service-auth.md), Accepted — [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89)); M0–M5 land credentials, mint/verify, SDK resolve, widget coverage UX, and operator docs. Remaining: npm publish polish and M6 follow-ons.
+UMD/ESM builds and `apps/agency-demo` (BFF mint) exist. Agency reads use **issuer credentials → `integrator_read` JWT** ([RFC-0003](./rfcs/0003-agency-sdk-service-auth.md), Accepted — [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89)); M0–M5 plus photo URL auth (M6) are on `main`. Remaining: npm publish polish, external-id batch lookup, multi-issuer hubs ([#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92)).
 
 **Direction:** Versioned npm + CDN examples pinned to tags; locale/tier display consistent with Access; keep embedding checklist next to the widget docs ([ACCESSIBILITY.md](./ACCESSIBILITY.md)).
 

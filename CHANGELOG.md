@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- RFC-0003 M6 photo URL auth: accessibility JSON returns short-lived signed `GET /api/photos/:id` links instead of public storage URLs or data-URIs ([RFC-0003](docs/rfcs/0003-agency-sdk-service-auth.md), [#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92))
 - Public site at [www.wikitraveler.org](https://www.wikitraveler.org): pitch, origin story, and canonical privacy policy (`apps/www`, [WWW.md](docs/WWW.md))
 - Public privacy policy at `/privacy` on Node and Access (copies); Lens options and the Chrome Web Store use `https://www.wikitraveler.org/privacy` ([PRIVACY.md](docs/PRIVACY.md), [LENS.md](docs/LENS.md))
 - Chrome Web Store listing assets (1280×800 screenshots, small promo, marquee) in `docs/assets/chrome-web-store/` ([LENS.md](docs/LENS.md))

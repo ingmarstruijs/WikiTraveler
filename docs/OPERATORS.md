@@ -57,7 +57,7 @@ Agencies authenticate as **applications**, not people.
 1. On the **issuer**: `pnpm node:integrator create --name "Acme Travel"` (or Admin `POST /api/admin/integrators`). Store the plaintext secret once.
 2. Give the partner `clientId` + secret + issuer URL — never put the secret in frontend JS.
 3. On every **data node** that should accept agency reads: allow partner **browser** origins in `CLIENT_ORIGINS` / `CORS_ORIGINS` (same allowlist model as Access/Lens — never `*`).
-4. Partner flow: mint → `resolveDataNode` → `getAccessibility` with the same JWT ([SDK README](../packages/sdk/README.md)).
+4. Partner flow: mint → `resolveDataNode` → `getAccessibility` with the same JWT ([SDK README](../packages/sdk/README.md)). Photo `url`s are signed node links — [FEDERATED-AUTH.md](./FEDERATED-AUTH.md#audit-photo-urls).
 
 ### Revoke
 
@@ -65,9 +65,9 @@ Agencies authenticate as **applications**, not people.
 
 ### Optional public GET (demos only)
 
-Admin setting `publicAccessibilityReads` (`PATCH /api/admin/settings`) allows anonymous GET on accessibility + peers resolve. **Default off.** Use for marketing demos with rate limits / WAF — not production agency traffic.
+Admin setting `publicAccessibilityReads` (`PATCH /api/admin/settings`) allows anonymous GET on accessibility + peers resolve. **Default off.** Use for marketing demos with rate limits / WAF — not production agency traffic. Photo fetch still needs a signed URL (or a read JWT) — [FEDERATED-AUTH.md](./FEDERATED-AUTH.md#audit-photo-urls).
 
-Tracking: [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89) · [RFC-0003](./rfcs/0003-agency-sdk-service-auth.md) · [FEDERATED-AUTH.md](./FEDERATED-AUTH.md).
+Tracking: [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89) · [#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92) · [RFC-0003](./rfcs/0003-agency-sdk-service-auth.md) · [FEDERATED-AUTH.md](./FEDERATED-AUTH.md).
 
 ---
 

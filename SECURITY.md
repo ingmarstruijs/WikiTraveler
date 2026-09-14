@@ -34,6 +34,7 @@ Pay extra attention when reviewing changes touching:
 | `POST /api/auth/*` | Account takeover, brute force |
 | Admin backup/restore | Data exfiltration or destructive restore |
 | CORS / client origins (`CORS_ORIGINS`, `CLIENT_ORIGINS`, `ACCESS_PUBLIC_URL`) | Browser clients (Access, Lens, SDK) calling `/api/*`; `proxy.ts` reflects trusted `Origin` only — over-broad allowlists or `*` in production expand blast radius of stolen JWTs — see [RFC-0002](docs/rfcs/0002-global-hub-access.md) |
+| Photo URLs (`/api/photos`) | Client JSON must not leak storage URLs or data-URIs — [FEDERATED-AUTH.md](docs/FEDERATED-AUTH.md#audit-photo-urls) |
 
 ## Operator responsibilities
 

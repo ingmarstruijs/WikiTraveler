@@ -11,6 +11,18 @@ Agencies must **not** use traveler username/password for reads.
 
 Writes (audits, favorites, admin) still require a human user JWT.
 
+### Audit photo URLs
+
+Accessibility JSON does **not** include object-storage URLs or data-URIs. Each photo `url` is a short-lived node link:
+
+`GET /api/photos/:id?exp=&sig=` (HMAC, 1h TTL)
+
+- Use as `<img src>` — no `Authorization` header (the query is the capability).
+- A valid user or `integrator_read` JWT also authorizes `GET /api/photos/:id` without the query.
+- Refetch accessibility JSON if a photo 403s after expiry.
+- `publicAccessibilityReads` still mints signed URLs; unauthenticated `/api/photos/:id` without `exp`/`sig` is 401.
+- Gossip `photoRefs` still carry stored refs (node-to-node). Object buckets that remain world-readable can still be fetched if the object key is known — prefer private buckets.
+
 ---
 
 ## Short answer

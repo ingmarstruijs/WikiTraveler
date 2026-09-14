@@ -5,7 +5,8 @@ import { evaluateMeshTruth, factKey } from "@wikitraveler/core";
 import { NODE_ID, NODE_URL } from "@/lib/nodeInfo";
 import { runAiAnalysis } from "@/lib/aiAnalyze";
 import { pushFactsToPeers } from "@/lib/push";
-import { getPhotoStorage, photoToDisplayUrl } from "@/lib/photoStorage";
+import { getPhotoStorage } from "@/lib/photoStorage";
+import { authenticatedPhotoUrl, legacyPhotoId } from "@/lib/photoUrlAuth";
 import {
   extractAuditNotes,
   mergeAuditPhotosBySlot,
@@ -40,14 +41,12 @@ function normalizeLegacyPhotos(photoUrls: unknown): string[] {
   if (!Array.isArray(photoUrls)) return [];
   return photoUrls
     .filter((p): p is string => typeof p === "string" && p.length > 0)
-    .slice(0, MAX_AUDIT_PHOTOS)
-    .map(photoToDisplayUrl);
+    .slice(0, MAX_AUDIT_PHOTOS);
 }
 
-function photoOriginNode(url: string): string | null {
-  if (url.startsWith("data:")) return null;
+function photoOriginHost(): string | null {
   try {
-    return new URL(url).hostname;
+    return new URL(NODE_URL).hostname;
   } catch {
     return null;
   }
@@ -128,7 +127,7 @@ export async function GET(
   const evidenceSubs: EvidenceSubmission[] = submissionsRaw.map((sub) => {
     const structured: EvidencePhoto[] = sub.photos.map((p) => ({
       id: p.id,
-      url: photoToDisplayUrl(p.url),
+      url: authenticatedPhotoUrl(p.id),
       caption: p.caption,
       fieldName: p.fieldName,
       scopeKey: p.scopeKey,
@@ -137,15 +136,18 @@ export async function GET(
     }));
     const legacy: EvidencePhoto[] = structured.length
       ? []
-      : normalizeLegacyPhotos(sub.photoUrls).map((url, i) => ({
-          id: `legacy-${sub.id}-${i}`,
-          url,
-          caption: null,
-          fieldName: null,
-          scopeKey: null,
-          width: null,
-          height: null,
-        }));
+      : normalizeLegacyPhotos(sub.photoUrls).map((_url, i) => {
+          const photoId = legacyPhotoId(sub.id, i);
+          return {
+            id: photoId,
+            url: authenticatedPhotoUrl(photoId),
+            caption: null,
+            fieldName: null,
+            scopeKey: null,
+            width: null,
+            height: null,
+          };
+        });
     return {
       id: sub.id,
       createdAt: sub.createdAt,
@@ -181,12 +183,11 @@ export async function GET(
   } | null = null;
 
   if (mergedPhotos.live.length > 0 && mergedPhotos.newestSubmissionId && mergedPhotos.newestCapturedAt) {
-    const firstUrl = mergedPhotos.live[0]?.url ?? null;
     auditPhotos = {
       submissionId: mergedPhotos.newestSubmissionId,
       capturedAt: mergedPhotos.newestCapturedAt,
       photos: mergedPhotos.live,
-      photoOriginNode: firstUrl ? photoOriginNode(firstUrl) : null,
+      photoOriginNode: photoOriginHost(),
     };
   }
 

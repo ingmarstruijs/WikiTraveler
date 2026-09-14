@@ -156,7 +156,7 @@ Minimum before calling the widget “agency-ready”:
 | **M3** | SDK resolve + read with one token; README + agency-demo BFF happy path; drop “login as user” — **shipping** |
 | **M4** | Widget coverage/trust UX + a11y checklist; optional public GET flag for demo nodes — **shipping** |
 | **M5** | Operator docs: which node is issuer, CORS for partner origins, revoke story — **shipping** |
-| **M6** | Follow-ons: external-id batch lookup, photo URL auth hardening, multi-issuer / branded hubs — **separate issue** ([#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92)) |
+| **M6** | Follow-ons: external-id batch lookup, **photo URL auth hardening (done)**, multi-issuer / branded hubs — [#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92) |
 
 ## Highest-impact risks
 
@@ -184,7 +184,7 @@ Minimum before calling the widget “agency-ready”:
 ## Open questions
 
 1. Credential minting UX on issuer: Node Admin only, CLI, or both?
-2. Should photo URLs on accessibility payloads require the same auth as JSON (hotlink risk)?
+2. Photo URLs: **yes** — signed `GET /api/photos/:id` (HMAC, 1h) instead of storage URLs or data-URIs. Details: [FEDERATED-AUTH.md](../FEDERATED-AUTH.md#audit-photo-urls).
 3. External-id lookup (`booking:…`) as first-class resolve input for OTAs — ship with M3/M4 or later?
 4. Must every public data node accept the canonical issuer, or can operators disable foreign `integrator_read`?
 5. One canonical issuer for v1 (`node-eu` / project hub) vs multiple branded issuers from day one?

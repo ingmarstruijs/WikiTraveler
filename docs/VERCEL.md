@@ -144,7 +144,7 @@ Default (unset): base64 in Postgres. Set `PHOTO_STORAGE_PROVIDER` for object sto
 
 Cloudflare R2 free tier: 10 GB / 1 M writes per month. Supabase Storage free tier: 1 GB.
 
-Set these on the **node** Vercel project (Access only displays public photo URLs; it does not need R2 keys). EU-jurisdiction buckets also need `R2_JURISDICTION=eu`.
+Set these on the **node** Vercel project (Access loads photos via signed node URLs; it does not need R2 keys — [FEDERATED-AUTH.md](./FEDERATED-AUTH.md#audit-photo-urls)). EU-jurisdiction buckets also need `R2_JURISDICTION=eu`.
 
 After switching from base64, migrate existing photos once from your machine (rewrites `AuditPhoto.url` and legacy `photoUrls`):
 

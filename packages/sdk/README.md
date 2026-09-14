@@ -59,6 +59,7 @@ const wt = new WikiTraveler({
 const node = await wt.resolveDataNode({ lat: 51.44, lon: 5.47 });
 const data = await wt.getAccessibility("osm:123", { nodeUrl: node.url });
 // data.facts include trust tiers (OFFICIAL → CONFIRMED)
+// data.auditPhotos.photos[].url are short-lived signed node URLs — use as <img src>
 ```
 
 ## Pattern C — ESM / bundlers (token already minted)

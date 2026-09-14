@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getPhotoStorage,
+  inspectStoredPhoto,
+  isSafeUpstreamPhotoUrl,
   photoToVisionInput,
   resetPhotoStorageCache,
   r2S3Endpoint,
@@ -53,6 +55,41 @@ describe("getPhotoStorage", () => {
   it("throws when supabase provider is set without credentials", async () => {
     process.env.PHOTO_STORAGE_PROVIDER = "supabase";
     await expect(getPhotoStorage()).rejects.toThrow(/Supabase storage requires/);
+  });
+});
+
+describe("isSafeUpstreamPhotoUrl", () => {
+  it("allows public https hosts", () => {
+    expect(isSafeUpstreamPhotoUrl("https://cdn.example.com/photos/a.jpg")).toBe(true);
+  });
+
+  it("blocks localhost and RFC1918", () => {
+    expect(isSafeUpstreamPhotoUrl("http://127.0.0.1/secret")).toBe(false);
+    expect(isSafeUpstreamPhotoUrl("https://10.0.0.5/x")).toBe(false);
+    expect(isSafeUpstreamPhotoUrl("https://192.168.1.1/x")).toBe(false);
+    expect(isSafeUpstreamPhotoUrl("https://localhost/x")).toBe(false);
+  });
+});
+
+describe("inspectStoredPhoto", () => {
+  it("decodes a jpeg data URI", () => {
+    const jpeg = Buffer.from("jpeg-bytes").toString("base64");
+    const parsed = inspectStoredPhoto(`data:image/jpeg;base64,${jpeg}`);
+    expect(parsed).toMatchObject({ kind: "inline", contentType: "image/jpeg" });
+    if (parsed?.kind === "inline") {
+      expect(parsed.body.toString()).toBe("jpeg-bytes");
+    }
+  });
+
+  it("returns a remote URL for public https refs", () => {
+    expect(inspectStoredPhoto("https://cdn.example.com/a.jpg")).toEqual({
+      kind: "remote",
+      url: "https://cdn.example.com/a.jpg",
+    });
+  });
+
+  it("rejects private remote hosts", () => {
+    expect(inspectStoredPhoto("http://127.0.0.1/x")).toBeNull();
   });
 });
 

@@ -199,5 +199,71 @@ export function photoToVisionInput(ref: string): string {
   return `data:image/jpeg;base64,${ref}`;
 }
 
-/** Same normalisation as vision input — suitable for <img src> in clients. */
+/** Same normalisation as vision input — internal only; client JSON uses signed `/api/photos` URLs. */
 export const photoToDisplayUrl = photoToVisionInput;
+
+export const MAX_PROXIED_PHOTO_BYTES = 8 * 1024 * 1024;
+
+export type StoredPhotoBytes =
+  | { kind: "inline"; contentType: string; body: Buffer }
+  | { kind: "remote"; url: string };
+
+function isPrivateIpv4(host: string): boolean {
+  const parts = host.split(".").map((p) => Number(p));
+  if (parts.length !== 4 || parts.some((n) => !Number.isInteger(n) || n < 0 || n > 255)) {
+    return false;
+  }
+  const [a, b] = parts;
+  if (a === 10 || a === 127 || a === 0) return true;
+  if (a === 169 && b === 254) return true;
+  if (a === 192 && b === 168) return true;
+  if (a === 172 && b >= 16 && b <= 31) return true;
+  return false;
+}
+
+/** Block localhost / link-local / RFC1918 hosts when proxying stored HTTPS photos. */
+export function isSafeUpstreamPhotoUrl(url: string): boolean {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return false;
+  }
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return false;
+  if (parsed.protocol === "http:" && process.env.NODE_ENV === "production") return false;
+
+  const host = parsed.hostname.toLowerCase().replace(/^\[|\]$/g, "");
+  if (
+    host === "localhost" ||
+    host.endsWith(".localhost") ||
+    host === "0.0.0.0" ||
+    host === "::1" ||
+    host === "metadata.google.internal" ||
+    host.endsWith(".internal")
+  ) {
+    return false;
+  }
+  if (isPrivateIpv4(host)) return false;
+  if (host.includes(":") && (host.startsWith("fc") || host.startsWith("fd") || host.startsWith("fe80"))) {
+    return false;
+  }
+  return true;
+}
+
+/** Inspect a DB-stored photo ref for authenticated serving (never return this ref to clients). */
+export function inspectStoredPhoto(ref: string): StoredPhotoBytes | null {
+  if (!ref) return null;
+  const normalized = photoToVisionInput(ref);
+  if (normalized.startsWith("data:")) {
+    const match = /^data:([^;,]+);base64,(.+)$/i.exec(normalized);
+    if (!match) return null;
+    const body = Buffer.from(match[2], "base64");
+    if (body.length === 0 || body.length > MAX_PROXIED_PHOTO_BYTES) return null;
+    return { kind: "inline", contentType: match[1], body };
+  }
+  if (/^https?:\/\//i.test(normalized)) {
+    if (!isSafeUpstreamPhotoUrl(normalized)) return null;
+    return { kind: "remote", url: normalized };
+  }
+  return null;
+}
