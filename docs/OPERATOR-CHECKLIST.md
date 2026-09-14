@@ -55,7 +55,7 @@ curl -s "$NODE_URL/api/nodeinfo" | jq .
 3. Deploy new image/tag — see [UPGRADE.md](./UPGRADE.md).
 4. Run `pnpm db:deploy` if the release includes Prisma migrations.
 5. Re-run `pnpm doctor` against production `NODE_URL`.
-6. Confirm Admin **Peers** show expected versions (Phase 4 skew warnings should be green for N ↔ N-1 mesh).
+6. Confirm Admin **Peers** show expected versions (skew warnings should be green for N ↔ N-1 mesh).
 7. If you run **hub or branded Access**: rebuild with matching tag; redeploy **Node + Access** together when map/API contracts change (**H5**); check **Settings** — node and client versions should align.
 8. Confirm backup Access origin (if any) remains on the node allowlist (**H4**).
 

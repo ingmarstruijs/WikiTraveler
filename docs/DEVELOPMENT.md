@@ -111,7 +111,7 @@ After pulling schema changes on an existing DB: `pnpm db:migrate` (not `db:setup
 | `pnpm lighthouse:ci` | Lighthouse gate (apps must be running) |
 | `pnpm dev:gossip-lab` | Two-node Docker gossip lab |
 | `pnpm gossip:discovery` | Bootstrap discovery + sync E2E (no forced link-peers) |
-| `pnpm gossip:hardening` | Tier A mesh kernel E2E (push/pull, auth, bbox, crud, reingest) — [FEDERATION-E2E.md](./FEDERATION-E2E.md) |
+| `pnpm gossip:hardening` | Mesh kernel E2E (push/pull, auth, bbox, crud, reingest) — [GOSSIP-DEV.md](./GOSSIP-DEV.md) |
 | `pnpm gossip:tier-b` | Tier B topology E2E (mesh-3, CONFIRMED, resolve) — needs `dev:gossip-lab-mesh3` |
 | `pnpm gossip:compat` | N↔N-1 mixed-version federation check |
 | `pnpm gossip:check` | Peer smoke test |

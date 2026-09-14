@@ -57,7 +57,7 @@ Each `v*` tag should produce:
 | **SDK bundles** | Agencies | `packages/sdk/dist` on Release + **npm** `@wikitraveler/sdk` when `NPM_PUBLISH=true` and [Trusted Publishing](https://docs.npmjs.com/trusted-publishers/) is configured for `release.yml` (`npm stage publish` → maintainer 2FA approve) |
 | **Release manifest** | Operators | `manifest.json` on GitHub Release + [releases/manifest.json](../releases/manifest.json) on `main` |
 
-Tags and changelog are prepared with `scripts/release.mjs`. Docker GHCR images and GitHub Release assets publish automatically on tag push — see [Release automation](#release-automation-roadmap).
+Tags and changelog are prepared with `scripts/release.mjs`. Docker GHCR images and GitHub Release assets publish automatically on tag push — see [Release automation](#release-automation).
 
 ---
 
@@ -205,7 +205,7 @@ Maintainers announce the intended minor window in the changelog or an issue when
 | Dependabot security updates | Same | **Enabled** — CVE PRs only |
 | Dependabot version updates | `.github/dependabot.yml` | **Off** — no scheduled bump PRs |
 
-See [RELEASE-PHASES.md](./RELEASE-PHASES.md) for the archived phase 0–6 ledger and remaining publish todos.
+See [LENS.md](./LENS.md) for Chrome Web Store upload after a tag. Keep GHCR packages public for new operators. Grow [public-peers.json](./public-peers.json) as operators opt in.
 
 Contributors implementing automation should follow this doc and update the table when workflows land.
 

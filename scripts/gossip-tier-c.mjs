@@ -6,7 +6,7 @@
  *     -f docker/docker-compose.gossip-mesh3.yml up --build
  *
  * Usage: pnpm gossip:tier-c
- * See docs/FEDERATION-E2E.md
+ * See docs/GOSSIP-DEV.md
  */
 
 import { spawnSync } from "child_process";

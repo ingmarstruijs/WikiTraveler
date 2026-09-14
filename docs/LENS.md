@@ -65,7 +65,6 @@ pnpm --filter @wikitraveler/lens test
 
 ## Related
 
-- [apps/README.md](../apps/README.md) Flow 3  
-- [FEDERATED-AUTH.md](./FEDERATED-AUTH.md) — same JWT rules when Lens talks to nodes  
-- [OPERATORS.md](./OPERATORS.md) — hub vs node; trusted client origins  
-- [ROADMAP.md](./ROADMAP.md) — Lens reach / Store listing / offline Access
+- [apps/README.md](../apps/README.md) Flow 3
+- [FEDERATED-AUTH.md](./FEDERATED-AUTH.md) — JWT and host permissions when Lens talks to nodes  
+- [OPERATORS.md](./OPERATORS.md) — hub vs node; trusted client origins

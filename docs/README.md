@@ -11,11 +11,10 @@ Single entry point for the project. Pick the path that matches your role — eac
 | **Understand the system** | [Architecture](./ARCHITECTURE.md) |
 | **Run a node in production** | [Operators guide](./OPERATORS.md) → [Docker](./DOCKER.md) or [Vercel](./VERCEL.md) |
 | **Upgrade an existing deployment** | [Upgrade runbook](./UPGRADE.md) |
-| **Release archive** | [Release phases](./RELEASE-PHASES.md) · [Roadmap](./ROADMAP.md) · [Compatibility](./COMPATIBILITY.md) |
 | **Develop features locally** | [Development guide](./DEVELOPMENT.md) → [Local setup](./LOCAL.md) |
-| **Join as a contributor** | [Community](./COMMUNITY.md) → [Contributing](../CONTRIBUTING.md) · [Auditor onboarding](./AUDITOR-ONBOARDING.md) |
+| **Join as a contributor** | [Community](./COMMUNITY.md) → [Contributing](../CONTRIBUTING.md) |
 | **Ship or consume a release** | [Releases](./RELEASES.md) → [Changelog](../CHANGELOG.md) |
-| **Test federation / gossip** | [Gossip dev lab](./GOSSIP-DEV.md) · [Federation E2E plan](./FEDERATION-E2E.md) |
+| **Test federation / gossip** | [Gossip lab](./GOSSIP-DEV.md) |
 | **Meet accessibility requirements** | [Accessibility checklist](./ACCESSIBILITY.md) · [Conformance report](./CONFORMANCE.md) |
 | **Read the origin story** | [Story](./story/README.md) · live: [www.wikitraveler.org/story](https://www.wikitraveler.org/story) |
 | **Deploy the public website** | [WWW.md](./WWW.md) |
@@ -33,11 +32,9 @@ Single entry point for the project. Pick the path that matches your role — eac
 | [DOCKER.md](./DOCKER.md) | Self-hosted node (+ optional Access) with Docker Compose |
 | [VERCEL.md](./VERCEL.md) | Serverless node + Access on Vercel |
 | [UPGRADE.md](./UPGRADE.md) | Version upgrades, migrations, rollback, gossip compatibility |
-| [RELEASES.md](./RELEASES.md) | Versioning model, release cadence, artifacts, federation policy |
-| [RELEASE-PHASES.md](./RELEASE-PHASES.md) | Archived phase 0–6 ledger + remaining maintainer publish todos |
-| [ROADMAP.md](./ROADMAP.md) | Public priorities (maintainer publish todos, features, quality, community, strategy, performance) |
-| [COMPATIBILITY.md](./COMPATIBILITY.md) | N/N-1 mesh and protocol compatibility matrix |
-| [rfcs/](./rfcs/README.md) | RFC process; [RFC-0002](./rfcs/0002-global-hub-access.md) hub Access (Accepted); [RFC-0003](./rfcs/0003-agency-sdk-service-auth.md) agency SDK (Accepted — [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89)) |
+| [RELEASES.md](./RELEASES.md) | Versioning, artifacts, tag checklist, federation policy |
+| [COMPATIBILITY.md](./COMPATIBILITY.md) | N/N-1 mesh and protocol compatibility |
+| [rfcs/](./rfcs/README.md) | RFC process; [RFC-0002](./rfcs/0002-global-hub-access.md) hub Access; [RFC-0003](./rfcs/0003-agency-sdk-service-auth.md) agency SDK |
 
 ### For developers (build & test)
 
@@ -45,24 +42,21 @@ Single entry point for the project. Pick the path that matches your role — eac
 |-----|---------|
 | [DEVELOPMENT.md](./DEVELOPMENT.md) | Monorepo layout, scripts, PR workflow, quality gates |
 | [LOCAL.md](./LOCAL.md) | Local Postgres, apps, OSM ingest, env vars |
-| [GOSSIP-DEV.md](./GOSSIP-DEV.md) | Gossip lab for federation testing (`gossip:discovery`, `gossip:hardening`, `gossip:tier-b`, `gossip:compat`) |
-| [FEDERATION-E2E.md](./FEDERATION-E2E.md) | Gossip/federation E2E tiers A–D (kernel, topology, hub Access, photos) |
-| [FEDERATED-AUTH.md](./FEDERATED-AUTH.md) | Cross-node JWT verify; agency integrator tokens; signed audit photo URLs |
-| [RFC-0002](./rfcs/0002-global-hub-access.md) | Global hub Access/Lens, mesh CORS trust, viewport map (M0–M5 shipped; M6 follow-ons) |
-| [RFC-0003](./rfcs/0003-agency-sdk-service-auth.md) | Agency SDK: service auth, read/write split, hub resolve, widget bar (Accepted — [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89)) |
+| [GOSSIP-DEV.md](./GOSSIP-DEV.md) | Gossip lab and CI federation scripts |
+| [FEDERATED-AUTH.md](./FEDERATED-AUTH.md) | Human JWT, integrator tokens, signed photo URLs, node signatures |
+| [RFC-0002](./rfcs/0002-global-hub-access.md) | Global hub Access/Lens, trusted CORS, viewport map |
+| [RFC-0003](./rfcs/0003-agency-sdk-service-auth.md) | Agency SDK service auth |
 | [PUBLIC-PEERS.md](./PUBLIC-PEERS.md) | Voluntary bootstrap peer directory |
 | [LENS.md](./LENS.md) | Chrome extension distribution (Release zip / Store) |
 | [apps/README.md](../apps/README.md) | End-to-end flow walkthroughs (SDK, Access, Lens) |
-| [ACCESS-UX.md](./ACCESS-UX.md) | Access PWA IA, nav, and audit catalogue (redesign) |
-| [ARCHITECTURE.md](./ARCHITECTURE.md) | System design, API surface, gossip, auth, audit photo scopes |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | System design, API surface, gossip, Access PWA, audit photos |
 | [rfcs/](./rfcs/README.md) | RFC process for gossip / auth / schema changes |
 
 ### For the community
 
 | Doc | Purpose |
 |-----|---------|
-| [COMMUNITY.md](./COMMUNITY.md) | Roles, mesh growth, communication norms |
-| [AUDITOR-ONBOARDING.md](./AUDITOR-ONBOARDING.md) | Maintainer + auditor pipeline while Access signup is controlled |
+| [COMMUNITY.md](./COMMUNITY.md) | Roles, mesh growth, becoming an auditor |
 | [PUBLIC-PEERS.md](./PUBLIC-PEERS.md) | Opt-in public bootstrap peers |
 | [../CONTRIBUTING.md](../CONTRIBUTING.md) | How to open issues and PRs |
 | [../CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) | Expected behaviour |

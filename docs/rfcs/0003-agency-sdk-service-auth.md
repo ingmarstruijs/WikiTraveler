@@ -1,8 +1,8 @@
 # RFC-0003: Agency SDK — service auth, public reads, hub resolve
 
-**Status:** Accepted — **M0–M5 shipping** (`rfc/accepted`; tracking [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89))  
+**Status:** Accepted (`rfc/accepted`; tracking [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89), follow-ons [#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92))  
 **Area:** Agency SDK / node API auth / trusted client reads / peer resolve  
-**Related:** [RFC-0002](./0002-global-hub-access.md) · [packages/sdk](../../packages/sdk/README.md) · [ARCHITECTURE.md](../ARCHITECTURE.md) · [FEDERATED-AUTH.md](../FEDERATED-AUTH.md) · [SECURITY.md](../../SECURITY.md) · [ROADMAP.md](../ROADMAP.md)
+**Related:** [RFC-0002](./0002-global-hub-access.md) · [packages/sdk](../../packages/sdk/README.md) · [ARCHITECTURE.md](../ARCHITECTURE.md) · [FEDERATED-AUTH.md](../FEDERATED-AUTH.md) · [SECURITY.md](../../SECURITY.md)
 
 ## Summary
 
@@ -16,7 +16,7 @@ This RFC proposes making the SDK a first-class **sidecar client** for product te
 4. **Widget as a shippable product surface** (trust tiers, empty/coverage states, a11y, deep-link to Access).
 5. **DX** that matches reality (auth model, errors, agency-demo happy path).
 
-No implementation lands in this PR — design only.
+Accepted. Implementation is in the tree; remaining follow-ons are tracked on [#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92).
 
 ## Motivation
 

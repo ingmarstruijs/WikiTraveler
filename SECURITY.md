@@ -63,4 +63,4 @@ This repository uses **alerts + security-update PRs, without version-bump PRs**:
 
 Review and merge security PRs promptly. For non-CVE bumps, use `pnpm update` manually, then `pnpm test` / `pnpm build`. Document security-related dependency changes in [CHANGELOG.md](CHANGELOG.md).
 
-**Next.js 16:** Apps run Next.js **16.2.x** (React 19). Prefer coordinated upgrades of `apps/node` and `apps/access` together; close Dependabot major bumps that only touch one app. Remaining lower-priority transitive alerts are tracked in [docs/ROADMAP.md](docs/ROADMAP.md#dependency-security-without-override-debt).
+**Next.js 16:** Apps run Next.js **16.x** (React 19). Prefer coordinated upgrades of `apps/node` and `apps/access` together; close Dependabot major bumps that only touch one app. Transitive alerts: Dependabot on this repository.

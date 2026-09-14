@@ -37,14 +37,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Lens node status renders connection text with DOM text nodes instead of `innerHTML`, so a typed node URL or node-info fields cannot be interpreted as HTML ([LENS.md](docs/LENS.md))
 - Bump `next` to `16.3.3` in Node and Access for critical Dependabot RCE advisories (Windows-hosted servers / Image Optimization AVIF)
 - Skip `output: "standalone"` on Vercel (Next 16.3 adapter ENOENT on `next-server.js.nft.json`; Docker still uses standalone) and opt out of immutable static assets so Preview Comments can deploy
-- Access profile sync no longer resurrects cleared accessibility preferences from an older server snapshot ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access in-app Back from property detail restores the discovery map pins, camera, selected pin sheet, and profile filters ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access map pin selection on mobile pans the pin into view above the preview bottom sheet ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access profile sync no longer resurrects cleared accessibility preferences from an older server snapshot ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Access in-app Back from property detail restores the discovery map pins, camera, selected pin sheet, and profile filters ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Access map pin selection on mobile pans the pin into view above the preview bottom sheet ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 
 ### Changed
 
 - Public www homepage uses the marketing layout: hero with Access screenshot, trust-tier cards, how-it-works, ecosystem, and contribution CTA; type matches Access (`--wt-font`); header GitHub/Access links open in a new tab with an external-link icon ([WWW.md](docs/WWW.md))
-- Access property detail accessibility icons sit closer together on mobile and desktop ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access property detail accessibility icons sit closer together on mobile and desktop ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Docs hub is current-state only: removed ACCESS-UX, auditor-onboarding, federation-E2E plan, release-phases, and roadmap; auth lives in [FEDERATED-AUTH.md](docs/FEDERATED-AUTH.md) ([docs/README.md](docs/README.md))
 - Dev dependency: Vitest `3.2.x` → `4.1.11` (with Upstash mock constructor fixes for Vitest 4)
 
 ## [0.5.2] - 2026-09-08
@@ -59,29 +60,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Access profile sync: favorites, accessibility preferences, and theme sync to the home-node account (`GET`/`PUT /api/auth/preferences`, `/api/auth/favorites`); localStorage remains a per-user cache ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access desktop layout (≥900px): icon rail, map|list split, map pin bottom sheet in the map column, list↔map hover/selection, denser Favorites grid ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access profile sync: favorites, accessibility preferences, and theme sync to the home-node account (`GET`/`PUT /api/auth/preferences`, `/api/auth/favorites`); localStorage remains a per-user cache ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Access desktop layout (≥900px): icon rail, map|list split, map pin bottom sheet in the map column, list↔map hover/selection, denser Favorites grid ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 
 ### Changed
 
-- Access heroes use shared padding/logo sizing (tabs + toolbar); property detail loading skeleton matches mobile stack vs desktop photo|sheet split ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access Contribute: stacked mobile dashboard and two-column desktop layout (add-property CTA, activity stats, recent audits) ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access discovery list: favorited rows use the same card chrome as other properties; heart uses theme accent like map pins ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access Favorites desktop: equal-width card grid (cover photo + “Add a place” as a matching tile) instead of a leftover mobile strip ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access heroes use shared padding/logo sizing (tabs + toolbar); property detail loading skeleton matches mobile stack vs desktop photo|sheet split ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Access Contribute: stacked mobile dashboard and two-column desktop layout (add-property CTA, activity stats, recent audits) ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Access discovery list: favorited rows use the same card chrome as other properties; heart uses theme accent like map pins ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Access Favorites desktop: equal-width card grid (cover photo + “Add a place” as a matching tile) instead of a leftover mobile strip ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 - Lens popup facts match Access: grouped sections, quieter Verified status, per-room-type values, accessibility icons packed left under the address ([LENS.md](docs/LENS.md))
 
 ### Removed
 
-- Access first-run onboarding dialog (traveler/auditor/skip) — it did not change any settings ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access first-run onboarding dialog (traveler/auditor/skip) — it did not change any settings ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 
 ### Fixed
 
 - Lens popup fact labels stay on one line (flex on table cells no longer collapses the column)
-- Access profile sync write-through runs app-wide (property detail hearts / prefs), so a second logged-in device can see the same favorites and preferences ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access profile sync write-through runs app-wide (property detail hearts / prefs), so a second logged-in device can see the same favorites and preferences ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 - Access profile sync no longer lets a focus/visibility pull overwrite hearts or accessibility preferences that have not been pushed yet
 - Access profile sync applies home-node accessibility preferences and theme on a new login (empty device no longer keeps the default theme stamp over the server)
-- Access “near me” GPS: keep the map visible while requesting location, then fit a **1 km** radius around the traveler without remounting the map ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access “Show on map” in the discovery list pans the pin into the visible map above the preview bottom sheet ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access “near me” GPS: keep the map visible while requesting location, then fit a **1 km** radius around the traveler without remounting the map ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Access “Show on map” in the discovery list pans the pin into the visible map above the preview bottom sheet ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 - Access property accessibility score uses the same field-to-category mapping as Lens (room-scoped bathroom facts no longer inflate Room and drop Bathroom)
 - Lens popup search waits until typing pauses (500ms debounce; Enter searches immediately)
 - Docker node/Access images build `@wikitraveler/audit` (release images no longer fail module-not-found)
@@ -121,9 +122,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Lens first-run onboarding wizard and menu overlay (deep-links to Access hub)
 - Node admin: permanently delete a community signal; bulk-clear resolved/dismissed (`DELETE /api/admin/signals/[id]`, `POST /api/admin/signals/cleanup`)
-- Access UX redesign: Search / Saved / Profile nav, place-aware search, map “Search this area” + client cache, claim property, booking deep links, onboarding + a11y preferences, in-app report notifications ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Property claim API: `POST`/`DELETE /api/properties/[id]/claim` (AUDITOR/ADMIN); `claimedByUserId` / `claimedAt` on Property + Access accessibility GET (`isClaimedByMe`) ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access audit wizard steps: Entrance → Mobility → Room → Bathroom → Communication → Review with Yes/Partial/No/N/A toggles; fields `automatic_door`, `path_to_entrance`, `corridor_min_width_cm`, `elevator_width_cm`, `visual_alarms`, `step_free_room`, `clear_space_beside_bed` ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access UX redesign: Search / Saved / Profile nav, place-aware search, map “Search this area” + client cache, claim property, booking deep links, onboarding + a11y preferences, in-app report notifications ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Property claim API: `POST`/`DELETE /api/properties/[id]/claim` (AUDITOR/ADMIN); `claimedByUserId` / `claimedAt` on Property + Access accessibility GET (`isClaimedByMe`) ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Access audit wizard steps: Entrance → Mobility → Room → Bathroom → Communication → Review with Yes/Partial/No/N/A toggles; fields `automatic_door`, `path_to_entrance`, `corridor_min_width_cm`, `elevator_width_cm`, `visual_alarms`, `step_free_room`, `clear_space_beside_bed` ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 - Rate limiting accepts Vercel Marketplace Upstash aliases `KV_REST_API_URL` / `KV_REST_API_TOKEN` (same as `UPSTASH_REDIS_REST_*`) ([VERCEL.md](docs/VERCEL.md))
 - Access Vercel deploy: `vercel-build:access`, `apps/access/vercel.json`, and hub custom-domain steps ([VERCEL.md](docs/VERCEL.md))
 - Access installable PWA: web manifest, 192/512 icons, and Apple web-app metadata for Add to Home Screen (standalone; no offline SW yet)
@@ -170,7 +171,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Access Profile: toggling accessibility preferences no longer triggers a React “setState while rendering SearchTab” error
 - Access property notes: Wheelmap `[Bathroom]` / `[Communication]` dumps render as headings and bullets instead of bracket soup
 - Photo migrate (`pnpm db:migrate-photos`) also rewrites `AuditPhoto` rows; R2 supports EU jurisdiction via `R2_JURISDICTION=eu` ([VERCEL.md](docs/VERCEL.md))
-- Access audit wizard: Yes/Partial/No/N/A (and OSM `true`/`false`) map to canonical boolean tokens; custom room type chips stay after deselect; custom slugs such as `twin_room_disability_access` are accepted ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access audit wizard: Yes/Partial/No/N/A (and OSM `true`/`false`) map to canonical boolean tokens; custom room type chips stay after deselect; custom slugs such as `twin_room_disability_access` are accepted ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 - Audit POST writes **Verified** for a field audit; **Confirmed** is only ≥3 independent auditors — unchanged OSM prefills no longer jump to Confirmed ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 
 - Large `node:import` / Admin gzip imports no longer hit Postgres bind-variable limits or per-row upsert timeouts; imports batch with `createMany`, retry transient disconnects, and support `--limit` for smoke tests
@@ -201,14 +202,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Access Profile hero matches the larger avatar / name / outlined sign-out layout
 - Access version moved out of Node connection into its own Profile section
 - Access map bottom sheet shows an audited badge and a short audit summary
-- Access Favorites tab (was Saved): heart icon, search/sort, richer cards; Contribute tab restored for auditors/admins; profile identity in the hero with node + Access versions; notification bell popup; named themes Standard / Dark / High contrast / Calm (automatic removed); PWA icons use bright WikiTraveler-blue with a white mark ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access UX polish: map locate (1 km Near me), property detail hero/sheet + accessibility score + claim card, minimal a11y icons, audit label/control rows + per-step notes/photos + title/address margin + scroll-to-top on step next/back; custom room type stacked input/button; add-property/audit toolbars without role chip + single back; Saved → property back returns to Saved tab; removed Check availability; Saved list cards with property photos ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access Search: shared navy Access hero (WikiTraveler · Access + Saved/Profile subsection), sticky Map/List tabs with full-height map/list, full-bleed search + filter icon, hero notification bell → Profile with badge, result meta under tabs, locate permission/progress feedback; property claim UI hidden; property sheet mini-map + a11y icons left-aligned under address; property hero photo placeholder; property facts label/value rows with single tier badge (notes left-aligned for reading); accessibility score from category coverage with help explainer; map legend removed (unified pins, saved as hearts, coverage message only — no shaded regions); zoom-in hint clears so Search this area can show; map pin opens bottom summary sheet with photo thumb; map camera restored after View property back; profile a11y preferences appear as marked chips in Advanced filters (on by default, session-off) ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access: Near me and Settings fold into Search / Profile; Favorites shows saved places only; global region chip removed from toolbar; `accessible_room_count` retired from active audit catalogue ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access Favorites tab (was Saved): heart icon, search/sort, richer cards; Contribute tab restored for auditors/admins; profile identity in the hero with node + Access versions; notification bell popup; named themes Standard / Dark / High contrast / Calm (automatic removed); PWA icons use bright WikiTraveler-blue with a white mark ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Access UX polish: map locate (1 km Near me), property detail hero/sheet + accessibility score + claim card, minimal a11y icons, audit label/control rows + per-step notes/photos + title/address margin + scroll-to-top on step next/back; custom room type stacked input/button; add-property/audit toolbars without role chip + single back; Saved → property back returns to Saved tab; removed Check availability; Saved list cards with property photos ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Access Search: shared navy Access hero (WikiTraveler · Access + Saved/Profile subsection), sticky Map/List tabs with full-height map/list, full-bleed search + filter icon, hero notification bell → Profile with badge, result meta under tabs, locate permission/progress feedback; property claim UI hidden; property sheet mini-map + a11y icons left-aligned under address; property hero photo placeholder; property facts label/value rows with single tier badge (notes left-aligned for reading); accessibility score from category coverage with help explainer; map legend removed (unified pins, saved as hearts, coverage message only — no shaded regions); zoom-in hint clears so Search this area can show; map pin opens bottom summary sheet with photo thumb; map camera restored after View property back; profile a11y preferences appear as marked chips in Advanced filters (on by default, session-off) ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Access: Near me and Settings fold into Search / Profile; Favorites shows saved places only; global region chip removed from toolbar; `accessible_room_count` retired from active audit catalogue ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 - Vercel gossip cron runs daily (`0 1 * * *`) so Hobby plan deploys work; Pro can restore a sub-daily schedule in `vercel.json` ([VERCEL.md](docs/VERCEL.md))
 - Removed legacy `vercel.json` `@secret` env block — set node env vars in the Vercel project (include `CLIENT_ORIGINS`; do not ship `CORS_ORIGINS=*`) ([VERCEL.md](docs/VERCEL.md))
-- Access property detail: re-audit photos merge per step/room slot (later visit overwrites a slot only if it photographed it); visit notes listed (last two open, older collapsed); thumbnails open fullscreen ([ACCESS-UX.md](docs/ACCESS-UX.md))
-- Access property detail groups room facts in a labeled card per audited room type; audit wizard shows existing step photos read-only ([ACCESS-UX.md](docs/ACCESS-UX.md))
+- Access property detail: re-audit photos merge per step/room slot (later visit overwrites a slot only if it photographed it); visit notes listed (last two open, older collapsed); thumbnails open fullscreen ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+- Access property detail groups room facts in a labeled card per audited room type; audit wizard shows existing step photos read-only ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 
 ---
 
@@ -227,7 +228,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Federation Tier A–C E2E in CI: mesh hardening, mesh-3 topology (CONFIRMED, resolve), hub journey / `photoRefs` / Lens Origin (`pnpm gossip:hardening`, `gossip:tier-b`, `gossip:tier-c`) ([FEDERATION-E2E.md](docs/FEDERATION-E2E.md))
+- Federation Tier A–C E2E in CI: mesh hardening, mesh-3 topology (CONFIRMED, resolve), hub journey / `photoRefs` / Lens Origin (`pnpm gossip:hardening`, `gossip:tier-b`, `gossip:tier-c`) ([GOSSIP-DEV.md](docs/GOSSIP-DEV.md))
 - Gossip lab rewrites host-mapped `localhost:3000/3010/3020` peer URLs to docker DNS for federated JWT pubkey fetch, inbox upsert, and peer ingest (`GOSSIP_DEV`)
 - Global region preset catalog (all continents): Admin/CLI presets for major cities plus Geofabrik extracts across Europe, North/South America, Asia, Africa, and Oceania; UI groups as `{tier} · {continent}` ([LOCAL.md](docs/LOCAL.md#region-presets-global-catalog), [ARCHITECTURE.md](docs/ARCHITECTURE.md))
 - Trusted browser CORS for `/api/*`: reflect `Origin` when it matches `CORS_ORIGINS` ∪ `CLIENT_ORIGINS` ∪ `ACCESS_PUBLIC_URL` (`proxy.ts`); OPTIONS preflight; `Vary: Origin`. Gossip `accessUrl` is not auto-trusted ([RFC-0002](docs/rfcs/0002-global-hub-access.md))
@@ -252,7 +253,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Docker entrypoints strip CRLF after COPY; `.gitattributes` forces LF on `*.sh` so Windows checkouts do not fail with `exec /entrypoint.dev.sh: no such file or directory`
 - Pin transitive `js-yaml@4` to `>=4.3.1` via `pnpm.overrides` (Dependabot could not unlock past 4.3.0)
-- Gossip ingest still exchanges `peers[]` when no region bbox is configured (fact/override ingest stays skipped) — unblocks transitive discovery before region setup ([FEDERATION-E2E.md](docs/FEDERATION-E2E.md))
+- Gossip ingest still exchanges `peers[]` when no region bbox is configured (fact/override ingest stays skipped) — unblocks transitive discovery before region setup ([GOSSIP-DEV.md](docs/GOSSIP-DEV.md))
 
 ---
 
@@ -332,7 +333,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Documentation hub ([docs/README.md](docs/README.md)), [COMMUNITY.md](docs/COMMUNITY.md), [OPERATORS.md](docs/OPERATORS.md), [RELEASES.md](docs/RELEASES.md), [UPGRADE.md](docs/UPGRADE.md), [DEVELOPMENT.md](docs/DEVELOPMENT.md), [RELEASE-PHASES.md](docs/RELEASE-PHASES.md), [COMPATIBILITY.md](docs/COMPATIBILITY.md)
+- Documentation hub ([docs/README.md](docs/README.md)), [COMMUNITY.md](docs/COMMUNITY.md), [OPERATORS.md](docs/OPERATORS.md), [RELEASES.md](docs/RELEASES.md), [UPGRADE.md](docs/UPGRADE.md), [DEVELOPMENT.md](docs/DEVELOPMENT.md), [RELEASES.md](docs/RELEASES.md), [COMPATIBILITY.md](docs/COMPATIBILITY.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [SECURITY.md](SECURITY.md), [versions.json](versions.json)
 - CI (`.github/workflows/ci.yml`): lint, test, build, prisma
 - Release automation: `.github/workflows/release-docker.yml`, `.github/workflows/release.yml`
