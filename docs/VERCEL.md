@@ -246,7 +246,11 @@ CORS_ORIGINS=https://access.wikitraveler.org,https://access-backup.example.org,h
 
 8. Verify: open `https://access.wikitraveler.org` → `/login` → sign in against the home node → search/map/audit → confirm CORS on the data node.
 
-### 6. Connect other clients
+### 6. Deploy the public website (www)
+
+Third Vercel project from the same repo: **Root Directory `apps/www`**, custom domains `www.wikitraveler.org` + apex redirect, Cloudflare **DNS only**. Full click-path, SSL/TLS, and verify commands: [WWW.md](./WWW.md).
+
+### 7. Connect other clients
 
 | Client | Configuration |
 |--------|---------------|
@@ -284,5 +288,6 @@ All cron routes verify `Authorization: Bearer <CRON_SECRET>`.
 - [ ] Region configured in Admin → Region & data
 - [ ] At least one auditor promoted
 - [ ] WikiTraveler Access deployed with `NEXT_PUBLIC_NODE_API_URL`
+- [ ] Public www deployed (`wikitraveler-www` + Cloudflare grey-cloud DNS) — [WWW.md](./WWW.md)
 - [ ] `/api/health` returns 200
 - [ ] Test audit from WikiTraveler Access appears on dashboard
