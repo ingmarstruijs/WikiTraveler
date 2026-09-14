@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- www Vercel build prebuilds `@wikitraveler/i18n` before `@wikitraveler/ui`, then runs the www `build` script so story/screenshot assets copy ([WWW.md](docs/WWW.md))
 - Origin story Mermaid architecture diagram renders on `/story` instead of a raw code fence ([WWW.md](docs/WWW.md))
 - Lens node status renders connection text with DOM text nodes instead of `innerHTML`, so a typed node URL or node-info fields cannot be interpreted as HTML ([LENS.md](docs/LENS.md))
 - Bump `next` to `16.3.3` in Node and Access for critical Dependabot RCE advisories (Windows-hosted servers / Image Optimization AVIF)
