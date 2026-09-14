@@ -45,15 +45,11 @@ One vocabulary note before we go on, because “UX” gets abused into meaning �
 
 ## The thing that already exists, and why it still fails
 
-Travel platforms are incredible at inventory, pricing, and converting intent into bookings. They are much worse at accessibility as **structured truth over time**.
-
-Maurice often gets a vague icon, a sentence that could mean anything, a filter that doesn’t match the bathroom, or a review that says “accessible” without saying *for whom*. Dedicated sites help — but they don’t fix that gap the same way.
-
-[Wheelchair Travel](https://wheelchairtravel.org/) is strong on advocacy and trip storytelling. Hotel detail often lives in narrative posts, not a living inventory you can trust night after night beside Booking.
+Travel platforms are incredible at inventory, pricing, and converting intent into bookings. They are much worse at accessibility as **structured truth over time**. Maurice often gets a vague icon, a sentence that could mean anything, a filter that doesn’t match the bathroom, or a review that says “accessible” without saying *for whom*.
 
 [Wheel the World](https://wheeltheworld.com/) is the closest cousin on *data shape*: proprietary AMS, trained mappers, measurements + photos, profiles, and a booking marketplace ([their trust write-up](https://blog.wheeltheworld.com/accessible-hotels-roll-in-showers-at-hotels-everything-you-need-to-know/)). Hotels can buy **Accessibility Verified**. Thin coverage often becomes concierge, not an honest empty map.
 
-That last part is the moral snag for me. The mapping work is real and expensive — I don’t begrudge people getting paid to measure bathrooms. What I resent is turning **whether a stay is actually usable** into proprietary inventory you rent through a marketplace and a B2B seal. That information should be a commons: free to read, free to reuse beside Booking, not a moat. Charge for booking, concierge, or ops if you must. Don’t own the facts of the doorway.
+The mapping work is real and expensive — I don’t begrudge people getting paid to measure bathrooms. What I resent is turning **whether a stay is actually usable** into proprietary inventory you rent through a marketplace and a B2B seal. Charge for booking, concierge, or ops if you must. Don’t own the facts of the doorway.
 
 Same hunger for verified structure. Different ownership of the truth:
 
@@ -64,15 +60,11 @@ Same hunger for verified structure. Different ownership of the truth:
 | Product | Marketplace / concierge | **Sidecar** beside Booking / Expedia |
 | Empty city | “Leave your email” | Say it isn’t covered — then fill it |
 
-Commercial AMS will densify *some* cities. An empty open map looks unfinished, not principled. Staying community-owned means refusing to monetize the facts — and making **real audits the whole game** instead. Triage first, deeper packs where people show up. Travelers usually don’t want a segregated travel internet; they want trustworthy facts *where they already book*.
+Travelers usually don’t want a segregated travel internet; they want trustworthy facts *where they already book*. Europe’s **EAA** (mid‑2025) adds pressure. It does not invent that dataset.
 
-Europe’s **EAA** (mid‑2025) adds pressure. It does not invent that dataset.
+So: treat stay accessibility like a commons — **closer to OpenStreetMap than to a proprietary AMS**. A **sidecar** beside the giants. OSM maps **where** things are (plus thin wheelchair tags). WikiTraveler is **can you stay and wash here** — audits, photos, trust tiers — on OSM as `OFFICIAL` baseline. Coarse verified signals (`wheelchair=yes|limited|no`) should be able to **flow back**; bed height and roll-in detail stay with us.
 
-So the framing became: treat stay accessibility like a commons — **closer to OpenStreetMap than to a proprietary roadmap**. A **sidecar** that rides next to the giants, enriches or contradicts them, and stays useful even if they ignore it.
-
-OSM maps **where** things are (plus thin wheelchair tags). WikiTraveler is **can you stay and wash here** — audits, photos, trust tiers — on OSM as `OFFICIAL` baseline. We don’t replace the map. Coarse verified signals (`wheelchair=yes|limited|no`) should be able to **flow back**; bed height, roll-in detail, and multi-auditor confirmation stay with us. Commons beside commons.
-
-Not another Booking. Not another accessible-hotels site. Not Wheel the World with a different logo. The truth layer beside the booking journey — and neighbourly to the open map it started from.
+Not another Booking. Not Wheel the World with a different logo. The truth layer beside the booking journey — and neighbourly to the open map it started from.
 
 ---
 

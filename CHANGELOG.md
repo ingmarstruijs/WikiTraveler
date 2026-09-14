@@ -43,6 +43,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Origin story contrast is Wheel the World only (proprietary AMS vs open sidecar), shorter ([WWW.md](docs/WWW.md))
 - Public www homepage uses the marketing layout: hero with Access screenshot, trust-tier cards, how-it-works, ecosystem, and contribution CTA; type matches Access (`--wt-font`); header GitHub/Access links open in a new tab with an external-link icon ([WWW.md](docs/WWW.md))
 - Access property detail accessibility icons sit closer together on mobile and desktop ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 - Docs hub is current-state only: removed ACCESS-UX, auditor-onboarding, federation-E2E plan, release-phases, and roadmap; auth lives in [FEDERATED-AUTH.md](docs/FEDERATED-AUTH.md) ([docs/README.md](docs/README.md))
