@@ -9,7 +9,7 @@ WikiTraveler is built for a **federated mesh** — independent operators, shared
 | Role | What you do | Primary docs |
 |------|-------------|--------------|
 | **Traveler** | Browse accessibility facts via **hub Access** (canonical `access.wikitraveler.org`) or agency widgets | Prefer the public hub; regional Access is optional branding |
-| **Auditor** | Submit on-site verified audits | [AUDITOR-ONBOARDING.md](./AUDITOR-ONBOARDING.md) · [apps/README.md](../apps/README.md) Flow 2 |
+| **Auditor** | Submit on-site verified audits | This page · [apps/README.md](../apps/README.md) Flow 2 |
 | **Node operator** | Run a sovereign regional node (API + data); allow trusted hub origins | [OPERATORS.md](./OPERATORS.md) |
 | **Hub operator** | Run canonical / backup / branded Access; uptime for travelers | [OPERATORS.md](./OPERATORS.md#audiences) · [VERCEL.md](./VERCEL.md) |
 | **Client maintainer** | Customize Access, Lens, SDK integrations | [DEVELOPMENT.md](./DEVELOPMENT.md) · [LENS.md](./LENS.md) |
@@ -48,14 +48,13 @@ Operators are **not** required to run the latest version immediately. The projec
 
 ## Contributing as an auditor
 
-Public Access signup may be **off** during controlled tests. That is intentional — trust is not ambient.
+Public Access signup may be **off**. Maintainers create accounts on the **home node**.
 
-1. Read [AUDITOR-ONBOARDING.md](./AUDITOR-ONBOARDING.md).
-2. Reach out via GitHub (issue/discussion) with region + independence context.
-3. A maintainer creates your home-node account, sets `AUDITOR`, and walks you through Access + a first triage audit.
-4. Prefer on-site facts and photos; never promote AI guesses to verified truth.
+**If you want to audit:** open a GitHub issue with your region and that you can visit properties in person. Prefer auditors who are not selling the room.
 
-Hotel-inspection firms: same pipeline — bring accessibility into visits you already make; keep verification independent of the property’s sales desk.
+**If you operate the home node:** Admin → Users (or `POST /api/admin/users/import`, then `PATCH /api/admin/users/:username` with `{ "role": "AUDITOR" }`). Send Access URL, home node URL, username, and a temporary password out of band. Walk through: sign in on hub Access, trust tiers (`OFFICIAL` → `AI_GUESS` → `VERIFIED` → `CONFIRMED`), one on-site audit with photos on the relevant steps.
+
+Partial audits are fine. Do not invent measurements. AI guesses are never ground truth. Independent confirmation (`CONFIRMED`) needs ≥3 distinct auditors.
 
 ---
 
@@ -95,7 +94,7 @@ As the community grows, maintainers may add:
 - Operator office hours or Matrix/Discord (linked from README when established)
 - More structured contribution ladders and translator checklists
 
-None of these replace per-operator deployment control. Public priorities live in [ROADMAP.md](./ROADMAP.md).
+None of these replace per-operator deployment control. Feature ideas: GitHub issues.
 
 ---
 
@@ -114,7 +113,7 @@ Operators and integrators should attribute WikiTraveler data per CC-BY when repu
 
 | Goal | Link |
 |------|------|
-| Become an auditor | [AUDITOR-ONBOARDING.md](./AUDITOR-ONBOARDING.md) |
+| Become an auditor | [Contributing as an auditor](#contributing-as-an-auditor) |
 | Set up dev environment | [DEVELOPMENT.md](./DEVELOPMENT.md) |
 | Deploy a node | [OPERATORS.md](./OPERATORS.md) |
 | Bootstrap peers | [PUBLIC-PEERS.md](./PUBLIC-PEERS.md) |

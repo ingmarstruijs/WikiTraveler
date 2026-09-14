@@ -21,16 +21,16 @@ Open an RFC issue (template: **RFC**) if your change:
 3. Implement in a PR that links the RFC issue.
 4. Update [COMPATIBILITY.md](../COMPATIBILITY.md), [CHANGELOG.md](../../CHANGELOG.md), and [versions.json](../../versions.json) when protocol or schema numbers change.
 
-## Protocol notes (no production mesh yet)
+## Protocol notes
 
-As of the Phase 6 cut there are **no known public production nodes**. Protocol bumps may raise `MIN_SUPPORTED_GOSSIP_PROTOCOL` without a long sunset when maintainers agree — still document the change in an RFC and the changelog so early operators are not surprised.
+There is no assumed public production mesh yet. Protocol bumps may raise `MIN_SUPPORTED_GOSSIP_PROTOCOL` without a long sunset when maintainers agree — still document the change in an RFC and the changelog so operators are not surprised.
 
 ## Index
 
 | RFC | Title | Status |
 |-----|-------|--------|
 | [0001](./0001-gossip-protocol-2.md) | Gossip protocol version 2 | Accepted |
-| [0002](./0002-global-hub-access.md) | Global hub Access & Lens (federation invisible) | Accepted — M0–M5 done ([#51](https://github.com/ingmarstruijs/WikiTraveler/issues/51), PRs [#50](https://github.com/ingmarstruijs/WikiTraveler/pull/50)–[#55](https://github.com/ingmarstruijs/WikiTraveler/pull/55)) |
-| [0003](./0003-agency-sdk-service-auth.md) | Agency SDK — service auth, public reads, hub resolve | Accepted — M0–M5 ([#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89)); M6 → [#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92) |
+| [0002](./0002-global-hub-access.md) | Global hub Access & Lens (federation invisible) | Accepted ([#51](https://github.com/ingmarstruijs/WikiTraveler/issues/51)) |
+| [0003](./0003-agency-sdk-service-auth.md) | Agency SDK — service auth, public reads, hub resolve | Accepted ([#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89), [#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92)) |
 
 Accepted RFCs live as `docs/rfcs/NNNN-slug.md` after acceptance.

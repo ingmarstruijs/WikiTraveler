@@ -122,27 +122,34 @@ The canonical deployment unit. A Next.js 16 App Router app serving:
 - **Admin panel** at `/stats` — Users tab — role management (ADMIN only)
 - **Gossip cron** at `/api/cron/gossip` — polls peers, ingests deltas, self-announces
 - **Auth pages**: `/login` (blocks USER role), `/register` (creates account, shows close-tab success for Lens flow)
-- **CORS proxy** — reflects a single trusted `Origin` when it matches the client allowlist (`apps/node/proxy.ts`; [RFC-0002](./rfcs/0002-global-hub-access.md) M1)
+- **CORS proxy** — reflects a single trusted `Origin` when it matches the client allowlist (`apps/node/proxy.ts`; [RFC-0002](./rfcs/0002-global-hub-access.md))
 - **Region presets** — curated global bbox catalog (`apps/node/lib/regionPresets.ts`) keyed by ingest `tier` and world `continent`; large extracts use Geofabrik URLs in `apps/node/lib/geofabrik.ts` (all continents). Admin groups presets as `{tier} · {continent}`. How to add presets: [LOCAL.md](./LOCAL.md#region-presets-global-catalog).
 
 ### `apps/access`
 
 Mobile-optimised Next.js app for travelers and auditors. **Hub operators** run the canonical client (`https://access.wikitraveler.org`); node operators may run a branded copy. Connects to a default home node via `NEXT_PUBLIC_NODE_API_URL` and to **data nodes** via GPS resolve — nodes must allow the Access origin in `CLIENT_ORIGINS` / `CORS_ORIGINS` ([RFC-0002](./rfcs/0002-global-hub-access.md)).
 
-**Auth:** All authenticated roles (`USER`, `AUDITOR`, `ADMIN`) may use the app. The Access `proxy.ts` redirects unauthenticated requests to `/login`. `USER` accounts can browse, save places, and submit community signals; only `AUDITOR`/`ADMIN` may open the audit wizard (enforced in proxy and API).
+**Auth:** All authenticated roles (`USER`, `AUDITOR`, `ADMIN`) may use the app. The Access `proxy.ts` redirects unauthenticated requests to `/login`. `USER` accounts can browse, save places, and submit community signals; only `AUDITOR`/`ADMIN` may open the audit wizard (enforced in proxy and API). How tokens work: [FEDERATED-AUTH.md](./FEDERATED-AUTH.md).
 
-Flow: login on **home** → search / nearby / map on the resolved **data** node → property detail (read-first) → optional report issue (community signal) or field audit (auditors). Uncovered areas show “This area isn’t covered yet.” Cross-node JWT verification uses `/.well-known/pubkey` — no re-login when auditing on a peer. Operator checklist: [FEDERATED-AUTH.md](./FEDERATED-AUTH.md).
+**Chrome:** Search | Favorites | Contribute (`AUDITOR`/`ADMIN` only) | Profile. Desktop (≥900px): icon rail, map and list side-by-side, pin sheet in the map column. Themes: Standard, Dark, High contrast, Calm (no system automatic theme). Favorites and accessibility preferences sync to the home-node account.
+
+**Audit wizard:** `entrance` → `mobility` → `room` → `bathroom` → `communication` → `review`. Boolean answers store `yes` / `partial` / `no` / `n/a`. A field audit writes **Verified**; **Confirmed** needs ≥3 independent auditors on the same value.
+
+Flow: login on **home** → search / map on the resolved **data** node → property detail (read-first) → optional report (community signal) or field audit (auditors). Uncovered areas show “This area isn’t covered yet.”
 
 #### Audit photo evidence (step-level)
 
-Photos attach to the **audit step** (or room type) where they were captured — not to individual fact rows. Auditors do not pick a per-fact “Photo shows” tag.
+Photos attach to the **audit step** (or room type) where they were captured — not to individual fact rows.
 
 | Scope key | Meaning |
 |-----------|---------|
-| `step:building_access` | Photos added on Building access |
-| `step:shared_facilities` | Photos added on Shared facilities |
-| `room-type:<id>` | Photos for a selected room type |
-| (none / general) | Legacy or unscoped photos |
+| `step:entrance` | Entrance step |
+| `step:mobility` | Mobility step |
+| `step:bathroom` | Bathroom step |
+| `step:communication` | Communication step |
+| `room-type:<id>` | Selected room type |
+| `step:building_access` / `step:shared_facilities` | Legacy slots still merged if present |
+| (none / general) | Unscoped / legacy photos |
 
 **Display:** Property detail merges photos **per slot** (step / room type / unscoped). The newest visit that attached photos for a slot wins that slot; empty slots are not an overwrite. Superseded slot photos stay in `auditPhotoHistory`. Thumbnails open a fullscreen lightbox. Per-fact strips only when a photo has an explicit `fieldName` (legacy / rare). Notes come from each `AuditSubmission` (`auditNotes`): last two visits expanded, older collapsed.
 
@@ -377,7 +384,8 @@ Cron endpoints are protected by `Authorization: Bearer <CRON_SECRET>` (injected 
 | GET | `/api/properties?q=` | USER or `integrator_read` | Search properties |
 | POST | `/api/properties` | AUDITOR | Create property |
 | GET | `/api/properties/map?bbox=` | USER | Viewport pins; requires `bbox=` (or Admin `region=1`); may return `BBOX_TOO_LARGE` |
-| GET | `/api/properties/[id]/accessibility` | USER, `integrator_read`, or optional public GET | Collapsed facts with tier; includes `claimedByUserId` / `isClaimedByMe` |
+| GET | `/api/properties/[id]/accessibility` | USER, `integrator_read`, or optional public GET | Collapsed facts with tier; photo `url`s are signed `/api/photos/:id` links |
+| GET | `/api/photos/[id]` | Signed query or USER / `integrator_read` | Audit photo bytes — [FEDERATED-AUTH.md](./FEDERATED-AUTH.md#audit-photo-urls) |
 | POST | `/api/properties/[id]/accessibility` | AUDITOR | Submit audit (saves facts, triggers push + vision) |
 | POST | `/api/properties/[id]/claim` | AUDITOR | Claim property for current auditor (`409` if claimed by another; ADMIN may take over) |
 | DELETE | `/api/properties/[id]/claim` | AUDITOR | Clear claim (claimer or ADMIN) |
@@ -413,7 +421,7 @@ Cron endpoints are protected by `Authorization: Bearer <CRON_SECRET>` (injected 
 | Gossip | HTTP pull + signed push | Cron safety net + real-time push after each audit |
 | Push signing | RSA-SHA256 (HTTP Signatures) | Stateless, no PKI authority; keys via `/.well-known/pubkey` |
 | AI provider | OpenAI GPT-4o | Best-in-class vision + JSON mode; swappable via ai-agent |
-| Photo storage | base64 in DB (demo) / R2 or Supabase (prod) | Object storage recommended for production — [LOCAL.md](./LOCAL.md) · [DOCKER.md](./DOCKER.md) |
+| Photo storage | base64 in DB (demo) / R2 or Supabase (prod) | Object storage for production; client URLs are signed node links — [FEDERATED-AUTH.md](./FEDERATED-AUTH.md#audit-photo-urls) |
 | Extension | Chrome MV3 vanilla JS | Background `NODE_FETCH`; load unpacked or Release zip — [LENS.md](./LENS.md) |
 | SDK bundling | tsup (esbuild) | Fast, dual CJS+ESM+UMD from one config; npm on tag when enabled |
 | Monorepo | pnpm workspaces | Fast installs, strict isolation |

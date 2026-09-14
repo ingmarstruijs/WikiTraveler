@@ -336,6 +336,8 @@ PHOTO_STORAGE_PROVIDER=r2 R2_ACCOUNT_ID=... R2_BUCKET=... \
 
 The script is idempotent — rows that already contain HTTPS URLs are skipped.
 
+Client-facing photo URLs are signed node links — [FEDERATED-AUTH.md](./FEDERATED-AUTH.md#audit-photo-urls).
+
 ### WikiTraveler Access URL
 
 `NEXT_PUBLIC_NODE_API_URL` in `.env` tells WikiTraveler Access which node API to call:

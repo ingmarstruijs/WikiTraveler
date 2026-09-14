@@ -34,6 +34,7 @@ Pay extra attention when reviewing changes touching:
 | `POST /api/auth/*` | Account takeover, brute force |
 | Admin backup/restore | Data exfiltration or destructive restore |
 | CORS / client origins (`CORS_ORIGINS`, `CLIENT_ORIGINS`, `ACCESS_PUBLIC_URL`) | Browser clients (Access, Lens, SDK) calling `/api/*`; `proxy.ts` reflects trusted `Origin` only — over-broad allowlists or `*` in production expand blast radius of stolen JWTs — see [RFC-0002](docs/rfcs/0002-global-hub-access.md) |
+| Photo URLs (`/api/photos`) | Client JSON must not leak storage URLs or data-URIs — [FEDERATED-AUTH.md](docs/FEDERATED-AUTH.md#audit-photo-urls) |
 
 ## Operator responsibilities
 
@@ -62,4 +63,4 @@ This repository uses **alerts + security-update PRs, without version-bump PRs**:
 
 Review and merge security PRs promptly. For non-CVE bumps, use `pnpm update` manually, then `pnpm test` / `pnpm build`. Document security-related dependency changes in [CHANGELOG.md](CHANGELOG.md).
 
-**Next.js 16:** Apps run Next.js **16.2.x** (React 19). Prefer coordinated upgrades of `apps/node` and `apps/access` together; close Dependabot major bumps that only touch one app. Remaining lower-priority transitive alerts are tracked in [docs/ROADMAP.md](docs/ROADMAP.md#dependency-security-without-override-debt).
+**Next.js 16:** Apps run Next.js **16.x** (React 19). Prefer coordinated upgrades of `apps/node` and `apps/access` together; close Dependabot major bumps that only touch one app. Transitive alerts: Dependabot on this repository.

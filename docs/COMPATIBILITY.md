@@ -18,7 +18,7 @@ Cross-version behaviour for WikiTraveler nodes in a federated mesh.
 | Access with viewport map (RFC-0002 M3) → Node without `map?bbox=` | No | Redeploy **Node + Access** together (**H5**); unscoped `/api/properties/map` is rejected |
 | Lens with background `NODE_FETCH` (M4) → older nodes | Yes | Same REST; needs host permission / reachability to home + data nodes |
 
-Maintainers test **same-version discovery**, **Tier A hardening**, **Tier B topology** (mesh-3 / CONFIRMED / resolve), and **N ↔ N-1** in CI ([gossip-compat](../.github/workflows/gossip-compat.yml), [FEDERATION-E2E.md](./FEDERATION-E2E.md)).
+Maintainers test **same-version discovery**, mesh hardening, 3-node topology (CONFIRMED / resolve), and **N ↔ N-1** in CI ([gossip-compat](../.github/workflows/gossip-compat.yml), [GOSSIP-DEV.md](./GOSSIP-DEV.md)).
 
 ---
 
@@ -68,7 +68,7 @@ Update this table on every minor/major release.
 | `metadataOverrides` | No | v0.2 | Ignored if absent |
 | `peers[]` | No | v0.2 | Ignored if absent |
 | `photoRefs` | No | v0.2+ | Ignored if absent |
-| `protocolVersion` | No | v0.2+ (Phase 4) | Defaults to `1` when absent |
+| `protocolVersion` | No | v0.2+ | Defaults to `1` when absent |
 
 ### Protocol 2 (current emit — [RFC-0001](./rfcs/0001-gossip-protocol-2.md))
 
@@ -110,4 +110,4 @@ No production public mesh existed at the protocol 2 cut — future breaks may ra
 | Lens | 0.2.0+ | Documented per Lens release |
 | SDK | 0.2.0+ | Documented per SDK release |
 
-Phase 5: Access shows a warning when node version is below minimum.
+Access shows a warning when the node version is below the client minimum.

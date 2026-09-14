@@ -1,6 +1,6 @@
 # RFC-0001: Gossip protocol version 2
 
-**Status:** Accepted (Phase 6 — no public production mesh yet)  
+**Status:** Accepted  
 **Area:** Gossip / protocol
 
 ## Summary

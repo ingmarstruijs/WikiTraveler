@@ -23,7 +23,17 @@ pnpm gossip:reingest         # re-run OSM ingest; confirm overrides survive
 pnpm gossip:compat           # N↔N-1 mixed lab (needs compat compose overlays)
 ```
 
-Suite plan and tiers: [FEDERATION-E2E.md](./FEDERATION-E2E.md).
+CI ([`.github/workflows/gossip-compat.yml`](../.github/workflows/gossip-compat.yml)) runs discovery, N↔N-1 compat, hardening, then mesh-3 topology and client-federation scripts:
+
+| Command | What it checks |
+|---------|----------------|
+| `pnpm gossip:discovery` | Bootstrap peers, pubkey, seed → cron pull |
+| `pnpm gossip:compat` | Mixed runtime versions still sync |
+| `pnpm gossip:hardening` | Push + pull, auth negatives, overrides, OSM re-ingest, bbox filter |
+| `pnpm gossip:tier-b` | 3-node discovery, CONFIRMED honesty, peer resolve |
+| `pnpm gossip:tier-c` | Home JWT on a data node, `photoRefs` ingest, Lens Origin allowlist |
+
+Individual scripts: `gossip:dual-path`, `gossip:auth-negative`, `gossip:bbox-identity`, `gossip:crud`, `gossip:reingest`, `gossip:mesh-3`, `gossip:confirmed`, `gossip:resolve`, `gossip:hub-journey`, `gossip:photos`, `gossip:lens-smoke`.
 
 **Prerequisites:** Docker Desktop. First start runs `pnpm install` inside the container (empty `node_modules` volume) and may take several minutes.
 

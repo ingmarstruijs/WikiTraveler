@@ -7,7 +7,7 @@
  * Usage (gossip lab must be running; prefer after gossip:discovery or seed):
  *   pnpm gossip:hardening
  *
- * See docs/FEDERATION-E2E.md
+ * See docs/GOSSIP-DEV.md
  */
 
 import { spawnSync } from "child_process";

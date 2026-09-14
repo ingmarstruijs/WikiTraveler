@@ -22,18 +22,20 @@ Do **not** rely on Booking.com’s origin being allowlisted — it never should 
 |---------|--------|
 | Load unpacked (`apps/lens/`) | Dev / power users — see [LOCAL.md](./LOCAL.md) |
 | GitHub Release zip `wikitraveler-lens-*.zip` | Every `v*` tag ([release.yml](../.github/workflows/release.yml)) |
-| Chrome Web Store | **Planned** — maintainers upload the Release zip |
+| Chrome Web Store | **Upload after `v0.5.3`** — use the GitHub Release zip (this page) |
 | Self-hosted signed CRX + `update_url` | Optional enterprise path (see below) |
 
 ## Chrome Web Store checklist (maintainers)
 
-1. Build/tag a release so the Lens zip is attached to the GitHub Release.
+After tag `v0.5.3` and a green [release.yml](../.github/workflows/release.yml) run, the zip is on the GitHub Release (`wikitraveler-lens-0.5.3.zip`). Then:
+
+1. Confirm the Release asset matches Lens `manifest.json` version `0.5.3`.
 2. Create/update the Web Store listing:
    - Privacy policy URL: **https://www.wikitraveler.org/privacy** (canonical; Node and Access serve copies at `/privacy`).
    - Screenshots and promo tiles in [`docs/assets/chrome-web-store/`](./assets/chrome-web-store/) (1280×800 screenshots, 440×280 small promo, 1400×560 marquee). Regenerate with `python scripts/compose-cws-assets.py`.
    - Single purpose: community-verified accessibility facts on booking sites (popup + listing tooltips).
    - Justify optional HTTPS host access: reach the user-configured WikiTraveler node and mesh peers only via the service worker.
-3. Upload the Release zip; set visibility (unlisted → public when ready).
+3. Upload `wikitraveler-lens-0.5.3.zip`; set visibility (unlisted → public when ready).
 4. Link the store URL from [README](../README.md) and this page when live; publish the extension ID so node operators can add `chrome-extension://…` to `CLIENT_ORIGINS`.
 5. Host permissions must match production OTAs + any first-party `wt-property-id` sites you support.
 
@@ -63,7 +65,6 @@ pnpm --filter @wikitraveler/lens test
 
 ## Related
 
-- [apps/README.md](../apps/README.md) Flow 3  
-- [FEDERATED-AUTH.md](./FEDERATED-AUTH.md) — same JWT rules when Lens talks to nodes  
-- [OPERATORS.md](./OPERATORS.md) — hub vs node; trusted client origins  
-- [ROADMAP.md](./ROADMAP.md) — Lens reach / Store listing / offline Access
+- [apps/README.md](../apps/README.md) Flow 3
+- [FEDERATED-AUTH.md](./FEDERATED-AUTH.md) — JWT and host permissions when Lens talks to nodes  
+- [OPERATORS.md](./OPERATORS.md) — hub vs node; trusted client origins

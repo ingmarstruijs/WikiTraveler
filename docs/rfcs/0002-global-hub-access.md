@@ -1,10 +1,10 @@
 # RFC-0002: Global hub Access & Lens (federation invisible)
 
-**Status:** Accepted — **M0–M5 shipped** (`rfc/accepted`; tracking [#51](https://github.com/ingmarstruijs/WikiTraveler/issues/51) closed)  
+**Status:** Accepted (`rfc/accepted`; tracking [#51](https://github.com/ingmarstruijs/WikiTraveler/issues/51) closed)  
 **Area:** Auth trust / Access·Lens peer resolve / operator CORS / map API  
 **Canonical hub (intended):** `https://access.wikitraveler.org` (domain owned by project)  
-**Tracking issue:** [#51](https://github.com/ingmarstruijs/WikiTraveler/issues/51) — M1–M5 landed ([#50](https://github.com/ingmarstruijs/WikiTraveler/pull/50)–[#55](https://github.com/ingmarstruijs/WikiTraveler/pull/55)). **M6** is follow-on only ([ROADMAP.md](../ROADMAP.md)).  
-**Related:** [FEDERATED-AUTH.md](../FEDERATED-AUTH.md) · [PUBLIC-PEERS.md](../PUBLIC-PEERS.md) · [SECURITY.md](../../SECURITY.md) · [ROADMAP.md](../ROADMAP.md)
+**Tracking issue:** [#51](https://github.com/ingmarstruijs/WikiTraveler/issues/51) — M1–M5 landed ([#50](https://github.com/ingmarstruijs/WikiTraveler/pull/50)–[#55](https://github.com/ingmarstruijs/WikiTraveler/pull/55)). Follow-ons: GitHub issues.  
+**Related:** [FEDERATED-AUTH.md](../FEDERATED-AUTH.md) · [PUBLIC-PEERS.md](../PUBLIC-PEERS.md) · [SECURITY.md](../../SECURITY.md)
 
 ## Implementation progress
 
@@ -228,7 +228,7 @@ Access remains a **separate artifact** (image, Vercel project, `versions.json` k
 
 ---
 
-### Phase 6 — Follow-ons
+### Follow-ons
 
 - Multi-node viewport fan-out; cluster API
 - Admin UI to approve peer client origins beyond bootstrap
