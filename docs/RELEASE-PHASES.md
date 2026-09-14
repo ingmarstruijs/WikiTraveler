@@ -28,7 +28,7 @@ Not blockers for `main` — enable when ready to publish externally. Same list l
 
 - [x] Set Actions variable `NPM_PUBLISH=true` for `@wikitraveler/sdk` npm publish
 - [x] Configure npm [Trusted Publishing](https://docs.npmjs.com/trusted-publishers/) on `@wikitraveler/sdk` for GitHub `ingmarstruijs/WikiTraveler` / workflow `release.yml` (`npm stage publish` only; approve with 2FA after each tag)
-- [ ] Upload Lens Release zip to the Chrome Web Store ([LENS.md](./LENS.md))
+- [ ] Upload `wikitraveler-lens-0.5.3.zip` to the Chrome Web Store after the `v0.5.3` GitHub Release ([LENS.md](./LENS.md#chrome-web-store-checklist-maintainers))
 - [ ] Confirm GHCR packages are **public** for new operators
 - [ ] Grow [public-peers.json](./public-peers.json) as operators opt in ([PUBLIC-PEERS.md](./PUBLIC-PEERS.md))
 

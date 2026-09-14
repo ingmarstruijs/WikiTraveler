@@ -29,7 +29,7 @@ This document is **directional**, not a commitment calendar. Items move up when 
 | Theme | Status |
 |-------|--------|
 | **npm SDK** | `NPM_PUBLISH=true`; Trusted Publishing on `@wikitraveler/sdk` for `release.yml` |
-| **Lens distribution** | Release zip + [LENS.md](./LENS.md) checklist; Store listing pending |
+| **Lens distribution** | `v0.5.3` GitHub Release zip; Chrome Web Store upload after tag ([LENS.md](./LENS.md#chrome-web-store-checklist-maintainers)) |
 | **Peer directory** | [PUBLIC-PEERS.md](./PUBLIC-PEERS.md) (empty until operators opt in) |
 | **GHCR visibility** | Confirm packages stay public for new operators |
 

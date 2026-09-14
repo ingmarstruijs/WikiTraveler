@@ -10,6 +10,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-09-14
+
+### Operator notes
+
+- **Patch release** — additive Prisma migrations since `0.5.2`: `integrator_clients` (`IntegratorClient` table) and `public_accessibility_reads` (`NodeSettings.publicAccessibilityReads`). Run `DATABASE_URL=… pnpm db:deploy` **before** deploying node.
+- Redeploy **Node + Access + www**. Reload unpacked Lens or install the GitHub Release zip `wikitraveler-lens-0.5.3.zip`. Gossip protocol unchanged (`2`).
+- Docker: `ghcr.io/ingmarstruijs/wikitraveler-node:0.5.3`, `wikitraveler-access:0.5.3`.
+- GitHub Release attaches `manifest.json`, Lens zip (`0.5.3`), and SDK dist. npm `@wikitraveler/sdk@0.5.3` stages via Trusted Publishing (`npm stage publish` → 2FA approve). See [RELEASES.md](docs/RELEASES.md).
+- **Chrome Web Store:** after the GitHub Release zip exists, upload `wikitraveler-lens-0.5.3.zip` per [LENS.md](docs/LENS.md#chrome-web-store-checklist-maintainers). Privacy policy URL: `https://www.wikitraveler.org/privacy`. Listing assets: [`docs/assets/chrome-web-store/`](docs/assets/chrome-web-store/).
+- Accessibility photo `url`s are now signed node links (`GET /api/photos/:id`). Access/SDK/widget keep using them as `<img src>` (keep the query string). No new env vars.
+
 ### Added
 
 - RFC-0003 M6 photo URL auth: accessibility JSON returns short-lived signed `GET /api/photos/:id` links instead of public storage URLs or data-URIs ([RFC-0003](docs/rfcs/0003-agency-sdk-service-auth.md), [#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92))
@@ -336,7 +347,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - All workspace packages aligned to version `0.2.0`
 - CodeQL via GitHub default setup (no custom `codeql.yml`)
 
-[Unreleased]: https://github.com/ingmarstruijs/WikiTraveler/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/ingmarstruijs/WikiTraveler/compare/v0.5.3...HEAD
+[0.5.3]: https://github.com/ingmarstruijs/WikiTraveler/releases/tag/v0.5.3
+[0.5.2]: https://github.com/ingmarstruijs/WikiTraveler/releases/tag/v0.5.2
+[0.5.1]: https://github.com/ingmarstruijs/WikiTraveler/releases/tag/v0.5.1
+[0.5.0]: https://github.com/ingmarstruijs/WikiTraveler/releases/tag/v0.5.0
 [0.4.0]: https://github.com/ingmarstruijs/WikiTraveler/releases/tag/v0.4.0
 [0.3.0]: https://github.com/ingmarstruijs/WikiTraveler/releases/tag/v0.3.0
 [0.2.1]: https://github.com/ingmarstruijs/WikiTraveler/releases/tag/v0.2.1
