@@ -2,7 +2,7 @@
 
 **Docs:** [Hub](./README.md) · [Operators](./OPERATORS.md) · [Upgrade](./UPGRADE.md) · [Docker](./DOCKER.md)
 
-Deploy the **node** (API + dashboard) and optionally **WikiTraveler Access** as separate Vercel projects. The node needs hosted PostgreSQL. Access is a frontend client — the **canonical hub** is `https://access.wikitraveler.org`; regional/branded Access is optional ([RFC-0002](./rfcs/0002-global-hub-access.md)). The public project site is a third project: [WWW.md](./WWW.md).
+Deploy the **node** (API + dashboard) and optionally **WikiTraveler Access** as separate Vercel projects. The node needs hosted PostgreSQL. Access is a frontend client — the **canonical hub** is `https://access.wikitraveler.org`; regional/branded Access is optional ([RFC-0002](./rfcs/0002-global-hub-access.md)). The public marketing site (`apps/www` → `www.wikitraveler.org`) is an optional third project.
 
 ```
 https://www.wikitraveler.org          → Public site (pitch, story, canonical privacy)
@@ -250,7 +250,7 @@ CORS_ORIGINS=https://access.wikitraveler.org,https://access-backup.example.org,h
 
 ### 6. Deploy the public website (www)
 
-Third Vercel project from the same repo: **Root Directory `apps/www`**, custom domains `www.wikitraveler.org` + apex redirect, Cloudflare **DNS only**. Full click-path, SSL/TLS, and verify commands: [WWW.md](./WWW.md).
+Optional third Vercel project from the same repo: **Root Directory `apps/www`**, domains `www.wikitraveler.org` + apex redirect to www, Cloudflare **DNS only** (grey cloud). Local: `pnpm dev:www`.
 
 ### 7. Connect other clients
 
@@ -290,6 +290,6 @@ All cron routes verify `Authorization: Bearer <CRON_SECRET>`.
 - [ ] Region configured in Admin → Region & data
 - [ ] At least one auditor promoted
 - [ ] WikiTraveler Access deployed with `NEXT_PUBLIC_NODE_API_URL`
-- [ ] Public www deployed (`wikitraveler-www` + Cloudflare grey-cloud DNS) — [WWW.md](./WWW.md)
+- [ ] Public www deployed (`wikitraveler-www` + Cloudflare grey-cloud DNS) when you want the marketing site
 - [ ] `/api/health` returns 200
 - [ ] Test audit from WikiTraveler Access appears on dashboard

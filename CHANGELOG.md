@@ -20,6 +20,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Traveler access JWTs expire in **1 hour** by default (`TRAVELER_ACCESS_TOKEN_TTL`); login/setup return `{ token, refreshToken, expiresIn, … }`
 - CORS fail-closed when `CORS_ORIGINS` / client origins are unset — only an explicit `*` allows all (local/dev) ([OPERATORS.md](docs/OPERATORS.md))
+- www `/story`: publish captions moved to [`publish-ready.md`](docs/story/publish-ready.md); screenshots and Mermaid diagrams open on click; added a one-napkin system diagram
+- www: external links (Access, GitHub, story markdown, footer) open in a new tab; same-site paths stay in-tab
 
 ### Fixed
 
@@ -28,6 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Removed
 
+- `docs/WWW.md` — marketing-site deploy notes; short www pointer remains in [VERCEL.md](docs/VERCEL.md)
 - Unused `POST`/`DELETE /api/properties/[id]/claim` and Access `claimProperty` / `unclaimProperty` helpers ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 
 ## [0.5.3] - 2026-09-14
@@ -44,7 +47,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 
 - RFC-0003 M6 photo URL auth: accessibility JSON returns short-lived signed `GET /api/photos/:id` links instead of public storage URLs or data-URIs ([RFC-0003](docs/rfcs/0003-agency-sdk-service-auth.md), [#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92))
-- Public site at [www.wikitraveler.org](https://www.wikitraveler.org): pitch, origin story, and canonical privacy policy (`apps/www`, [WWW.md](docs/WWW.md))
+- Public site at [www.wikitraveler.org](https://www.wikitraveler.org): pitch, origin story, and canonical privacy policy (`apps/www`)
 - Public privacy policy at `/privacy` on Node and Access (copies); Lens options and the Chrome Web Store use `https://www.wikitraveler.org/privacy` ([PRIVACY.md](docs/PRIVACY.md), [LENS.md](docs/LENS.md))
 - Chrome Web Store listing assets (1280×800 screenshots, small promo, marquee) in `docs/assets/chrome-web-store/` ([LENS.md](docs/LENS.md))
 - RFC-0003 M3–M5: SDK `mintIntegratorReadToken` / `resolveDataNode` / typed errors, agency-demo BFF (no traveler login), widget coverage/trust/Access deep-link UX, optional `publicAccessibilityReads`, operator issuer/CORS/revoke docs ([RFC-0003](docs/rfcs/0003-agency-sdk-service-auth.md), [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89))
@@ -52,8 +55,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
-- www Vercel build prebuilds `@wikitraveler/i18n` before `@wikitraveler/ui`, then runs the www `build` script so story/screenshot assets copy ([WWW.md](docs/WWW.md))
-- Origin story Mermaid architecture diagram renders on `/story` instead of a raw code fence ([WWW.md](docs/WWW.md))
+- www Vercel build prebuilds `@wikitraveler/i18n` before `@wikitraveler/ui`, then runs the www `build` script so story/screenshot assets copy
+- Origin story Mermaid architecture diagram renders on `/story` instead of a raw code fence
 - Lens node status renders connection text with DOM text nodes instead of `innerHTML`, so a typed node URL or node-info fields cannot be interpreted as HTML ([LENS.md](docs/LENS.md))
 - Bump `next` to `16.3.3` in Node and Access for critical Dependabot RCE advisories (Windows-hosted servers / Image Optimization AVIF)
 - Skip `output: "standalone"` on Vercel (Next 16.3 adapter ENOENT on `next-server.js.nft.json`; Docker still uses standalone) and opt out of immutable static assets so Preview Comments can deploy
@@ -63,8 +66,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Origin story contrast is Wheel the World only (proprietary AMS vs open sidecar), shorter ([WWW.md](docs/WWW.md))
-- Public www homepage uses the marketing layout: hero with Access screenshot, trust-tier cards, how-it-works, ecosystem, and contribution CTA; type matches Access (`--wt-font`); header GitHub/Access links open in a new tab with an external-link icon ([WWW.md](docs/WWW.md))
+- Origin story contrast is Wheel the World only (proprietary AMS vs open sidecar), shorter
+- Public www homepage uses the marketing layout: hero with Access screenshot, trust-tier cards, how-it-works, ecosystem, and contribution CTA; type matches Access (`--wt-font`); header GitHub/Access links open in a new tab with an external-link icon
 - Access property detail accessibility icons sit closer together on mobile and desktop ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
 - Docs hub is current-state only: removed ACCESS-UX, auditor-onboarding, federation-E2E plan, release-phases, and roadmap; auth lives in [FEDERATED-AUTH.md](docs/FEDERATED-AUTH.md) ([docs/README.md](docs/README.md))
 - Dev dependency: Vitest `3.2.x` → `4.1.11` (with Upstash mock constructor fixes for Vitest 4)

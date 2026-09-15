@@ -39,9 +39,14 @@ body:
     id: proposal
     attributes:
       label: Proposal
-      description: Wire format, API, or schema sketch (bullet list or JSON example)
+      description: Target design — wire format, API, or schema sketch (bullet list or JSON). Do not use M0–Mn / phase tables; track delivery on the RFC issue.
     validations:
       required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks
+      description: Highest-impact risks and mitigations (design constraints). Optional IDs (H1, S1, …) are fine.
   - type: textarea
     id: compat
     attributes:
@@ -64,6 +69,8 @@ body:
       label: Checklist
       options:
         - label: I read docs/rfcs/README.md and COMPATIBILITY.md
+          required: true
+        - label: This RFC is design-only (no milestone / phase schedule)
           required: true
         - label: I will update CHANGELOG + versions.json if protocol/schema numbers change
           required: true

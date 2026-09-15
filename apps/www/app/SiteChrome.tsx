@@ -127,10 +127,18 @@ export function SiteFooter() {
               <Link href="/privacy">Privacy</Link>
             </li>
             <li>
-              <a href={LINKS.accessibility}>Accessibility</a>
+              <a
+                href={LINKS.accessibility}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Accessibility
+              </a>
             </li>
             <li>
-              <a href={LINKS.issues}>Contact</a>
+              <a href={LINKS.issues} target="_blank" rel="noopener noreferrer">
+                Contact
+              </a>
             </li>
           </ul>
         </div>
