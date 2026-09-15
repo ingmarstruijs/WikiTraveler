@@ -11,6 +11,13 @@ import { labPubkeyFetchCandidates } from "@/lib/gossipLabUrls";
 const ROLE_RANK: Record<string, number> = { USER: 0, AUDITOR: 1, ADMIN: 2 };
 export type Role = "USER" | "AUDITOR" | "ADMIN";
 
+const HUMAN_ROLES = new Set(["USER", "AUDITOR", "ADMIN"]);
+
+/** Short-lived traveler / admin access JWT (H6). Refresh is opaque + DB-backed. */
+export const TRAVELER_ACCESS_TOKEN_TTL = "1h";
+export const TRAVELER_ACCESS_TOKEN_TTL_SECONDS = 60 * 60;
+export const TRAVELER_REFRESH_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
 // ---------------------------------------------------------------------------
 // Key material
 // ---------------------------------------------------------------------------
@@ -28,7 +35,10 @@ const JWT_SECRET = process.env.JWT_SECRET ?? "change-me-in-production";
 // ---------------------------------------------------------------------------
 // Sign — RS256 with NODE_PRIVATE_KEY when available, HS256 fallback for dev
 // ---------------------------------------------------------------------------
-export function signToken(payload: object, expiresIn = "30d"): string {
+export function signToken(
+  payload: object,
+  expiresIn: string | number = TRAVELER_ACCESS_TOKEN_TTL
+): string {
   const base = { ...(payload as Record<string, unknown>), homeNodeUrl: NODE_URL };
   if (PRIVATE_KEY) {
     return jwt.sign(base, PRIVATE_KEY, { algorithm: "RS256", expiresIn } as jwt.SignOptions);
@@ -111,8 +121,14 @@ export async function requireRole(req: NextRequest, minRole: Role = "USER"): Pro
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const payload = await verifyToken(auth.slice(7));
+    if (payload.typ === "refresh") {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
     const role = (payload.role as string | undefined)?.toUpperCase() ?? "USER";
     if (role === "INTEGRATOR_READ") {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+    if (!HUMAN_ROLES.has(role)) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
     if ((ROLE_RANK[role] ?? 0) < (ROLE_RANK[minRole] ?? 0)) {
@@ -149,9 +165,16 @@ export async function requireReadAccess(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const payload = await verifyToken(auth.slice(7));
+    if (payload.typ === "refresh") {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
     const role = (payload.role as string | undefined)?.toUpperCase() ?? "USER";
 
     if (role === "INTEGRATOR_READ") {
+      const { isIntegratorIssuerAllowed } = await import("@/lib/integratorIssuers");
+      if (!isIntegratorIssuerAllowed(payload.homeNodeUrl as string | undefined)) {
+        return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+      }
       const aud = payload.aud;
       if (aud != null && aud !== "sdk" && !(Array.isArray(aud) && aud.includes("sdk"))) {
         return NextResponse.json({ message: "Forbidden" }, { status: 403 });
@@ -167,6 +190,9 @@ export async function requireReadAccess(
       return null;
     }
 
+    if (!HUMAN_ROLES.has(role)) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
     if ((ROLE_RANK[role] ?? 0) < ROLE_RANK.USER) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
@@ -188,11 +214,14 @@ export async function getAuthUser(req: NextRequest): Promise<AuthUser | null> {
     const auth = req.headers.get("authorization") ?? "";
     if (!auth.startsWith("Bearer ")) return null;
     const payload = await verifyToken(auth.slice(7));
+    if (payload.typ === "refresh") return null;
+    const roleRaw = (payload.role as string | undefined)?.toUpperCase() ?? "USER";
+    if (roleRaw === "INTEGRATOR_READ" || !HUMAN_ROLES.has(roleRaw)) return null;
     const username = (payload.sub as string | undefined)?.trim().toLowerCase();
     if (!username) return null;
     return {
       username,
-      role: ((payload.role as string | undefined)?.toUpperCase() ?? "USER") as Role,
+      role: roleRaw as Role,
       homeNodeUrl: payload.homeNodeUrl as string | undefined,
     };
   } catch {

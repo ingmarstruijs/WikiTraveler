@@ -30,7 +30,7 @@ import {
   photosForRoomScope,
   type AuditPhotoRef,
 } from "../../lib/propertyFacts";
-import { invalidateMapPins } from "../../lib/accessApi";
+import { authFetch, invalidateMapPins } from "../../lib/accessApi";
 import { propertyHref } from "../../lib/propertyHref";
 import {
   loadAuditDraft,
@@ -522,11 +522,15 @@ export function AuditWizard({
     }
     setSubmitting(true);
     const photos = flattenPhotos(propertyPhotos, roomPhotos);
-    const res = await fetch(`${submitUrl}/api/properties/${encodeURIComponent(propertyId)}/accessibility`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ facts, photos, locale }),
-    });
+    const res = await authFetch(
+      submitUrl,
+      `${submitUrl}/api/properties/${encodeURIComponent(propertyId)}/accessibility`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ facts, photos, locale }),
+      }
+    );
     setSubmitting(false);
     if (!res.ok) {
       const d = (await res.json()) as { message?: string };

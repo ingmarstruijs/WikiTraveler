@@ -9,7 +9,7 @@ import { AuditWizard } from "./AuditWizard";
 import { clearAuth, persistAuth, readAuthToken } from "../../lib/authStorage";
 import { canContribute, roleFromToken } from "../../lib/userRole";
 import { propertyHref } from "../../lib/propertyHref";
-import { ENV_NODE_URL, type AuditPhotoItem } from "../../lib/accessApi";
+import { ENV_NODE_URL, authFetch, type AuditPhotoItem } from "../../lib/accessApi";
 import { findRecentAudit, removeRecentAudit, upsertRecentAudit } from "../../lib/recentAudits";
 import { useNodeOpenRegistration } from "../../hooks/useNodeOpenRegistration";
 import { useLocale } from "@wikitraveler/ui";
@@ -68,14 +68,20 @@ export default function FieldAuditForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: username.trim().toLowerCase(), password }),
       });
-      const data = await res.json() as { token?: string; username?: string; message?: string; role?: string };
+      const data = await res.json() as {
+        token?: string;
+        refreshToken?: string;
+        username?: string;
+        message?: string;
+        role?: string;
+      };
       if (!res.ok) { setAuthError(data.message ?? "Invalid credentials"); return; }
       if (!data.token) { setAuthError("No token returned from node."); return; }
       if (!canContribute((data.role ?? "USER").toUpperCase() as "USER" | "AUDITOR" | "ADMIN")) {
         setAuthError("Your account needs the AUDITOR or ADMIN role. Ask a node admin to upgrade you.");
         return;
       }
-      persistAuth(data.token, data.username ?? username.trim().toLowerCase(), nodeUrl);
+      persistAuth(data.token, data.username ?? username.trim().toLowerCase(), nodeUrl, data.refreshToken);
       setToken(data.token);
       setLoggedInAs(data.username ?? username);
     } catch {
@@ -170,10 +176,11 @@ export default function FieldAuditForm({
     let cancelled = false;
     setPropertyLoading(true);
 
-    fetch(`${url}/api/properties/${encodeURIComponent(propertyId)}/accessibility?locale=${locale}`, {
-      headers: { Authorization: `Bearer ${token}` },
-      cache: "no-store",
-    })
+    authFetch(
+      url,
+      `${url}/api/properties/${encodeURIComponent(propertyId)}/accessibility?locale=${locale}`,
+      { cache: "no-store" }
+    )
       .then(async (res) => {
         if (cancelled) return;
         if (res.status === 404) {

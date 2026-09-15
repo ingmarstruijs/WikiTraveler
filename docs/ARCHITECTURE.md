@@ -387,8 +387,6 @@ Cron endpoints are protected by `Authorization: Bearer <CRON_SECRET>` (injected 
 | GET | `/api/properties/[id]/accessibility` | USER, `integrator_read`, or optional public GET | Collapsed facts with tier; photo `url`s are signed `/api/photos/:id` links |
 | GET | `/api/photos/[id]` | Signed query or USER / `integrator_read` | Audit photo bytes — [FEDERATED-AUTH.md](./FEDERATED-AUTH.md#audit-photo-urls) |
 | POST | `/api/properties/[id]/accessibility` | AUDITOR | Submit audit (saves facts, triggers push + vision) |
-| POST | `/api/properties/[id]/claim` | AUDITOR | Claim property for current auditor (`409` if claimed by another; ADMIN may take over) |
-| DELETE | `/api/properties/[id]/claim` | AUDITOR | Clear claim (claimer or ADMIN) |
 | POST | `/api/properties/[id]/analyze` | AUDITOR | On-demand AI analysis |
 | POST | `/api/properties/[id]/external-ids` | AUDITOR | Add external ID mapping |
 | POST | `/api/import` | AUDITOR | Bulk import properties |
