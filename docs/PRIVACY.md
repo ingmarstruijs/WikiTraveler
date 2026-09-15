@@ -11,7 +11,7 @@ The same article is also served (no login) at:
 - `https://node-eu.wikitraveler.org/privacy`
 - `https://access.wikitraveler.org/privacy`
 
-Source: [`packages/ui/src/PrivacyPolicyArticle.tsx`](../packages/ui/src/PrivacyPolicyArticle.tsx). Site: [WWW.md](./WWW.md).
+Source: [`packages/ui/src/PrivacyPolicyArticle.tsx`](../packages/ui/src/PrivacyPolicyArticle.tsx). Live: [www.wikitraveler.org/privacy](https://www.wikitraveler.org/privacy).
 
 ## Operator notes
 
@@ -19,4 +19,4 @@ Source: [`packages/ui/src/PrivacyPolicyArticle.tsx`](../packages/ui/src/PrivacyP
 - Third-party node operators may keep a local `/privacy` copy or link to the canonical URL.
 - Security reports: [SECURITY.md](../SECURITY.md) — not a public GitHub issue.
 
-Related: [LENS.md](./LENS.md) · [OPERATORS.md](./OPERATORS.md) · [WWW.md](./WWW.md)
+Related: [LENS.md](./LENS.md) · [OPERATORS.md](./OPERATORS.md)

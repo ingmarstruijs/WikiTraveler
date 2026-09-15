@@ -9,4 +9,4 @@ Long-form writing about why WikiTraveler exists and how it was built.
 
 Screenshots used in the story live in [`../assets/screenshots/`](../assets/screenshots/).
 
-Published at [https://www.wikitraveler.org/story](https://www.wikitraveler.org/story) ([WWW.md](../WWW.md)).
+Published at [https://www.wikitraveler.org/story](https://www.wikitraveler.org/story).
