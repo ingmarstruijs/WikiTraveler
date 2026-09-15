@@ -17,6 +17,10 @@ import { fetchPropertyAccessibility } from "../lib/accessApi";
 import { saveAccessReturn } from "../lib/navigationReturn";
 import { AccessPageHero } from "../components/AccessPageHero";
 import { AccessibilityIconRow } from "../components/AccessibilityIconRow";
+import {
+  heroPhotoUrlFromAccessibility,
+  isSignedPhotoUrlStale,
+} from "../lib/signedPhotoUrl";
 
 const PLACEHOLDER_SRC = "/images/property-hero-placeholder.svg";
 
@@ -30,6 +34,13 @@ interface Props {
 
 function thumbSrc(place: SavedPlace): string {
   return place.imageUrl || PLACEHOLDER_SRC;
+}
+
+function needsHydrate(place: SavedPlace): boolean {
+  if (place.facts === undefined) return true;
+  if (place.imageUrl === undefined) return true;
+  if (place.imageUrl && isSignedPhotoUrlStale(place.imageUrl)) return true;
+  return false;
 }
 
 function matchesQuery(place: SavedPlace, q: string): boolean {
@@ -71,10 +82,8 @@ export function SavedTab({ homeNodeUrl, active = true, onAddLocation }: Props) {
     const controller = new AbortController();
 
     (async () => {
-      const needsHydrate = readSavedPlaces().filter(
-        (p) => p.imageUrl === undefined || p.facts === undefined
-      );
-      for (const place of needsHydrate) {
+      const needsHydrateList = readSavedPlaces().filter(needsHydrate);
+      for (const place of needsHydrateList) {
         if (cancelled) break;
         try {
           const data = await fetchPropertyAccessibility(
@@ -83,10 +92,7 @@ export function SavedTab({ homeNodeUrl, active = true, onAddLocation }: Props) {
             locale,
             controller.signal
           );
-          const url =
-            data.property.photos?.[0]?.url ??
-            data.auditPhotos?.photos?.[0]?.url ??
-            null;
+          const url = heroPhotoUrlFromAccessibility(data);
           const facts = (data.facts ?? []).map((f) => ({
             fieldName: f.fieldName,
             value: f.value,
@@ -100,8 +106,11 @@ export function SavedTab({ homeNodeUrl, active = true, onAddLocation }: Props) {
           }
         } catch {
           if (!cancelled && !controller.signal.aborted) {
+            const dropStale =
+              place.imageUrl != null && isSignedPhotoUrlStale(place.imageUrl);
             patchSavedPlace(place.id, {
-              imageUrl: place.imageUrl === undefined ? null : place.imageUrl,
+              imageUrl:
+                place.imageUrl === undefined || dropStale ? null : place.imageUrl,
               facts: place.facts ?? [],
             });
             setSaved(readSavedPlaces());
@@ -116,6 +125,28 @@ export function SavedTab({ homeNodeUrl, active = true, onAddLocation }: Props) {
     };
   }, [active, homeNodeUrl, locale]);
 
+  async function refreshThumb(place: SavedPlace) {
+    try {
+      const data = await fetchPropertyAccessibility(
+        place.nodeUrl || homeNodeUrl,
+        place.id,
+        locale
+      );
+      patchSavedPlace(place.id, {
+        imageUrl: heroPhotoUrlFromAccessibility(data),
+        facts:
+          place.facts ??
+          (data.facts ?? []).map((f) => ({
+            fieldName: f.fieldName,
+            value: f.value,
+          })),
+      });
+      setSaved(readSavedPlaces());
+    } catch {
+      patchSavedPlace(place.id, { imageUrl: null });
+      setSaved(readSavedPlaces());
+    }
+  }
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
     const filtered = saved.filter((p) => matchesQuery(p, q));
@@ -182,6 +213,10 @@ export function SavedTab({ homeNodeUrl, active = true, onAddLocation }: Props) {
                     src={thumbSrc(p)}
                     alt=""
                     loading="lazy"
+                    onError={() => {
+                      if (!p.imageUrl || p.imageUrl === PLACEHOLDER_SRC) return;
+                      void refreshThumb(p);
+                    }}
                   />
                 </span>
                 <div className="fk-saved-card__main">

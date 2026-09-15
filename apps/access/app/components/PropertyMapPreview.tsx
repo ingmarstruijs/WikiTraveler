@@ -11,8 +11,12 @@ import { saveAccessReturn, type AccessReturnState } from "../lib/navigationRetur
 import { patchMapBrowseSession } from "../lib/mapBrowseSession";
 import { readAuthToken } from "../lib/authStorage";
 import { canContribute, roleFromToken } from "../lib/userRole";
-import { readSavedPlaces } from "../lib/savedPlaces";
+import { patchSavedPlace, readSavedPlaces } from "../lib/savedPlaces";
 import { AccessibilityIconRow } from "./AccessibilityIconRow";
+import {
+  heroPhotoUrlFromAccessibility,
+  isSignedPhotoUrlStale,
+} from "../lib/signedPhotoUrl";
 
 const PLACEHOLDER_SRC = "/images/property-hero-placeholder.svg";
 
@@ -50,7 +54,9 @@ function topHighlights(pin: MapPin, max = 3): Array<{ field: string; value: stri
 
 function savedImageFor(id: string): string | null {
   const place = readSavedPlaces().find((p) => p.id === id);
-  return place?.imageUrl || null;
+  const url = place?.imageUrl;
+  if (!url || isSignedPhotoUrlStale(url)) return null;
+  return url;
 }
 
 interface Props {
@@ -98,9 +104,12 @@ export function PropertyMapPreview({
 
     void fetchPropertyAccessibility(propertyNodeUrl, pin.id, locale, controller.signal)
       .then((data) => {
-        const url =
-          data.property.photos?.[0]?.url ?? data.auditPhotos?.photos?.[0]?.url ?? null;
-        if (!cancelled) setImageUrl(url || PLACEHOLDER_SRC);
+        const url = heroPhotoUrlFromAccessibility(data);
+        if (cancelled) return;
+        setImageUrl(url || PLACEHOLDER_SRC);
+        if (url && readSavedPlaces().some((p) => p.id === pin.id)) {
+          patchSavedPlace(pin.id, { imageUrl: url });
+        }
       })
       .catch(() => {
         if (!cancelled && !controller.signal.aborted) setImageUrl(PLACEHOLDER_SRC);

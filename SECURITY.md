@@ -33,7 +33,8 @@ Pay extra attention when reviewing changes touching:
 | `apps/node/app/api/cron/` | Unauthenticated cron if `CRON_SECRET` misconfigured |
 | `POST /api/auth/*` | Account takeover, brute force |
 | Admin backup/restore | Data exfiltration or destructive restore |
-| CORS / client origins (`CORS_ORIGINS`, `CLIENT_ORIGINS`, `ACCESS_PUBLIC_URL`) | Browser clients (Access, Lens, SDK) calling `/api/*`; `proxy.ts` reflects trusted `Origin` only — over-broad allowlists or `*` in production expand blast radius of stolen JWTs — see [RFC-0002](docs/rfcs/0002-global-hub-access.md) |
+| CORS / client origins (`CORS_ORIGINS`, `CLIENT_ORIGINS`, `ACCESS_PUBLIC_URL`) | Browser clients (Access, Lens, SDK) calling `/api/*`; `proxy.ts` reflects trusted `Origin` only — unset is fail-closed; over-broad allowlists or `*` in production expand blast radius of stolen JWTs — see [RFC-0002](docs/rfcs/0002-global-hub-access.md) |
+| Integrator issuer allowlist (`INTEGRATOR_ISSUERS`) | When set, data nodes accept `integrator_read` only from listed issuer URLs; unset keeps accept-any verified issuer |
 | Photo URLs (`/api/photos`) | Client JSON must not leak storage URLs or data-URIs — [FEDERATED-AUTH.md](docs/FEDERATED-AUTH.md#audit-photo-urls) |
 
 ## Operator responsibilities

@@ -10,6 +10,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Opaque traveler refresh tokens (`RefreshSession`, `POST /api/auth/refresh`) with 30-day lifetime; Access, Lens, and Node Admin persist refresh and retry once on 401 ([FEDERATED-AUTH.md](docs/FEDERATED-AUTH.md))
+- Optional `INTEGRATOR_ISSUERS` allowlist for `integrator_read` on data nodes ([FEDERATED-AUTH.md](docs/FEDERATED-AUTH.md))
+- Upstash rate limits for accessibility GET and peers/resolve GET when Redis is configured
+
+### Changed
+
+- Traveler access JWTs expire in **1 hour** by default (`TRAVELER_ACCESS_TOKEN_TTL`); login/setup return `{ token, refreshToken, expiresIn, … }`
+- CORS fail-closed when `CORS_ORIGINS` / client origins are unset — only an explicit `*` allows all (local/dev) ([OPERATORS.md](docs/OPERATORS.md))
+
+### Fixed
+
+- Access Saved favorites re-mint expired signed photo thumbnails instead of showing unauthorized images ([FEDERATED-AUTH.md](docs/FEDERATED-AUTH.md))
+- Access 401 retry refreshes against the home node (not the peer data URL) and single-flights concurrent refresh rotates
+
+### Removed
+
+- Unused `POST`/`DELETE /api/properties/[id]/claim` and Access `claimProperty` / `unclaimProperty` helpers ([ARCHITECTURE.md](docs/ARCHITECTURE.md))
+
 ## [0.5.3] - 2026-09-14
 
 ### Operator notes

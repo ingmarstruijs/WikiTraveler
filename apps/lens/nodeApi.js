@@ -42,6 +42,71 @@ async function nodeFetch(url, options = {}) {
 }
 
 /**
+ * Exchange opaque refresh for a new access JWT. Returns true if storage was updated.
+ * @param {string} homeNodeUrl
+ */
+async function refreshLensAccessSession(homeNodeUrl) {
+  const items = await new Promise((resolve) =>
+    chrome.storage.sync.get({ wtRefresh: null, wtUsername: "", nodeUrl: homeNodeUrl }, resolve)
+  );
+  if (!items.wtRefresh) return false;
+  try {
+    const res = await nodeFetch(`${String(homeNodeUrl).replace(/\/$/, "")}/api/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken: items.wtRefresh }),
+      timeoutMs: 8000,
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    if (!data?.token) return false;
+    await new Promise((resolve) =>
+      chrome.storage.sync.set(
+        {
+          wtToken: data.token,
+          wtRefresh: data.refreshToken ?? items.wtRefresh,
+          wtUsername: data.username ?? items.wtUsername,
+        },
+        resolve
+      )
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * nodeFetch with Bearer from storage; on 401 refresh once against home node then retry.
+ * @param {string} homeNodeUrl
+ * @param {string} url
+ * @param {{ method?: string, headers?: Record<string, string>, body?: string | null, timeoutMs?: number }} [options]
+ */
+async function authNodeFetch(homeNodeUrl, url, options = {}) {
+  const items = await new Promise((resolve) =>
+    chrome.storage.sync.get({ wtToken: null }, resolve)
+  );
+  const headers = { ...(options.headers || {}) };
+  if (items.wtToken) headers.Authorization = `Bearer ${items.wtToken}`;
+  const res = await nodeFetch(url, { ...options, headers });
+  if (res.status !== 401) return res;
+
+  const ok = await refreshLensAccessSession(homeNodeUrl);
+  if (!ok) {
+    await new Promise((resolve) =>
+      chrome.storage.sync.remove(["wtToken", "wtRefresh", "wtUsername"], resolve)
+    );
+    return res;
+  }
+  const next = await new Promise((resolve) =>
+    chrome.storage.sync.get({ wtToken: null }, resolve)
+  );
+  const retryHeaders = { ...(options.headers || {}) };
+  if (next.wtToken) retryHeaders.Authorization = `Bearer ${next.wtToken}`;
+  return nodeFetch(url, { ...options, headers: retryHeaders });
+}
+
+/**
  * Request optional host access so the service worker can reach production nodes
  * and mesh peers (user gesture required — call from Save / Sign in).
  * @param {string} nodeUrl

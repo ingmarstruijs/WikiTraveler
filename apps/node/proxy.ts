@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
-import { getClientIp, getRateLimitProfile } from "@/lib/rateLimitRoutes";
+import { getClientIp, getRateLimitProfile, getReadRateLimitKey } from "@/lib/rateLimitRoutes";
 import { decodeAuthCookie, looksLikeJwt } from "@/lib/authCookie";
 import { canAccessDashboard, roleFromToken } from "@/lib/userRole";
 import { applyCorsHeaders } from "@/lib/corsOrigins";
@@ -17,18 +17,20 @@ const SKIP_EXACT = new Set(["/login", "/register", "/setup", "/accessibility", "
 let authLimiter: Ratelimit | null = null;
 let auditLimiter: Ratelimit | null = null;
 let signalLimiter: Ratelimit | null = null;
+let readLimiter: Ratelimit | null = null;
 
 function getLimiters(): {
   auth: Ratelimit | null;
   audit: Ratelimit | null;
   signal: Ratelimit | null;
+  read: Ratelimit | null;
 } {
-  if (authLimiter && auditLimiter && signalLimiter) {
-    return { auth: authLimiter, audit: auditLimiter, signal: signalLimiter };
+  if (authLimiter && auditLimiter && signalLimiter && readLimiter) {
+    return { auth: authLimiter, audit: auditLimiter, signal: signalLimiter, read: readLimiter };
   }
   const redis = createUpstashRedis();
   if (!redis) {
-    return { auth: null, audit: null, signal: null };
+    return { auth: null, audit: null, signal: null, read: null };
   }
   authLimiter = new Ratelimit({
     redis,
@@ -45,7 +47,12 @@ function getLimiters(): {
     limiter: Ratelimit.slidingWindow(10, "60 s"),
     prefix: "wt:rl:signal",
   });
-  return { auth: authLimiter, audit: auditLimiter, signal: signalLimiter };
+  readLimiter = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(60, "60 s"),
+    prefix: "wt:rl:read",
+  });
+  return { auth: authLimiter, audit: auditLimiter, signal: signalLimiter, read: readLimiter };
 }
 
 function withApiCors(req: NextRequest, res: NextResponse): NextResponse {
@@ -69,8 +76,8 @@ export async function proxy(req: NextRequest) {
 
   // ── Rate limiting ─────────────────────────────────────────────────────────
   // Only when UPSTASH_REDIS_REST_* or Vercel KV_REST_API_* are set.
-  const { auth: al, audit: audl, signal: sigl } = getLimiters();
-  if (al && audl && sigl) {
+  const { auth: al, audit: audl, signal: sigl, read: rdl } = getLimiters();
+  if (al && audl && sigl && rdl) {
     const profile = getRateLimitProfile(pathname, method);
     const limiter =
       profile === "auth"
@@ -79,10 +86,13 @@ export async function proxy(req: NextRequest) {
           ? audl
           : profile === "signal"
             ? sigl
-            : null;
+            : profile === "read"
+              ? rdl
+              : null;
     if (limiter) {
-      const ip = getClientIp(req.headers);
-      const { success, reset } = await limiter.limit(ip);
+      const key =
+        profile === "read" ? getReadRateLimitKey(req.headers) : getClientIp(req.headers);
+      const { success, reset } = await limiter.limit(key);
       if (!success) {
         const retryAfter = Math.ceil((reset - Date.now()) / 1000);
         const res = NextResponse.json(

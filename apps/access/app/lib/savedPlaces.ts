@@ -12,7 +12,7 @@ export type SavedPlace = {
   location: string;
   nodeUrl: string;
   savedAt: string;
-  /** Hero / first audit photo URL; `null` means checked with no photo. */
+  /** Hero / first audit photo URL (signed; may expire — Saved tab refreshes). `null` = checked, no photo. */
   imageUrl?: string | null;
   category?: SavedPlaceCategory;
   facts?: SavedPlaceFact[];

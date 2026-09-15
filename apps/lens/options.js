@@ -225,7 +225,12 @@ async function doAuth(mode) {
     }
 
     chrome.storage.sync.set(
-      { wtToken: data.token, wtUsername: data.username ?? username, nodeUrl },
+      {
+        wtToken: data.token,
+        wtRefresh: data.refreshToken ?? null,
+        wtUsername: data.username ?? username,
+        nodeUrl,
+      },
       () => {
         renderAuthState(data.username ?? username);
         document.getElementById("password").value = "";
@@ -249,7 +254,7 @@ loginBtn.addEventListener("click", () => doAuth("login"));
 registerBtn.addEventListener("click", () => doAuth("register"));
 
 logoutBtn.addEventListener("click", () => {
-  chrome.storage.sync.remove(["wtToken", "wtUsername"], () => {
+  chrome.storage.sync.remove(["wtToken", "wtRefresh", "wtUsername"], () => {
     renderAuthState("");
     setStatus(wtT("ui.signOut", currentLocale), "#059669");
     clearStatusSoon(2000);

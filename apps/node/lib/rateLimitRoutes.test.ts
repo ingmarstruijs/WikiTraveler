@@ -1,9 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { getClientIp, getRateLimitProfile } from "./rateLimitRoutes";
+import {
+  getClientIp,
+  getRateLimitProfile,
+  getReadRateLimitKey,
+} from "./rateLimitRoutes";
 
 describe("getRateLimitProfile", () => {
   it("matches POST /api/auth/login as auth", () => {
     expect(getRateLimitProfile("/api/auth/login", "POST")).toBe("auth");
+  });
+
+  it("matches POST /api/auth/refresh as auth", () => {
+    expect(getRateLimitProfile("/api/auth/refresh", "POST")).toBe("auth");
   });
 
   it("matches POST /api/auth/integrator/token as auth", () => {
@@ -20,7 +28,14 @@ describe("getRateLimitProfile", () => {
     ).toBe("audit");
   });
 
-  it("ignores GET requests", () => {
+  it("matches GET accessibility and resolve as read", () => {
+    expect(
+      getRateLimitProfile("/api/properties/prop-1/accessibility", "GET")
+    ).toBe("read");
+    expect(getRateLimitProfile("/api/peers/resolve", "GET")).toBe("read");
+  });
+
+  it("ignores GET login", () => {
     expect(getRateLimitProfile("/api/auth/login", "GET")).toBeNull();
   });
 
@@ -42,5 +57,36 @@ describe("getClientIp", () => {
 
   it("returns anonymous when no IP headers are present", () => {
     expect(getClientIp(new Headers())).toBe("anonymous");
+  });
+});
+
+describe("getReadRateLimitKey", () => {
+  it("uses IP when no Authorization", () => {
+    const headers = new Headers({ "x-real-ip": "1.1.1.1" });
+    expect(getReadRateLimitKey(headers)).toBe("1.1.1.1");
+  });
+
+  it("buckets integrator JWT by sub", () => {
+    const payload = Buffer.from(
+      JSON.stringify({ role: "integrator_read", sub: "wt_ic_abc" })
+    ).toString("base64url");
+    const token = `hdr.${payload}.sig`;
+    const headers = new Headers({
+      authorization: `Bearer ${token}`,
+      "x-real-ip": "1.1.1.1",
+    });
+    expect(getReadRateLimitKey(headers)).toBe("integrator:wt_ic_abc");
+  });
+
+  it("uses IP for traveler JWT", () => {
+    const payload = Buffer.from(
+      JSON.stringify({ role: "USER", sub: "alice" })
+    ).toString("base64url");
+    const token = `hdr.${payload}.sig`;
+    const headers = new Headers({
+      authorization: `Bearer ${token}`,
+      "x-real-ip": "2.2.2.2",
+    });
+    expect(getReadRateLimitKey(headers)).toBe("2.2.2.2");
   });
 });

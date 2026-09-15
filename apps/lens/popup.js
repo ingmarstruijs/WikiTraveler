@@ -81,7 +81,7 @@ async function searchForProperty(name, nodeUrl, coords, headers = {}) {
       const results = await cachedFetch(
         key,
         async () => {
-          const res = await nodeFetch(`${nodeUrl}/api/properties?q=${encodeURIComponent(q)}`, {
+          const res = await authNodeFetch(nodeUrl, `${nodeUrl}/api/properties?q=${encodeURIComponent(q)}`, {
             headers,
             timeoutMs: 6000,
           });
@@ -469,7 +469,7 @@ function initSearchSection(nodeUrl, authHeaders, locale, onSelect) {
         const properties = await cachedFetch(
           key,
           async () => {
-            const res = await nodeFetch(`${nodeUrl}/api/properties?q=${encodeURIComponent(q)}`, {
+            const res = await authNodeFetch(nodeUrl, `${nodeUrl}/api/properties?q=${encodeURIComponent(q)}`, {
               headers: authHeaders,
               timeoutMs: 6000,
             });
@@ -669,7 +669,14 @@ function showLoginForm(content, locale, nodeUrl = DEFAULT_NODE_URL, nodeHealth =
           return;
         }
         await new Promise((resolve) =>
-          chrome.storage.sync.set({ wtToken: data.token, wtUsername: username }, resolve)
+          chrome.storage.sync.set(
+            {
+              wtToken: data.token,
+              wtRefresh: data.refreshToken ?? null,
+              wtUsername: username,
+            },
+            resolve
+          )
         );
         init();
       } catch {
@@ -712,7 +719,8 @@ async function fetchAndRender(resolvedId, displayName, content, nodeUrl, authHea
     data = await cachedFetch(
       key,
       async () => {
-        const res = await nodeFetch(
+        const res = await authNodeFetch(
+          nodeUrl,
           `${nodeUrl}/api/properties/${encodeURIComponent(resolvedId)}/accessibility`,
           { headers: authHeaders, timeoutMs: 6000 }
         );
@@ -731,7 +739,7 @@ async function fetchAndRender(resolvedId, displayName, content, nodeUrl, authHea
   }
 
   if (status === 401 || status === 403) {
-    await new Promise((resolve) => chrome.storage.sync.remove(["wtToken"], resolve));
+    await new Promise((resolve) => chrome.storage.sync.remove(["wtToken", "wtRefresh"], resolve));
     invalidateCache();
     showLoginForm(content, locale, nodeUrl);
     return;
@@ -942,7 +950,7 @@ function openMenu() {
       }
       if (item.action === "signout") {
         await new Promise((resolve) =>
-          chrome.storage.sync.remove(["wtToken", "wtUsername"], resolve)
+          chrome.storage.sync.remove(["wtToken", "wtRefresh", "wtUsername"], resolve)
         );
         init();
         return;
@@ -1111,7 +1119,7 @@ async function init() {
     signOutBtn.style.display = "block";
     signOutBtn.onclick = async () => {
       await new Promise((resolve) =>
-        chrome.storage.sync.remove(["wtToken", "wtUsername"], resolve)
+        chrome.storage.sync.remove(["wtToken", "wtRefresh", "wtUsername"], resolve)
       );
       signOutBtn.style.display = "none";
       if (userLine) userLine.textContent = "";

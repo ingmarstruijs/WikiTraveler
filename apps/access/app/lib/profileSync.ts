@@ -5,7 +5,7 @@ import {
   writeA11yPreferences,
   type A11yPreferenceKey,
 } from "./a11yPreferences";
-import { getAuthHeaders, getStoredNodeUrl } from "./accessApi";
+import { authFetch, getStoredNodeUrl } from "./accessApi";
 import { AUTH_CHANGED_EVENT, readAuthToken } from "./authStorage";
 import {
   readSavedPlaces,
@@ -73,10 +73,9 @@ async function fetchJson<T>(path: string, init?: RequestInit): Promise<T | null>
   if (!token) return null;
   const nodeUrl = getStoredNodeUrl();
   try {
-    const res = await fetch(`${nodeUrl}${path}`, {
+    const res = await authFetch(nodeUrl, `${nodeUrl}${path}`, {
       ...init,
       headers: {
-        ...getAuthHeaders(),
         ...(init?.body ? { "Content-Type": "application/json" } : {}),
         ...(init?.headers ?? {}),
       },
