@@ -29,11 +29,11 @@ export function PrivacyPolicyArticle() {
         WikiTraveler is open-source software for community-verified stay accessibility facts.
         The <strong>operator of the WikiTraveler node you connect to</strong> is the data controller
         for that node. The project hub is{" "}
-        <a href="https://node-eu.wikitraveler.org" style={link}>
+        <a href="https://node-eu.wikitraveler.org" style={link} target="_blank" rel="noopener noreferrer">
           node-eu.wikitraveler.org
         </a>{" "}
         (Access:{" "}
-        <a href="https://access.wikitraveler.org" style={link}>
+        <a href="https://access.wikitraveler.org" style={link} target="_blank" rel="noopener noreferrer">
           access.wikitraveler.org
         </a>
         ). The canonical policy URL is{" "}
@@ -134,11 +134,11 @@ export function PrivacyPolicyArticle() {
         <p style={p}>
           You can sign out (clears the Lens/Access token on that device), ask the node operator to
           correct or delete your account, or{" "}
-          <a href={ISSUES_URL} style={link}>
+          <a href={ISSUES_URL} style={link} target="_blank" rel="noopener noreferrer">
             open a project issue
           </a>{" "}
           for the hub. Security reports go through{" "}
-          <a href={SECURITY_URL} style={link}>
+          <a href={SECURITY_URL} style={link} target="_blank" rel="noopener noreferrer">
             private vulnerability reporting
           </a>
           , not a public issue.

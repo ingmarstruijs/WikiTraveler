@@ -14,7 +14,7 @@ App: [`apps/www`](../apps/www). Local: `pnpm dev:www` → http://localhost:3002
 | Path | Content |
 |------|---------|
 | `/` | Marketing homepage (hero, trust tiers, how it works, ecosystem) |
-| `/story` | Renders [`docs/story/the-hotel-said-accessible-that-wasnt-enough.md`](./story/the-hotel-said-accessible-that-wasnt-enough.md), including the Mermaid architecture diagram |
+| `/story` | Renders [`docs/story/the-hotel-said-accessible-that-wasnt-enough.md`](./story/the-hotel-said-accessible-that-wasnt-enough.md) (screenshots and Mermaid open on click); captions live in [`publish-ready.md`](./story/publish-ready.md) |
 | `/privacy` | Canonical privacy policy (Node and Access keep copies at `/privacy`) |
 
 ## Zone layout

@@ -19,10 +19,20 @@ export default function HomePage() {
               the world. Verified by people, powered by a global network.
             </p>
             <div className="wt-www-actions">
-              <a className="wt-www-btn wt-www-btn--primary" href={LINKS.access}>
+              <a
+                className="wt-www-btn wt-www-btn--primary"
+                href={LINKS.access}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Explore Access <span aria-hidden="true">→</span>
               </a>
-              <a className="wt-www-btn wt-www-btn--ghost" href={LINKS.github}>
+              <a
+                className="wt-www-btn wt-www-btn--ghost"
+                href={LINKS.github}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <GitHubIcon />
                 View on GitHub
               </a>
@@ -101,7 +111,12 @@ export default function HomePage() {
             <ul className="wt-www-eco-grid">
               {ECOSYSTEM.map((item) => (
                 <li key={item.title}>
-                  <a className="wt-www-card wt-www-card--eco" href={item.href}>
+                  <a
+                    className="wt-www-card wt-www-card--eco"
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <span className="wt-www-card__icon" aria-hidden="true">
                       {item.icon}
                     </span>
@@ -126,7 +141,12 @@ export default function HomePage() {
               and what’s not.
             </p>
             <div className="wt-www-actions">
-              <a className="wt-www-btn wt-www-btn--primary" href={LINKS.access}>
+              <a
+                className="wt-www-btn wt-www-btn--primary"
+                href={LINKS.access}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Try Access now <span aria-hidden="true">→</span>
               </a>
               <Link className="wt-www-btn wt-www-btn--ghost" href="/story">
@@ -150,7 +170,12 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-          <a className="wt-www-btn wt-www-btn--on-dark" href={LINKS.contributing}>
+          <a
+            className="wt-www-btn wt-www-btn--on-dark"
+            href={LINKS.contributing}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Get started <span aria-hidden="true">→</span>
           </a>
         </div>

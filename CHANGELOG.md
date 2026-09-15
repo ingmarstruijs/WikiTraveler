@@ -20,6 +20,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Traveler access JWTs expire in **1 hour** by default (`TRAVELER_ACCESS_TOKEN_TTL`); login/setup return `{ token, refreshToken, expiresIn, … }`
 - CORS fail-closed when `CORS_ORIGINS` / client origins are unset — only an explicit `*` allows all (local/dev) ([OPERATORS.md](docs/OPERATORS.md))
+- www `/story`: publish captions moved to [`publish-ready.md`](docs/story/publish-ready.md); screenshots and Mermaid diagrams open on click; added a one-napkin system diagram ([WWW.md](docs/WWW.md))
+- www: external links (Access, GitHub, story markdown, footer) open in a new tab; same-site paths stay in-tab
 
 ### Fixed
 
