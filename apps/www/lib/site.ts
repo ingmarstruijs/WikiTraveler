@@ -11,7 +11,7 @@ export const LINKS = {
   github: "https://github.com/ingmarstruijs/WikiTraveler",
   docs: "https://github.com/ingmarstruijs/WikiTraveler/blob/main/docs/README.md",
   contributing: "https://github.com/ingmarstruijs/WikiTraveler/blob/main/CONTRIBUTING.md",
-  lensRelease: "https://github.com/ingmarstruijs/WikiTraveler/releases/latest",
+  lensRelease: "https://chromewebstore.google.com/detail/wikitraveler-lens/bkkbidghpfkojnhhjnmddegkiopjbkho",
   changelog: "https://github.com/ingmarstruijs/WikiTraveler/blob/main/CHANGELOG.md",
   sdk: "https://www.npmjs.com/package/@wikitraveler/sdk",
   issues: "https://github.com/ingmarstruijs/WikiTraveler/issues",
