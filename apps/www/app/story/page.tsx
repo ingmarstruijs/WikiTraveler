@@ -5,7 +5,7 @@ import { StoryArticle } from "../StoryArticle";
 export const metadata = {
   title: "The hotel said “accessible.” That wasn’t enough.",
   description:
-    "Origin story of WikiTraveler: Maurice, sidecar UX, and building a federated accessibility commons for stays.",
+    "Origin story of WikiTraveler: sidecar UX, a federated accessibility commons for stays, and why the toolkit stays open to reuse.",
 };
 
 export default function StoryPage() {

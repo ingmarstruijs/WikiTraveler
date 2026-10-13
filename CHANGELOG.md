@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Origin story: Ongehinderd instead of Wheel the World contrast; shorter “reuse, don’t build my community” close; Lens links to Chrome Web Store; dates include years ([WWW.md](docs/WWW.md))
+
 ## [0.5.3] - 2026-09-14
 
 ### Operator notes
