@@ -358,6 +358,21 @@ model User {
   preferencesUpdatedAt   DateTime   @default(now())
   favoritesUpdatedAt     DateTime   @default(now())
   favorites              Favorite[]
+  refreshSessions        RefreshSession[]
+}
+
+/// Opaque traveler refresh tokens (H6) — hashed at rest; home-node only.
+model RefreshSession {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 // ---------------------------------------------------------------------------

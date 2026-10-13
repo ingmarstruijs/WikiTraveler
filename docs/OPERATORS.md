@@ -90,8 +90,9 @@ Tracking: [#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89) · [#92
 - [ ] Stable `NODE_ID` and public `NODE_URL`
 - [ ] RS256 keypair (`NODE_PRIVATE_KEY` / `NODE_PUBLIC_KEY`)
 - [ ] `CRON_SECRET` for cron routes (Vercel required; recommended for Docker)
-- [ ] `CORS_ORIGINS` / `CLIENT_ORIGINS` allow the **canonical hub** (`https://access.wikitraveler.org`), any **backup / branded** Access origins, Lens `chrome-extension://…` (when you know the Store/extension ID), and SDK embed origins — see [RFC-0002](./rfcs/0002-global-hub-access.md)
+- [ ] `CORS_ORIGINS` / `CLIENT_ORIGINS` allow the **canonical hub** (`https://access.wikitraveler.org`), any **backup / branded** Access origins, Lens `chrome-extension://…` (when you know the Store/extension ID), and SDK embed origins — see [RFC-0002](./rfcs/0002-global-hub-access.md). Unset CORS is fail-closed (no allow-all).
 - [ ] Optional `ACCESS_PUBLIC_URL` if this node advertises a preferred Access on `/api/nodeinfo` (hubs/directory only — **not** automatic CORS trust from gossip)
+- [ ] Optional `INTEGRATOR_ISSUERS` on public **data** nodes (comma issuer `NODE_URL`s) so only listed issuers’ `integrator_read` JWTs are accepted
 - [ ] Rate limiting via Upstash (recommended for public nodes) — see [VERCEL.md](./VERCEL.md)
 
 **Never in production:**
@@ -106,7 +107,7 @@ Report vulnerabilities: [SECURITY.md](../SECURITY.md) (private reporting, not pu
 ### 2. Database
 
 - [ ] PostgreSQL provisioned (Neon, Supabase, self-hosted, or Compose)
-- [ ] `pnpm db:deploy` applied once before first app start
+- [ ] `pnpm db:deploy` applied once before first app start (includes `RefreshSession` for traveler refresh tokens)
 - [ ] Backups configured (provider snapshots or Admin gzip export)
 
 ### 3. Deploy the node

@@ -394,7 +394,7 @@ Full backup **replaces the entire database** on restore — do not use it for a 
 |---------|-----|
 | `Cannot find module 'next/dist/pages/_app'` | Corrupted `node_modules` — delete `node_modules` and run `pnpm install` |
 | Map is empty after start | Complete `/setup`, then **Load sample data** in Admin or run `pnpm node:region --preset eindhoven && pnpm db:seed` |
-| WikiTraveler Access CORS errors | Set `CORS_ORIGINS=*` in `.env` (fine for local dev) |
+| WikiTraveler Access CORS errors | Set `CORS_ORIGINS=*` in `.env` for local allow-all (explicit `*` only — unset is fail-closed) |
 | Properties missing from map | `pnpm geocode:missing` |
 | Audit wizard shows no fields | `pnpm exec tsx scripts/seed-fields.ts` |
 | Port 5432 in use | Set `POSTGRES_HOST_PORT=5433` in `.env`, update `DATABASE_URL`, recreate the postgres container |

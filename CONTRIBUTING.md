@@ -18,7 +18,7 @@ Thank you for helping build open, federated accessibility data. This document co
 |------|----------------|
 | Bug fix | Issue + PR with repro steps |
 | Feature | Issue for discussion if it touches gossip, auth, or schema |
-| RFC | Federation-impacting design — [docs/rfcs/](docs/rfcs/README.md) + **RFC** issue template |
+| RFC | Federation-impacting **design** — [docs/rfcs/](docs/rfcs/README.md) + **RFC** issue template (no milestone tables in the RFC itself) |
 | Documentation | `docs/` or README — follow the [docs hub](docs/README.md) structure |
 | Translation | `packages/i18n/src/locales/` |
 | Operator runbooks | `docs/OPERATORS.md`, `UPGRADE.md`, `DOCKER.md`, `VERCEL.md` |

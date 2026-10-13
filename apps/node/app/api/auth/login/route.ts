@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { signToken } from "@/lib/auth";
-
+import { issueAuthSession } from "@/lib/refreshSession";
+import type { Role } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
+
 /**
  * POST /api/auth/login
- * Exchange username + password for a 30-day RS256 JWT.
- * The JWT contains { sub: username, homeNodeUrl, role: "auditor" }.
+ * Exchange username + password for a short-lived access JWT + opaque refresh token.
  */
 export async function POST(req: Request) {
   let body: { username?: string; password?: string };
@@ -40,6 +40,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
   }
 
-  const token = signToken({ sub: username, role: user.role });
-  return NextResponse.json({ token, username, role: user.role });
+  const session = await issueAuthSession({
+    id: user.id,
+    username: user.username,
+    role: user.role as Role,
+  });
+  return NextResponse.json(session);
 }

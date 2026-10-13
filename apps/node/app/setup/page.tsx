@@ -41,6 +41,7 @@ export default function SetupPage() {
       });
       const data = (await res.json()) as {
         token?: string;
+        refreshToken?: string;
         username?: string;
         message?: string;
       };
@@ -50,10 +51,8 @@ export default function SetupPage() {
         return;
       }
 
-      // Store the token and go straight to the dashboard
-      const maxAge = 30 * 24 * 60 * 60;
-      document.cookie = `wt_token=${encodeURIComponent(data.token!)}; path=/; max-age=${maxAge}; SameSite=Lax`;
-      sessionStorage.setItem("wt_node_token", data.token!);
+      const { persistNodeAuth } = await import("../../lib/persistNodeAuth");
+      persistNodeAuth(data.token!, data.refreshToken);
       router.replace("/");
     } catch {
       setError("Could not reach server.");

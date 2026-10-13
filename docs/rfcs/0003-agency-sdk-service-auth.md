@@ -47,7 +47,7 @@ Cold-start of *audit data* is a separate product risk (community). This RFC unbl
 - Replacing auditor/traveler JWT for Access, Lens popup login, or field audits
 - Open unauthenticated write / audit submission
 - Building a full OAuth2 authorization-server product in v1
-- Multi-node map fan-out (still RFC-0002 M6 / follow-on)
+- Multi-node map fan-out (RFC-0002 follow-on)
 - Forcing every agency to use the drop-in widget (raw client remains valid)
 
 ---
@@ -146,18 +146,6 @@ Minimum before calling the widget “agency-ready”:
 
 ---
 
-## Milestones (proposed)
-
-| Milestone | Deliverable |
-|-----------|-------------|
-| **M0** | Accept RFC; tracking issue — **done** ([#89](https://github.com/ingmarstruijs/WikiTraveler/issues/89)) |
-| **M1** | Integrator client credentials on **issuer** node (hash-at-rest, scopes, mint/revoke Admin/CLI) — **done** |
-| **M2** | Issuer: exchange credentials → short-lived `integrator_read` RS256 JWT; data nodes verify foreign integrator JWTs on agreed GETs (reuse pubkey fetch path); rate limits — **done** |
-| **M3** | SDK resolve + read with one token; README + agency-demo BFF happy path; drop “login as user” — **shipping** |
-| **M4** | Widget coverage/trust UX + a11y checklist; optional public GET flag for demo nodes — **shipping** |
-| **M5** | Operator docs: which node is issuer, CORS for partner origins, revoke story — **shipping** |
-| **M6** | Follow-ons: external-id batch lookup, **photo URL auth hardening (done)**, multi-issuer / branded hubs — [#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92) |
-
 ## Highest-impact risks
 
 | # | Risk | Mitigation |
@@ -185,9 +173,13 @@ Minimum before calling the widget “agency-ready”:
 
 1. Credential minting UX on issuer: Node Admin only, CLI, or both?
 2. Photo URLs: **yes** — signed `GET /api/photos/:id` (HMAC, 1h) instead of storage URLs or data-URIs. Details: [FEDERATED-AUTH.md](../FEDERATED-AUTH.md#audit-photo-urls).
-3. External-id lookup (`booking:…`) as first-class resolve input for OTAs — ship with M3/M4 or later?
+3. External-id lookup (`booking:…`) as first-class resolve input for OTAs — remaining on [#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92)?
 4. Must every public data node accept the canonical issuer, or can operators disable foreign `integrator_read`?
 5. One canonical issuer for v1 (`node-eu` / project hub) vs multiple branded issuers from day one?
+
+## Follow-ons
+
+Tracked on [#92](https://github.com/ingmarstruijs/WikiTraveler/issues/92): external-id batch lookup, multi-issuer / branded hubs, and related DX.
 
 ## Success criteria
 

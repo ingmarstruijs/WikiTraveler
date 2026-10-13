@@ -115,7 +115,12 @@ export default function AuditPage({ propertyId, propertyName }: Props) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
     });
-    const data = await res.json() as { token?: string; message?: string; role?: string };
+    const data = await res.json() as {
+      token?: string;
+      refreshToken?: string;
+      message?: string;
+      role?: string;
+    };
     if (!res.ok) {
       setStatus({ type: "error", msg: data.message ?? "Auth failed" });
       return;
@@ -126,8 +131,8 @@ export default function AuditPage({ propertyId, propertyName }: Props) {
       return;
     }
     if (data.token) {
-      document.cookie = `wt_token=${encodeURIComponent(data.token)}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`;
-      sessionStorage.setItem("wt_node_token", data.token);
+      const { persistNodeAuth } = await import("../../../lib/persistNodeAuth");
+      persistNodeAuth(data.token, data.refreshToken);
       setToken(data.token);
       setContributor(true);
     }

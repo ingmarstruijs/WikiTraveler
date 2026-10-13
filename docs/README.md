@@ -17,7 +17,6 @@ Single entry point for the project. Pick the path that matches your role — eac
 | **Test federation / gossip** | [Gossip lab](./GOSSIP-DEV.md) |
 | **Meet accessibility requirements** | [Accessibility checklist](./ACCESSIBILITY.md) · [Conformance report](./CONFORMANCE.md) |
 | **Read the origin story** | [Story](./story/README.md) · live: [www.wikitraveler.org/story](https://www.wikitraveler.org/story) |
-| **Deploy the public website** | [WWW.md](./WWW.md) |
 
 ---
 
@@ -70,7 +69,6 @@ Single entry point for the project. Pick the path that matches your role — eac
 |-----|---------|
 | [ACCESSIBILITY.md](./ACCESSIBILITY.md) | WCAG developer checklist |
 | [PRIVACY.md](./PRIVACY.md) | Public privacy policy (`www` canonical; Node/Access copies) |
-| [WWW.md](./WWW.md) | Public site `www.wikitraveler.org` (Vercel project + Cloudflare DNS/SSL) |
 | [CONFORMANCE.md](./CONFORMANCE.md) | Formal accessibility conformance statement |
 
 ---

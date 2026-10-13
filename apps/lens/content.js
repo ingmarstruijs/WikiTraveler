@@ -215,7 +215,7 @@ async function searchForProperty(name, nodeUrl, coords, headers = {}) {
 
   for (const q of queries) {
     try {
-      const res = await nodeFetch(`${nodeUrl}/api/properties?q=${encodeURIComponent(q)}`, {
+      const res = await authNodeFetch(nodeUrl, `${nodeUrl}/api/properties?q=${encodeURIComponent(q)}`, {
         headers,
         timeoutMs: 6000,
       });
@@ -570,7 +570,8 @@ async function handleCardEnter(card, fromKeyboard = false) {
     }
 
     try {
-      const res = await nodeFetch(
+      const res = await authNodeFetch(
+        nodeUrl,
         `${nodeUrl}/api/properties/${encodeURIComponent(propertyId)}/accessibility`,
         { headers, timeoutMs: 6000 }
       );
@@ -587,7 +588,8 @@ async function handleCardEnter(card, fromKeyboard = false) {
         if (headingName) {
           const { match } = await searchForProperty(headingName, nodeUrl, null, headers);
           if (match) {
-            const res2 = await nodeFetch(
+            const res2 = await authNodeFetch(
+              nodeUrl,
               `${nodeUrl}/api/properties/${encodeURIComponent(match.id)}/accessibility`,
               { headers, timeoutMs: 6000 }
             );

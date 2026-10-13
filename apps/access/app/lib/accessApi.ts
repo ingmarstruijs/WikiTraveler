@@ -1,6 +1,6 @@
 import type { SearchFilters } from "@wikitraveler/ui";
 import type { PropertySummary } from "@wikitraveler/ui";
-import { readAuthToken } from "./authStorage";
+import { clearAuth, readAuthToken, refreshAccessSession } from "./authStorage";
 import { dedupedFetch, invalidateClientCache } from "./clientCache";
 
 const RAW_ENV_NODE_URL = process.env.NEXT_PUBLIC_NODE_API_URL ?? "http://localhost:3000";
@@ -38,6 +38,34 @@ export function getAuthHeaders(): HeadersInit {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+/**
+ * Fetch with Bearer auth. On 401, refresh once against the **home** node, then retry.
+ * Clears auth if refresh fails.
+ */
+export async function authFetch(
+  nodeUrl: string,
+  input: string,
+  init?: RequestInit
+): Promise<Response> {
+  const headers = new Headers(init?.headers);
+  const token = getAuthToken();
+  if (token) headers.set("Authorization", `Bearer ${token}`);
+  const res = await fetch(input, { ...init, headers });
+  if (res.status !== 401) return res;
+
+  // Refresh is home-node only — never POST /api/auth/refresh to a peer data URL.
+  const home = getStoredNodeUrl();
+  const refreshed = await refreshAccessSession(home);
+  if (!refreshed) {
+    clearAuth();
+    return res;
+  }
+  const retryHeaders = new Headers(init?.headers);
+  const next = getAuthToken();
+  if (next) retryHeaders.set("Authorization", `Bearer ${next}`);
+  return fetch(input, { ...init, headers: retryHeaders });
+}
+
 export function buildSearchParams(q: string, filters: SearchFilters): URLSearchParams {
   const params = new URLSearchParams();
   if (q.trim()) params.set("q", q.trim());
@@ -72,9 +100,8 @@ export async function searchProperties(
   return dedupedFetch(
     cacheKey,
     async () => {
-      const res = await fetch(`${nodeUrl}/api/properties?${params}`, {
+      const res = await authFetch(nodeUrl, `${nodeUrl}/api/properties?${params}`, {
         signal,
-        headers: getAuthHeaders(),
       });
       if (!res.ok) throw new Error("search failed");
       const data = (await res.json()) as {
@@ -108,9 +135,8 @@ export async function fetchNearbyProperties(
     radiusKm: String(radiusKm),
     limit: "30",
   });
-  const res = await fetch(`${nodeUrl}/api/properties/nearby?${params}`, {
+  const res = await authFetch(nodeUrl, `${nodeUrl}/api/properties/nearby?${params}`, {
     signal,
-    headers: getAuthHeaders(),
   });
   if (!res.ok) throw new Error("nearby failed");
   const data = (await res.json()) as { properties?: PropertySummary[] };
@@ -123,9 +149,10 @@ export async function resolvePeerNode(
   lon: number
 ): Promise<{ url: string; region: string | null; matched: string } | null> {
   try {
-    const res = await fetch(
+    const res = await authFetch(
+      nodeUrl,
       `${nodeUrl}/api/peers/resolve?lat=${lat}&lon=${lon}`,
-      { signal: AbortSignal.timeout(4000), headers: getAuthHeaders() }
+      { signal: AbortSignal.timeout(4000) }
     );
     if (!res.ok) return null;
     const data = (await res.json()) as { url: string; region?: string | null; matched: string };
@@ -184,8 +211,7 @@ export async function fetchMapPins(
   if (limit != null) params.set("limit", String(limit));
   const cacheKey = `map-pins:${nodeUrl}:${bbox}:${limit ?? ""}`;
   return dedupedFetch(cacheKey, async () => {
-    const res = await fetch(`${nodeUrl}/api/properties/map?${params}`, {
-      headers: getAuthHeaders(),
+    const res = await authFetch(nodeUrl, `${nodeUrl}/api/properties/map?${params}`, {
       signal,
     });
     if (!res.ok) {
@@ -215,7 +241,7 @@ export async function fetchCoverageRegions(
   if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
   return dedupedFetch(`coverage:${homeNodeUrl}`, async () => {
     const [peersRes, infoRes] = await Promise.all([
-      fetch(`${homeNodeUrl}/api/peers`, { headers: getAuthHeaders(), signal }),
+      authFetch(homeNodeUrl, `${homeNodeUrl}/api/peers`, { signal }),
       fetch(`${homeNodeUrl}/api/nodeinfo`, { signal }),
     ]);
     const out: CoverageRegion[] = [];
@@ -269,9 +295,7 @@ export async function fetchSearchFields(
 ): Promise<SearchFieldDto[]> {
   if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
   return dedupedFetch(`fields:${nodeUrl}:${locale}`, async () => {
-    const res = await fetch(`${nodeUrl}/api/fields?locale=${locale}`, {
-      headers: getAuthHeaders(),
-    });
+    const res = await authFetch(nodeUrl, `${nodeUrl}/api/fields?locale=${locale}`);
     if (!res.ok) throw new Error("fields failed");
     const data = (await res.json()) as { fields?: SearchFieldDto[] };
     return data.fields ?? [];
@@ -368,9 +392,10 @@ export async function fetchPropertyAccessibility(
   locale: string,
   signal?: AbortSignal
 ): Promise<PropertyAccessibilityResponse> {
-  const res = await fetch(
+  const res = await authFetch(
+    nodeUrl,
     `${nodeUrl}/api/properties/${encodeURIComponent(propertyId)}/accessibility?locale=${locale}`,
-    { signal, headers: getAuthHeaders(), cache: "no-store" }
+    { signal, cache: "no-store" }
   );
   if (!res.ok) throw new Error(`property fetch failed (${res.status})`);
   return res.json() as Promise<PropertyAccessibilityResponse>;
@@ -393,11 +418,12 @@ export async function submitCommunitySignal(
     photos?: string[];
   }
 ) {
-  const res = await fetch(
+  const res = await authFetch(
+    nodeUrl,
     `${nodeUrl}/api/properties/${encodeURIComponent(propertyId)}/signals`,
     {
       method: "POST",
-      headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     }
   );
@@ -412,9 +438,10 @@ export async function fetchPropertySignals(
   signal?: AbortSignal,
   mine = false
 ) {
-  const res = await fetch(
+  const res = await authFetch(
+    nodeUrl,
     `${nodeUrl}/api/properties/${encodeURIComponent(propertyId)}/signals${mine ? "?mine=true" : ""}`,
-    { headers: getAuthHeaders(), signal }
+    { signal }
   );
   if (!res.ok) throw new Error("signals fetch failed");
   return res.json() as Promise<{
@@ -432,9 +459,7 @@ export async function fetchPropertySignals(
 
 export async function fetchMySignals(nodeUrl: string) {
   return dedupedFetch(`my-signals:${nodeUrl}`, async () => {
-    const res = await fetch(`${nodeUrl}/api/auth/my-signals`, {
-      headers: getAuthHeaders(),
-    });
+    const res = await authFetch(nodeUrl, `${nodeUrl}/api/auth/my-signals`);
     if (!res.ok) throw new Error("my signals fetch failed");
     return res.json() as Promise<{
       signals: Array<{
@@ -451,29 +476,11 @@ export async function fetchMySignals(nodeUrl: string) {
 }
 
 export async function fetchContributorStats(nodeUrl: string) {
-  const res = await fetch(`${nodeUrl}/api/auth/contributor-stats`, {
-    headers: getAuthHeaders(),
-  });
+  const res = await authFetch(nodeUrl, `${nodeUrl}/api/auth/contributor-stats`);
   if (!res.ok) return null;
   return res.json() as Promise<{
     role: string;
     signals: { submitted: number; resolved: number; open: number };
     auditsSubmitted: number;
   }>;
-}
-
-export async function claimProperty(nodeUrl: string, propertyId: string): Promise<void> {
-  const res = await fetch(`${nodeUrl}/api/properties/${encodeURIComponent(propertyId)}/claim`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-  });
-  if (!res.ok) throw new Error("claim failed");
-}
-
-export async function unclaimProperty(nodeUrl: string, propertyId: string): Promise<void> {
-  const res = await fetch(`${nodeUrl}/api/properties/${encodeURIComponent(propertyId)}/claim`, {
-    method: "DELETE",
-    headers: getAuthHeaders(),
-  });
-  if (!res.ok) throw new Error("unclaim failed");
 }

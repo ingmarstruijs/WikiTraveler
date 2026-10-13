@@ -7,7 +7,7 @@ import { propertyOrAuditHref } from "../lib/propertyHref";
 import { saveAccessReturn, type AccessReturnState } from "../lib/navigationReturn";
 import { readAuthToken } from "../lib/authStorage";
 import { canContribute, roleFromToken } from "../lib/userRole";
-import { getAuthHeaders, getStoredNodeUrl } from "../lib/accessApi";
+import { authFetch, getStoredNodeUrl } from "../lib/accessApi";
 import {
   RECENT_AUDITS_KEY,
   clearRecentAudits,
@@ -76,9 +76,10 @@ export function RecentPropertiesSection({
       items.map(async (item) => {
         const nodeUrl = item.nodeUrl ?? getStoredNodeUrl();
         try {
-          const res = await fetch(
+          const res = await authFetch(
+            nodeUrl,
             `${nodeUrl}/api/properties/${encodeURIComponent(item.id)}/accessibility`,
-            { headers: getAuthHeaders(), cache: "no-store" }
+            { cache: "no-store" }
           );
           return { id: item.id, missing: res.status === 404 };
         } catch {

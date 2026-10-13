@@ -521,6 +521,24 @@ img {
   margin: 16px 0;
 }
 
+.wt-www-article__media-link {
+  display: inline-block;
+  max-width: 100%;
+  cursor: zoom-in;
+  text-decoration: none;
+}
+
+.wt-www-article__media-link:focus-visible {
+  outline: 2px solid var(--wt-accent, #1d4ed8);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+.wt-www-article__media-link img {
+  margin: 16px 0;
+  vertical-align: middle;
+}
+
 .wt-www-article pre,
 .wt-www-article code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -543,9 +561,19 @@ img {
   font-size: 14px;
 }
 
+.wt-www-article pre.mermaid.wt-www-article__mermaid--clickable {
+  cursor: zoom-in;
+}
+
+.wt-www-article pre.mermaid.wt-www-article__mermaid--clickable:focus-visible {
+  outline: 2px solid var(--wt-accent, #1d4ed8);
+  outline-offset: 2px;
+}
+
 .wt-www-article pre.mermaid svg {
   max-width: 100%;
   height: auto;
+  pointer-events: none;
 }
 
 .wt-www-article blockquote {

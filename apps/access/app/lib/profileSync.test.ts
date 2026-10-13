@@ -7,6 +7,8 @@ vi.mock("./authStorage", () => ({
 
 vi.mock("./accessApi", () => ({
   getStoredNodeUrl: () => "http://localhost:3000",
+  authFetch: async (_nodeUrl: string, input: string, init?: RequestInit) =>
+    fetch(input, init),
   getAuthHeaders: () => ({ Authorization: "Bearer tok" }),
 }));
 

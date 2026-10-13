@@ -99,4 +99,22 @@ describe("requireReadAccess / integrator_read (RFC-0003)", () => {
     const res = await requireReadAccess(bearerReq(token), "read:accessibility");
     expect(res!.status).toBe(403);
   });
+
+  it("rejects foreign integrator issuer when INTEGRATOR_ISSUERS is set", async () => {
+    process.env.INTEGRATOR_ISSUERS = "https://allowed-issuer.example";
+    const token = jwt.sign(
+      {
+        sub: "wt_ic_abc",
+        role: "integrator_read",
+        aud: "sdk",
+        scopes: ["read:accessibility"],
+        homeNodeUrl: "https://evil-issuer.example",
+      },
+      JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+    const res = await requireReadAccess(bearerReq(token), "read:accessibility");
+    expect(res!.status).toBe(403);
+    delete process.env.INTEGRATOR_ISSUERS;
+  });
 });

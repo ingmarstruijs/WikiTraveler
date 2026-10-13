@@ -1,13 +1,13 @@
 "use client";
 
 import { useLocale } from "@wikitraveler/ui";
+import { clearNodeAuth } from "../lib/persistNodeAuth";
 
 export function SignOutButton() {
   const { t } = useLocale();
 
   function signOut() {
-    document.cookie = "wt_token=; path=/; max-age=0";
-    sessionStorage.removeItem("wt_node_token");
+    clearNodeAuth();
     window.location.href = "/login";
   }
 

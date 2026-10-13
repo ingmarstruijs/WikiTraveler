@@ -1,9 +1,10 @@
 /**
- * Trusted browser client origins for CORS (RFC-0002 M1).
+ * Trusted browser client origins for CORS (RFC-0002 H1/S6).
  *
  * Allowlist = CORS_ORIGINS ∪ CLIENT_ORIGINS ∪ origin(ACCESS_PUBLIC_URL).
- * `CORS_ORIGINS=*` keeps allow-all (local/dev). Gossip-advertised accessUrl
- * values are NOT trusted automatically (phishing / H2).
+ * Explicit `*` in CORS_ORIGINS or CLIENT_ORIGINS keeps allow-all (local/dev only).
+ * Unset CORS_ORIGINS is fail-closed (no reflection) — not historic allow-all.
+ * Gossip-advertised accessUrl values are NOT trusted automatically (phishing / H2).
  */
 
 const ALLOW_METHODS = "GET,POST,PATCH,DELETE,OPTIONS";
@@ -59,11 +60,7 @@ export function collectTrustedClientOrigins(env: NodeJS.ProcessEnv = process.env
   for (const part of splitOriginList(env.CLIENT_ORIGINS)) add(part);
   if (env.ACCESS_PUBLIC_URL?.trim()) add(env.ACCESS_PUBLIC_URL);
 
-  // Historic default when unset: allow all (matches previous `CORS_ORIGINS ?? "*"`).
-  if (env.CORS_ORIGINS === undefined) {
-    allowAll = true;
-  }
-
+  // Fail closed when unset: only explicit `*` enables allow-all.
   return { allowAll, origins };
 }
 

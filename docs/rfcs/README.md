@@ -2,6 +2,15 @@
 
 WikiTraveler uses lightweight RFCs before merging changes that affect the **federated mesh** — gossip wire format, auth trust, or Prisma schema that other operators must migrate.
 
+An RFC is the **target design**: problem, proposal, risks, compatibility. It is **not** a delivery schedule.
+
+**Do not put in an RFC:**
+
+- Milestone tables (`M0`–`Mn`), phased rollouts, or “implementation order” as the main structure
+- Sprint / ship calendars or “done / shipping” progress boards
+
+**Do put delivery tracking on GitHub issues** (and optionally link PRs). Risk IDs (e.g. H1, S5) are design vocabulary and belong in the RFC.
+
 ## When you need an RFC
 
 Open an RFC issue (template: **RFC**) if your change:
@@ -20,6 +29,7 @@ Open an RFC issue (template: **RFC**) if your change:
 2. Discuss until a maintainer labels it `rfc/accepted` or `rfc/declined`.
 3. Implement in a PR that links the RFC issue.
 4. Update [COMPATIBILITY.md](../COMPATIBILITY.md), [CHANGELOG.md](../../CHANGELOG.md), and [versions.json](../../versions.json) when protocol or schema numbers change.
+5. After acceptance, keep the accepted RFC as design truth; move follow-ons and remaining work to issues — do not grow the RFC into a roadmap.
 
 ## Protocol notes
 

@@ -2,7 +2,7 @@
 
 **Docs:** [Hub](./README.md) · [Operators](./OPERATORS.md) · [Upgrade](./UPGRADE.md) · [Docker](./DOCKER.md)
 
-Deploy the **node** (API + dashboard) and optionally **WikiTraveler Access** as separate Vercel projects. The node needs hosted PostgreSQL. Access is a frontend client — the **canonical hub** is `https://access.wikitraveler.org`; regional/branded Access is optional ([RFC-0002](./rfcs/0002-global-hub-access.md)). The public project site is a third project: [WWW.md](./WWW.md).
+Deploy the **node** (API + dashboard) and optionally **WikiTraveler Access** as separate Vercel projects. The node needs hosted PostgreSQL. Access is a frontend client — the **canonical hub** is `https://access.wikitraveler.org`; regional/branded Access is optional ([RFC-0002](./rfcs/0002-global-hub-access.md)). The public marketing site (`apps/www` → `www.wikitraveler.org`) is an optional third project.
 
 ```
 https://www.wikitraveler.org          → Public site (pitch, story, canonical privacy)
@@ -89,7 +89,8 @@ Set these in the **Vercel project → Settings → Environment Variables** (or `
 | `NODE_PUBLIC_KEY` | **Recommended** | RSA public key PEM |
 | `CRON_SECRET` | **Yes** | Random string; all cron routes require `Authorization: Bearer <value>` |
 | `CLIENT_ORIGINS` | Strongly recommended | Trusted hub Access + Lens + SDK origins — e.g. `https://access.wikitraveler.org` ([RFC-0002](./rfcs/0002-global-hub-access.md)) |
-| `CORS_ORIGINS` | Strongly recommended | Extra browser origins (or same list). Do **not** use `*` on public nodes |
+| `CORS_ORIGINS` | Strongly recommended | Extra browser origins (or same list). Unset = fail-closed. Do **not** use `*` on public nodes |
+| `INTEGRATOR_ISSUERS` | Recommended on data nodes | Comma issuer `NODE_URL`s allowed for `integrator_read`; unset = any verified issuer |
 | `ACCESS_PUBLIC_URL` | No | Access URL advertised on `/api/nodeinfo` (directory only — not auto CORS from gossip) |
 | `BOOTSTRAP_PEERS` | No | Comma-separated peer node URLs |
 | `OPENAI_API_KEY` / `AI_*` | No | AI features — see [LOCAL.md § AI provider](./LOCAL.md#ai-provider-optional) |
@@ -239,7 +240,8 @@ Baked in at build time — redeploy Access after changing the home node URL. Set
 ```env
 CLIENT_ORIGINS=https://access.wikitraveler.org,https://access-backup.example.org,https://audit.example.com
 CORS_ORIGINS=https://access.wikitraveler.org,https://access-backup.example.org,https://audit.example.com
-# both feed the middleware allowlist — do not leave CORS_ORIGINS unset on public nodes
+# both feed the middleware allowlist — unset CORS is fail-closed (not allow-all)
+# INTEGRATOR_ISSUERS=https://node-eu.wikitraveler.org
 ```
 
 **H4:** Keep a second Access project as backup; list both origins on nodes before you need them.
@@ -248,7 +250,7 @@ CORS_ORIGINS=https://access.wikitraveler.org,https://access-backup.example.org,h
 
 ### 6. Deploy the public website (www)
 
-Third Vercel project from the same repo: **Root Directory `apps/www`**, custom domains `www.wikitraveler.org` + apex redirect, Cloudflare **DNS only**. Full click-path, SSL/TLS, and verify commands: [WWW.md](./WWW.md).
+Optional third Vercel project from the same repo: **Root Directory `apps/www`**, domains `www.wikitraveler.org` + apex redirect to www, Cloudflare **DNS only** (grey cloud). Local: `pnpm dev:www`.
 
 ### 7. Connect other clients
 
@@ -288,6 +290,6 @@ All cron routes verify `Authorization: Bearer <CRON_SECRET>`.
 - [ ] Region configured in Admin → Region & data
 - [ ] At least one auditor promoted
 - [ ] WikiTraveler Access deployed with `NEXT_PUBLIC_NODE_API_URL`
-- [ ] Public www deployed (`wikitraveler-www` + Cloudflare grey-cloud DNS) — [WWW.md](./WWW.md)
+- [ ] Public www deployed (`wikitraveler-www` + Cloudflare grey-cloud DNS) when you want the marketing site
 - [ ] `/api/health` returns 200
 - [ ] Test audit from WikiTraveler Access appears on dashboard

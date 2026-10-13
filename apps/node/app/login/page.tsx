@@ -75,6 +75,7 @@ function LoginForm() {
       });
       const data = (await res.json()) as {
         token?: string;
+        refreshToken?: string;
         message?: string;
         username?: string;
         role?: string;
@@ -88,9 +89,8 @@ function LoginForm() {
         setDeniedUsername(data.username ?? username);
         return;
       }
-      const maxAge = 30 * 24 * 60 * 60;
-      document.cookie = `wt_token=${encodeURIComponent(data.token!)}; path=/; max-age=${maxAge}; SameSite=Lax`;
-      sessionStorage.setItem("wt_node_token", data.token!);
+      const { persistNodeAuth } = await import("../../lib/persistNodeAuth");
+      persistNodeAuth(data.token!, data.refreshToken);
       const next = searchParams.get("next") ?? "/";
       const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/";
       router.replace(safeNext);

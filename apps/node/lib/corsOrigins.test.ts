@@ -40,15 +40,23 @@ describe("collectTrustedClientOrigins / resolveAllowOrigin", () => {
     process.env.ACCESS_PUBLIC_URL = prev.ACCESS_PUBLIC_URL;
   });
 
-  it("allows all when CORS_ORIGINS is unset", () => {
-    const { allowAll } = collectTrustedClientOrigins(process.env);
-    expect(allowAll).toBe(true);
-    expect(resolveAllowOrigin("https://evil.example", process.env)).toBe("https://evil.example");
+  it("fails closed when CORS_ORIGINS is unset", () => {
+    const { allowAll, origins } = collectTrustedClientOrigins(process.env);
+    expect(allowAll).toBe(false);
+    expect(origins.size).toBe(0);
+    expect(resolveAllowOrigin("https://evil.example", process.env)).toBeNull();
   });
 
   it("allows all when CORS_ORIGINS=*", () => {
     process.env.CORS_ORIGINS = "*";
     expect(resolveAllowOrigin("https://access.example", process.env)).toBe("https://access.example");
+  });
+
+  it("allows all when CLIENT_ORIGINS contains *", () => {
+    process.env.CLIENT_ORIGINS = "*";
+    expect(resolveAllowOrigin("https://partner.example", process.env)).toBe(
+      "https://partner.example"
+    );
   });
 
   it("rejects unknown origins when allowlist is set", () => {

@@ -69,7 +69,13 @@ function LoginForm() {
         body: JSON.stringify({ username: username.trim().toLowerCase(), password }),
         signal: AbortSignal.timeout(8000),
       });
-      const data = await res.json() as { token?: string; message?: string; username?: string; role?: string };
+      const data = await res.json() as {
+        token?: string;
+        refreshToken?: string;
+        message?: string;
+        username?: string;
+        role?: string;
+      };
       if (!res.ok) {
         setError(data.message ?? `Login failed (${res.status})`);
         return;
@@ -79,7 +85,12 @@ function LoginForm() {
         return;
       }
 
-      persistAuth(data.token, data.username ?? username.trim().toLowerCase(), cleanUrl);
+      persistAuth(
+        data.token,
+        data.username ?? username.trim().toLowerCase(),
+        cleanUrl,
+        data.refreshToken
+      );
 
       const next = searchParams.get("next") ?? "/";
       // Same-origin relative paths only — blocks open redirects.

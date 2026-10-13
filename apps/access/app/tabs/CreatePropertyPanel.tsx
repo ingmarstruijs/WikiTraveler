@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useLocale } from "@wikitraveler/ui";
-import { getAuthHeaders, getAuthToken, invalidateMapPins } from "../lib/accessApi";
+import { getAuthToken, invalidateMapPins, authFetch } from "../lib/accessApi";
 import { clearAuth } from "../lib/authStorage";
 
 interface Props {
@@ -139,9 +139,9 @@ export function CreatePropertyPanel({
         body.lon = resolvedLon;
       }
 
-      const res = await fetch(`${searchNodeUrl}/api/properties`, {
+      const res = await authFetch(searchNodeUrl, `${searchNodeUrl}/api/properties`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
 

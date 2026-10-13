@@ -12,22 +12,28 @@ How WikiTraveler authenticates **people**, **partner apps**, **photos**, and **n
 | Peer node | HTTP signatures (`X-Node-Id`, `X-Node-Timestamp`, `X-Node-Signature`) | Gossip snapshot, ingest, inbox |
 | Cron | `Authorization: Bearer <CRON_SECRET>` | `/api/cron/*` |
 
-Writes (audits, favorites, admin, claims) always need a **human** JWT. Integrator tokens are read-only.
+Writes (audits, favorites, admin) always need a **human** JWT. Integrator tokens are read-only.
 
 ---
 
 ## Access and Lens (human JWT)
 
-Travelers and auditors register and log in on a **home node**. The JWT is RS256 when `NODE_PRIVATE_KEY` / `NODE_PUBLIC_KEY` are set (HS256 is local-only and does not federate). The payload includes `role` (`USER` | `AUDITOR` | `ADMIN`) and `homeNodeUrl`.
+Travelers and auditors register and log in on a **home node**. Login / setup return:
 
-A data node verifies a foreign JWT by fetching `homeNodeUrl/.well-known/pubkey`. The traveler does not re-register on every regional node.
+- **Access JWT** — short-lived (default **1 hour**, `TRAVELER_ACCESS_TOKEN_TTL`). Sent as `Authorization: Bearer` to home and data nodes. RS256 when `NODE_PRIVATE_KEY` / `NODE_PUBLIC_KEY` are set (HS256 is local-only and does not federate). Payload includes `role` (`USER` | `AUDITOR` | `ADMIN`) and `homeNodeUrl`.
+- **Opaque refresh token** — **30 days**, stored hashed on the home node (`RefreshSession`). Used only at `POST /api/auth/refresh` on the **home** node. Cannot be used as Bearer on data nodes. Clients rotate refresh on each successful refresh.
+
+A data node verifies a foreign **access** JWT by fetching `homeNodeUrl/.well-known/pubkey`. The traveler does not re-register on every regional node.
 
 ```
-Access / Lens ──login──► home node A  ──JWT (homeNodeUrl=A)──► client storage
+Access / Lens ──login──► home node A  ──access JWT (1h) + opaque refresh──► client storage
 Client ──resolve──► A /api/peers/resolve ──► data node B
-Client ──API──► B  (Authorization: Bearer JWT)
+Client ──API──► B  (Authorization: Bearer access JWT)
 B ──GET──► A/.well-known/pubkey ──► verify RS256
+Client ──401──► A /api/auth/refresh { refreshToken } ──► new access (+ rotated refresh)
 ```
+
+**Operator migrate:** run `pnpm db:deploy` so `RefreshSession` exists before travelers rely on refresh. Existing long-lived JWTs from older builds expire naturally; users re-login once if needed.
 
 | Role | Browse, favorites, signals | Audit wizard |
 |------|----------------------------|--------------|
@@ -37,14 +43,15 @@ B ──GET──► A/.well-known/pubkey ──► verify RS256
 
 Canonical hub Access: `https://access.wikitraveler.org`. Branded Access works the same if every data node allowlists that origin.
 
-**Not shared across nodes:** user rows stay on the home node. Audit attribution is `username@homeNodeUrl`. Admin dashboards on B require a local admin session on B.
+**Not shared across nodes:** user rows and refresh sessions stay on the home node. Audit attribution is `username@homeNodeUrl`. Admin dashboards on B require a local admin session on B.
 
 ### Operator setup
 
 1. RS256 keys on every public node ([LOCAL.md](./LOCAL.md) · [DOCKER.md](./DOCKER.md)).
-2. On every public **data** node, allow hub Access and Lens origins in `CLIENT_ORIGINS` / `CORS_ORIGINS`. Do not use `*` in production. Do not auto-trust gossiped `accessUrl` values.
+2. On every public **data** node, allow hub Access and Lens origins in `CLIENT_ORIGINS` / `CORS_ORIGINS`. Unset CORS is **fail-closed**. Do not use `*` in production. Do not auto-trust gossiped `accessUrl` values.
 3. Seed `BOOTSTRAP_PEERS` ([PUBLIC-PEERS.md](./PUBLIC-PEERS.md)) so resolve has peers.
 4. Gossip so properties exist on the data node ([GOSSIP-DEV.md](./GOSSIP-DEV.md)).
+5. Optional on public data nodes: set `INTEGRATOR_ISSUERS` to the canonical issuer URL(s) so only those nodes' `integrator_read` JWTs are accepted (unset keeps accept-any verified issuer for compat).
 
 ---
 
@@ -54,7 +61,7 @@ Agencies authenticate as **applications**, not people. Do not embed a traveler u
 
 1. On the **issuer** (hub/home node): create an `IntegratorClient` via Admin `POST /api/admin/integrators` or `pnpm node:integrator create --name "…"`. Store the plaintext secret once.
 2. Partner BFF exchanges `clientId` + `clientSecret` at `POST /api/auth/integrator/token` → RS256 JWT (`role: integrator_read`, `aud: sdk`, about 15 minutes).
-3. Call data-node `GET /api/properties/:id/accessibility` and `GET /api/peers/resolve` with `Authorization: Bearer <token>`. Foreign nodes verify the issuer public key the same way as traveler JWTs.
+3. Call data-node `GET /api/properties/:id/accessibility` and `GET /api/peers/resolve` with `Authorization: Bearer <token>`. Foreign nodes verify the issuer public key the same way as traveler JWTs. When `INTEGRATOR_ISSUERS` is set on the data node, the JWT `homeNodeUrl` must be on that allowlist.
 4. Revoke: `POST /api/admin/integrators/:clientId/revoke` or `pnpm node:integrator revoke --client-id …`. Existing JWTs expire; no need to rotate human passwords or `JWT_SECRET`.
 
 Allow partner **browser** origins on each data node (`CLIENT_ORIGINS` / `CORS_ORIGINS`).
@@ -73,7 +80,7 @@ Accessibility JSON does **not** include object-storage URLs or data-URIs. Each p
 
 - Use as `<img src>` — no `Authorization` header (the query is the capability).
 - A valid user or `integrator_read` JWT also authorizes `GET /api/photos/:id` without the query.
-- Refetch accessibility JSON if a photo 403s after expiry.
+- Refetch accessibility JSON if a photo 403s after expiry. Access Saved favorites do this automatically when the tab opens or a thumb fails to load.
 - `publicAccessibilityReads` still mints signed URLs; unauthenticated `/api/photos/:id` without `exp`/`sig` is 401.
 - Gossip `photoRefs` still carry stored refs (node-to-node). Object buckets that remain world-readable can still be fetched if the object key is known — prefer private buckets.
 

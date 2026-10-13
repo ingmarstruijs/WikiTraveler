@@ -154,11 +154,72 @@ async function checkNodeReachability() {
   console.log("");
 }
 
+function splitOriginList(raw) {
+  if (!raw?.trim()) return [];
+  return raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function checkCorsEnv() {
+  console.log("CORS / client origins");
+  const cors = process.env.CORS_ORIGINS;
+  const client = process.env.CLIENT_ORIGINS;
+  const access = process.env.ACCESS_PUBLIC_URL?.trim();
+  const parts = [
+    ...splitOriginList(cors),
+    ...splitOriginList(client),
+    ...(access ? [access] : []),
+  ];
+  const allowAll = parts.some((p) => p === "*");
+  const concrete = parts.filter((p) => p && p !== "*");
+
+  if (allowAll) {
+    if (isProduction) {
+      fail("CORS_ORIGINS/CLIENT_ORIGINS contains * — do not use allow-all on public nodes");
+    } else {
+      warn("CORS allow-all (*) — fine for local; never ship * on public nodes");
+    }
+  } else if (concrete.length === 0) {
+    if (isProduction) {
+      fail(
+        "No trusted client origins (set CORS_ORIGINS and/or CLIENT_ORIGINS) — unset is fail-closed"
+      );
+    } else {
+      warn("No trusted client origins configured — browser CORS will fail closed");
+    }
+  } else {
+    ok(`${concrete.length} trusted client origin(s) configured`);
+  }
+  console.log("");
+}
+
+function checkIntegratorIssuers() {
+  console.log("Integrator issuers (RFC-0003)");
+  const raw = process.env.INTEGRATOR_ISSUERS?.trim();
+  if (!raw) {
+    if (isProduction) {
+      warn(
+        "INTEGRATOR_ISSUERS unset — any RS256 issuer whose pubkey verifies is accepted for integrator_read"
+      );
+    } else {
+      ok("INTEGRATOR_ISSUERS unset (accept any verified issuer — optional allowlist)");
+    }
+  } else {
+    const n = splitOriginList(raw).length;
+    ok(`INTEGRATOR_ISSUERS allowlists ${n} issuer URL(s)`);
+  }
+  console.log("");
+}
+
 async function main() {
   console.log("WikiTraveler doctor\n");
   checkVersions();
   checkMigrations();
   checkKeys();
+  checkCorsEnv();
+  checkIntegratorIssuers();
   await checkNodeReachability();
 
   console.log(`Summary: ${errors} error(s), ${warnings} warning(s)`);

@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { signToken } from "@/lib/auth";
-
+import { issueAuthSession } from "@/lib/refreshSession";
+import type { Role } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
+
 /**
  * GET /api/setup
  * Returns { needed: true } when no admin account exists yet, { needed: false } otherwise.
@@ -72,7 +73,10 @@ export async function POST(req: Request) {
 
   console.info(`[setup] Admin account created: ${username}`);
 
-  // Issue a login token immediately so the browser lands on the dashboard
-  const token = signToken({ sub: user.username, role: user.role });
-  return NextResponse.json({ token, username: user.username, role: user.role }, { status: 201 });
+  const session = await issueAuthSession({
+    id: user.id,
+    username: user.username,
+    role: user.role as Role,
+  });
+  return NextResponse.json(session, { status: 201 });
 }

@@ -23,4 +23,29 @@ describe("renderStoryHtml", () => {
     expect(html).toContain("&lt;br/&gt;");
     expect(html).not.toContain('class="language-mermaid"');
   });
+
+  it("wraps images in zoom links", () => {
+    const html = renderStoryHtml("![Lens](/screenshots/lens.png)\n");
+    expect(html).toContain('class="wt-www-article__media-link"');
+    expect(html).toContain('href="/screenshots/lens.png"');
+    expect(html).toContain('src="/screenshots/lens.png"');
+    expect(html).toContain('target="_blank"');
+  });
+
+  it("opens external markdown links in a new tab", () => {
+    const html = renderStoryHtml("[WtW](https://wheeltheworld.com/)\n");
+    expect(html).toContain('href="https://wheeltheworld.com/"');
+    expect(html).toContain('target="_blank"');
+    expect(html).toContain('rel="noopener noreferrer"');
+  });
+
+  it("keeps same-site and relative links in this tab", () => {
+    const relative = renderStoryHtml("[Privacy](/privacy)\n");
+    expect(relative).toContain('href="/privacy"');
+    expect(relative).not.toContain('target="_blank"');
+
+    const sameSite = renderStoryHtml("[Home](https://www.wikitraveler.org/)\n");
+    expect(sameSite).toContain('href="https://www.wikitraveler.org/"');
+    expect(sameSite).not.toContain('target="_blank"');
+  });
 });

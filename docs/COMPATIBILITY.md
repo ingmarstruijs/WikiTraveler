@@ -15,8 +15,8 @@ Cross-version behaviour for WikiTraveler nodes in a federated mesh.
 | Node **N** ↔ Node **N-2** or older | Best effort | Not tested; upgrade recommended |
 | Access **N** → Node **N** or **N-1** | Yes | Client checks `/api/health` version |
 | Lens / SDK → Node **N** or **N-1** | Yes | REST API backward compatible |
-| Access with viewport map (RFC-0002 M3) → Node without `map?bbox=` | No | Redeploy **Node + Access** together (**H5**); unscoped `/api/properties/map` is rejected |
-| Lens with background `NODE_FETCH` (M4) → older nodes | Yes | Same REST; needs host permission / reachability to home + data nodes |
+| Access with viewport map (RFC-0002) → Node without `map?bbox=` | No | Redeploy **Node + Access** together (**H5**); unscoped `/api/properties/map` is rejected |
+| Lens with background `NODE_FETCH` (RFC-0002) → older nodes | Yes | Same REST; needs host permission / reachability to home + data nodes |
 
 Maintainers test **same-version discovery**, mesh hardening, 3-node topology (CONFIRMED / resolve), and **N ↔ N-1** in CI ([gossip-compat](../.github/workflows/gossip-compat.yml), [GOSSIP-DEV.md](./GOSSIP-DEV.md)).
 
