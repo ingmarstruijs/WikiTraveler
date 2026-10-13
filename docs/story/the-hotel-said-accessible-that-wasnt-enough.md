@@ -43,24 +43,6 @@ One vocabulary note before we go on, because “UX” gets abused into meaning �
 
 ---
 
-## Then I found something that already existed
-
-Travel platforms are incredible at inventory, pricing, and converting intent into bookings. They are much worse at accessibility as **structured truth over time**. Someone booking with a wheelchair often gets a vague icon, a sentence that could mean anything, a filter that doesn’t match the bathroom, or a review that says “accessible” without saying *for whom*.
-
-So I built. And shortly after the toolkit started working, I found [Ongehinderd](https://www.ongehinderd.nl/) — a Dutch organisation that already runs a system aimed at the same problem: trustworthy accessibility information for places people actually need to use.
-
-I wrote to them. No commercial pitch. Just: here’s an open-source side project that got out of hand; if any of the learning or tooling is useful to people who have been doing this work for years, I’d rather share it than pretend I invented the need. Data exchange, open standards, hands on a keyboard — whatever fits. They haven’t replied (yet). That’s fine.
-
-The useful conclusion for me wasn’t “compete.” It was: **I do not need to become the accidental IT department of accessibility information.**
-
-I still care that the work helps someone. I don’t want to run a product company, grow a community as a growth loop, or own this problem alone. WikiTraveler stays open. If someone already in the field — or someone who sees the sidecar/commons pattern for a different domain — wants to pick it up, adapt it, or strip parts for their own stack, that’s closer to the point than me pretending this side project is my next career.
-
-The bet that remains is still the same shape: treat stay accessibility like a commons — **closer to OpenStreetMap than to a closed inventory**. A **sidecar** beside the giants. OSM maps **where** things are (plus thin wheelchair tags). WikiTraveler is **can you stay and wash here** — audits, photos, trust tiers — on OSM as `OFFICIAL` baseline. Coarse verified signals (`wheelchair=yes|limited|no`) should be able to **flow back**; bed height and roll-in detail stay with the depth layer.
-
-Not another Booking. The truth layer beside the booking journey — and neighbourly to the open map it started from.
-
----
-
 ## Confession: I am not a full-time distributed-systems engineer
 
 I do UX and engineering for work.
@@ -176,47 +158,17 @@ The full architecture doc is longer. The useful mental model is short:
 
 **Clients never hold the truth. Regional nodes do — and they gossip.**
 
-```mermaid
-flowchart LR
-  subgraph sources["Sources"]
-    OSM["OpenStreetMap<br/>baseline"]
-    Audit["Field audits<br/>+ photos"]
-  end
+<img src="../assets/screenshots/mesh-overview.jpg" alt="WikiTraveler mesh: OpenStreetMap and field audits feed a node mesh (home node + data nodes gossiping); Access and Lens consume the mesh; Lens overlays Booking / Expedia" width="720" />
 
-  subgraph mesh["Node mesh = truth"]
-    Home["Home node<br/>identity · JWT · resolve"]
-    Data["Data node(s)<br/>regional facts"]
-  end
+*Sources feed the mesh. The mesh is the truth. Clients only ask.*
 
-  subgraph clients["Clients (apps & integrations)"]
-    Access["Access<br/>PWA"]
-    Lens["Lens<br/>browser sidecar"]
-    SDK["Agency SDK"]
-  end
+OpenStreetMap gives a baseline inventory. People on the ground add audits and photos. That truth lives on **regional data nodes**; a **home node** handles identity and “which node owns this place?” Nodes **gossip** deltas to peers so no single server has to cover the planet. Access, Lens, and the SDK only consume the mesh — search, overlay, embed — they never become the source of record. Booking sites stay where people book.
 
-  OSM -->|"ingest inventory"| Data
-  Data -.->|"coarse verified tags<br/>(future / careful)"| OSM
-  Audit --> Data
-  Home <-->|"gossip"| Data
-  Access -->|"login"| Home
-  Access -->|"search · map · audit"| Data
-  Lens -->|"resolve + facts"| Home
-  Lens --> Data
-  SDK --> Data
-  Lens -.->|"overlay"| OTA["Booking / Expedia / …"]
-```
+<img src="../assets/screenshots/mesh-coverage-map.png" alt="World map: traveler in Europe signs in via a home node, which resolves to a US data node; peer coverage can overlap; everywhere outside the colored regions has no coverage" width="720" />
 
-| Piece | Job |
-|-------|-----|
-| **Data node** | Owns properties/facts for a geographic region |
-| **Home node** | Registration, JWT, “which data node for this place?” |
-| **Access** | Traveler + auditor app |
-| **Lens** | Sidecar UX on existing booking sites |
-| **SDK** | Embed/fetch the same facts in agency products |
+*Coverage is geographic. Identity is not. A traveler in Europe can still look up a hotel in the US — their home node routes them to the data node that owns that region. Some coverages overlap. Everything outside a colored circle has no coverage yet — that isn’t one region, it’s the rest of the map.*
 
-<img src="../assets/screenshots/node-admin.png" alt="Node admin statistics: hundreds of thousands of OSM properties, almost all Official tier, almost no field audits yet" width="720" />
-
-*A real node dashboard. Hundreds of thousands of stays ingested from OSM. Almost all facts still `OFFICIAL`. Audits: basically a rounding error. That gap is the product.*
+In practice that gap is still the product: a node can hold hundreds of thousands of OSM stays while almost every fact is still `OFFICIAL`. Audits are basically a rounding error — until people fill them.
 
 ---
 
@@ -377,17 +329,15 @@ That is the new UX systems problem.
 
 ---
 
-## The product was never only the code
+## Then I found something that already existed
 
-Here’s the part where the engineer ego needs to sit down.
+Shortly after the toolkit started working, I found [Ongehinderd](https://www.ongehinderd.nl/) — a Dutch organisation that already runs a system aimed at the same problem: trustworthy accessibility information for places people actually need to use.
 
-The code is not the hard part anymore. Filling a system with **reliable accessibility information** — and keeping it trustworthy — is.
+I wrote to them. No commercial pitch. Just: here’s an open-source side project that got out of hand; if any of the learning or tooling is useful to people who have been doing this work for years, I’d rather share it than pretend I invented the need. Data exchange, open standards, hands on a keyboard — whatever fits. They haven’t replied (yet). That’s fine. The useful move isn’t to compete with people already in the field — it’s to keep the toolkit open so someone who needs it can use it.
 
-That needs travelers who notice gaps, auditors who go on-site, operators who run nodes, integrators who show facts where bookings happen. Without those humans the mesh is a fancy mirror of OSM tags and AI guesses. OSM is inventory, not a bathroom doorway.
+Here’s the part where the engineer ego needs to sit down anyway: the code is not the hard part. Filling a system with **reliable accessibility information** — and keeping it trustworthy — is. Without travelers, auditors, operators, and integrators, the mesh is a fancy mirror of OSM tags and AI guesses. OSM is inventory, not a bathroom doorway. Open source is the offer: use, fork, or discard what exists.
 
-I’m not recruiting a community as the growth strategy, though. I’m not looking to *build* one around myself.
-
-I’m looking for people who already care about this problem — or who see the same sidecar/commons pattern elsewhere — and might use, fork, absorb, or discard what exists. Open source is the offer. Ownership of the mission is optional, and preferably not mine forever.
+The bet that remains is still the same shape: a commons beside the booking journey — closer to OpenStreetMap than to a closed inventory — with stay-depth (audits, photos, trust tiers) living in the mesh, and coarse verified wheelchair signals able to flow back where they belong.
 
 ---
 
@@ -407,16 +357,7 @@ So the system is biased toward:
 - RFCs for federation-impacting changes
 - security checks in CI, not as folklore
 
-Is it perfect? No.
-Is there a public Access URL? Yes — [https://access.wikitraveler.org](https://access.wikitraveler.org) — but **registration is off** right now. This is still a controlled test setup, not an open signup product. You can read the repo and docs, judge the architecture, and tell me where I’m wrong. If you want a hands-on look (auditor, operator, or sharp reviewer), reach out via GitHub.
-
-Repo: [https://github.com/ingmarstruijs/WikiTraveler](https://github.com/ingmarstruijs/WikiTraveler)
-
-I want the kind of feedback that stings productively.
-
-Especially from people who travel with accessibility constraints.
-Especially from people who have tried to maintain community data before.
-Especially from people who look at federation and say: “cute, now show me the failure modes.”
+Clever architecture without that bias is just a faster way to ship a lie.
 
 ---
 
@@ -466,7 +407,7 @@ This one happened accidentally. The half-finished acts are both evidence and com
 
 ## An invitation, not a victory lap
 
-WikiTraveler is still a side project that grew teeth — releases, docs, a mesh, clients. It is not a company I intend to run.
+WikiTraveler is still a side project that grew teeth — releases, docs, a mesh, clients.
 
 Shipping code with agents isn’t the point.
 
@@ -482,7 +423,7 @@ Human test: would this have helped the last time someone needed trustworthy fact
 
 Shortest summary:
 
-**The goal was trustworthy accessibility facts for stays — via open data (beside OSM, not against it), a sidecar UX strategy, and AI-accelerated building. What exists now is a monorepo, a federated mesh, a browser extension, an SDK, too many architectural U-turns, and clearer respect for how hard that information is — and for the fact that others may already be closer to the people who need it.**
+**The goal was trustworthy accessibility facts for stays — via open data (beside OSM, not against it), a sidecar UX strategy, and AI-accelerated building. What exists now is a monorepo, a federated mesh, a browser extension, an SDK, too many architectural U-turns, and clearer respect for how hard that information is.**
 
 That’s the project.  
 That’s the lesson.  
@@ -502,9 +443,9 @@ And if you want to take any of it further — welcome.
 
 ---
 
-*Audience note: primary readers = UX/product people exploring AI-assisted building; secondary = a11y/disability, OSS/dev, travel tech. Channels: Medium, LinkedIn, Hacker News, plus disability / open-source / developer forums. CTA: read, share, reuse, critique — not “join my community.” Suggested tags: `#accessibility` `#opensource` `#ux` `#a11y` `#traveltech` `#federation` `#vibecoding`. Estimated reading time: ~15–18 minutes.*
+*Audience note: primary readers = UX/product people exploring AI-assisted building; secondary = a11y/disability, OSS/dev, travel tech. Channels: Medium, LinkedIn, Hacker News, plus disability / open-source / developer forums. CTA: read, share, reuse, critique. Suggested tags: `#accessibility` `#opensource` `#ux` `#a11y` `#traveltech` `#federation` `#vibecoding`. Estimated reading time: ~15–18 minutes.*
 
-**Images:** linked relatively from this file as `../assets/screenshots/` (`access-mobile.png`, `access-desktop.jpg`, `lens.png`, `node-admin.png`). On GitHub they render from the repo. For Medium/LinkedIn, upload those same files and swap in CDN URLs. Mermaid renders on GitHub; on Medium, paste a diagram screenshot if needed.
+**Images:** linked relatively from this file as `../assets/screenshots/` (`mesh-overview.jpg`, `mesh-coverage-map.png`, `access-mobile.png`, `access-desktop.jpg`, `lens.png`). On GitHub they render from the repo. For Medium/LinkedIn, upload those same files and swap in CDN URLs.
 
 ---
 
@@ -514,9 +455,7 @@ And if you want to take any of it further — welcome.
 
 The hotel said “accessible.” That wasn’t enough.
 
-I’m a UX engineer. After a relative who uses a wheelchair described how miserable booking travel still is, curiosity and a UX brain did the rest. Strong AI models removed the old implementation bottleneck. I got sucked into a side project that began behaving like an accidental product: federated mesh, browser sidecar, agency SDK.
-
-Then I found organisations already working on the same problem — and realised I don’t want to become the accidental IT department of accessibility information. The code stays open; the useful ask is reuse, critique, or picking it up if it fits your work.
+I’m a UX engineer. After a relative who uses a wheelchair described how miserable booking travel still is, curiosity and a UX brain did the rest. Strong AI models removed the old implementation bottleneck. I got sucked into a side project that began behaving like an accidental product: federated mesh, browser sidecar, agency SDK — and later found organisations already working on the same problem. The write-up is open; so is the code.
 
 [LINK TO ARTICLE]
 
@@ -533,7 +472,7 @@ Access (registration off): https://access.wikitraveler.org
 **Subtitle:** A relative told me how miserable booking travel with a wheelchair still is. Curiosity and a UX brain did the rest — then I got sucked into an accidental product once coding stopped being the bottleneck.
 
 **Deck / intro blurb:**  
-I’m not a distributed-systems engineer by trade — I do UX and engineering for work. After a conversation about booking accessible stays, I started a sidecar-style open project on top of travel platforms. This is the honest story of what got built, what got thrown away, and why I’d rather share the toolkit than run the product alone.
+I’m not a distributed-systems engineer by trade — I do UX and engineering for work. After a conversation about booking accessible stays, I started a sidecar-style open project on top of travel platforms. This is the honest story of what got built, what got thrown away, and what I’d still bet on.
 
 ---
 
@@ -547,7 +486,7 @@ I’m not a distributed-systems engineer by trade — I do UX and engineering fo
 **First comment (recommended for Show HN / discussion):**  
 Family conversation → “accessible hotel info is unreliable” → tried Amadeus → self-service developer portal decommissioned 17 July 2026 (enterprise-only left) → moved to OpenStreetMap → somehow ended up with a monorepo, gossip mesh, audit PWA, Chrome extension (Lens), and an agency SDK.
 
-Later found people already working on the same problem (e.g. Ongehinderd in NL). Open bet remains: CC-BY mesh + sidecar beside Booking, OSM as baseline. I’m closer to UX/engineering than to “I meant to invent federation,” and I’m not trying to become the IT shop for this domain — happy if others reuse or absorb what’s useful.
+Later found people already working on the same problem (e.g. Ongehinderd in NL). Open bet remains: CC-BY mesh + sidecar beside Booking, OSM as baseline. I’m closer to UX/engineering than to “I meant to invent federation.” Happy to talk trust tiers, sidecar UX, security — or where this is still naive.
 
 Repo: https://github.com/ingmarstruijs/WikiTraveler  
 Lens: https://chromewebstore.google.com/detail/wikitraveler-lens/bkkbidghpfkojnhhjnmddegkiopjbkho  
@@ -559,7 +498,7 @@ Article: [LINK]
 ### Disability / a11y forums
 
 Short version:  
-A relative who uses a wheelchair described how hard it is to find up-to-date accessibility information for hotels and other stays. I built an open prototype (web app + browser extension) that starts from open map data and is meant to be enriched by real audits and photos — not marketing checkboxes. I’m sharing it so people already in this space can judge, reuse, or take parts further — not so I can run a community product alone.
+A relative who uses a wheelchair described how hard it is to find up-to-date accessibility information for hotels and other stays. I built an open prototype (web app + browser extension) that starts from open map data and is meant to be enriched by real audits and photos — not marketing checkboxes.
 
 I’d love honest feedback from people who actually travel with accessibility needs: Does this solve a real problem, or the wrong one? Public signup is off while it’s a controlled test — GitHub issues / discussion welcome.
 
@@ -574,7 +513,7 @@ Repo: https://github.com/ingmarstruijs/WikiTraveler
 
 Built an MIT/CC-BY toolkit for federated accessibility facts about stays: regional nodes, gossip sync, trust tiers (OSM → AI guess → verified audit → multi-auditor confirmed), Access PWA, Lens extension, agency SDK.
 
-Looking for sharp critique — and for people who might reuse, fork, or absorb parts rather than for me to run this as a product forever.
+Looking for sharp critique on the architecture — and for people who might reuse or fork parts if useful.
 
 Article: [LINK]  
 Repo: https://github.com/ingmarstruijs/WikiTraveler  
