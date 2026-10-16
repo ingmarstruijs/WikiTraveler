@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- www `/story`: Access + Lens screenshots sit in one horizontal gallery row again (`<!-- gallery:start/end -->` + flex layout)
 - Access Saved favorites re-mint expired signed photo thumbnails instead of showing unauthorized images ([FEDERATED-AUTH.md](docs/FEDERATED-AUTH.md))
 - Access 401 retry refreshes against the home node (not the peer data URL) and single-flights concurrent refresh rotates
 

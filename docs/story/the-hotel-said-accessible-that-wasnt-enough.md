@@ -20,15 +20,15 @@ When people struggle like that, the system is often lying about complexity. It p
 
 Accessibility information for hotels, apartments, and other stays is not an edge case. It’s a trust problem dressed up as a content problem.
 
-That picture has to come first. Only then do the product and engineering questions get real room — what creates value, what scales without lying, what’s feasible to build without up-to-date programming knowledge.
+That picture has to come first. Only then do the product and engineering questions get real room — what scales without lying, what’s feasible to build without up-to-date programming knowledge.
 
-Strong AI models change the tempo: they can implement against a picture you can already hold in your head. The picture is the hard part. The agents type. You’re the conductor — continuously bridging **user → value → technology**.
+Strong AI models change the tempo: they can implement against a picture you can already hold in your head. The picture is the hard part. The agents type. You’re the conductor.
 
 So I did what people with dangerous curiosity always do.
 
 I started building.
 
-First the data model. Then the sidecar. Then the mesh. Then the monorepo. Then the parts that make a side project start behaving like an accidental product.
+First the data model. Then the sidecar. Then the mesh. Then the parts that make a side project start behaving like an accidental product.
 
 And then it got out of hand — in the useful way.
 
@@ -49,7 +49,7 @@ I do UX and engineering for work.
 
 That means I spend a lot of time on how complex tools feel to real people: flows, information structure, trust, whether something is usable under pressure — usability inside a broader experience, with UI as one of the instruments. I’ve also been poking at AI-assisted building — not because the model should own the product, but because implementation used to be the tax on having a clear system in your head.
 
-I can prototype. I’m not allergic to code. My programming knowledge is uneven and, in places, outdated. Historically that would have been enough to stop a build like this:
+I can prototype. I’m not allergic to code. My programming knowledge is uneven and, in places, outdated. Historically that would have been enough to stop a build like:
 
 - a federated mesh of nodes
 - gossip sync
@@ -71,18 +71,18 @@ The unpopular opinion worth planting early:
 
 **Outdated coding skills are less of a blocker than people think — if you can hold the system in your head like a board on the wall.**
 
-Journeys. Trust boundaries. Failure modes. What creates value. What’s feasible. What must stay human.
+Journeys. Trust boundaries. Failure modes. What must stay honest. What must stay human.
 
 AI doesn’t invent that board.
 AI doesn’t invent taste.
-AI doesn’t invent the original problem — that conversation did.
+AI doesn’t invent the original problem — Maurice did.
 
 What it can offer is **hands at the tempo of thought**.
 
 Agents can assemble a lot of the parts.
 Someone still has to hold the picture.
 Someone still has to conduct.
-The real job is the bridge: **user ↔ product/value ↔ technique** — over and over, every time a system invents a new way to lie.
+The scarce skill isn’t assembling the system. It’s noticing when the agents are solving the wrong problem — and killing that path before it hardens.
 
 And throughput, it turns out, is a hell of a drug.
 
@@ -126,23 +126,6 @@ In human terms:
 - **SDK** lets agencies and travel products embed or fetch the same data.
 - **Core** shared packages define tiers, merge rules, and gossip logic.
 
-```mermaid
-flowchart LR
-  Traveler([Traveler]) --> Apps[Access / Lens / SDK]
-  Apps --> Nodes[Regional nodes]
-  Nodes --> Facts[Accessibility facts]
-  OSM[OpenStreetMap] -.-> Nodes
-  Apps -.-> Booking[Booking sites]
-```
-
-
-
-*The whole system on one napkin: travelers use the apps; nodes hold the facts; booking sites stay where people already book.*
-
-![WikiTraveler Access on mobile: map of Eindhoven with an audited property sheet for The Match](../assets/screenshots/access-mobile.png)   ![WikiTraveler Access on desktop: map, property list, and detail card](../assets/screenshots/access-desktop.jpg)
-
-*Access — mobile and desktop. Same trust model; different viewport.*
-
 Trust is layered on purpose:
 
 
@@ -158,8 +141,17 @@ Higher tiers win on merge.
 
 That one table is the moral of the system.
 
-AI is allowed to help.
-AI is not allowed to quietly become reality.
+### What it looks like
+
+Three faces of the same truth model — Access on mobile and desktop, Lens on a booking site:
+
+<!-- gallery:start -->
+![WikiTraveler Access on mobile: map of Eindhoven with an audited property sheet for The Match](../assets/screenshots/access-mobile.png)
+![WikiTraveler Access on desktop: map, property list, and detail card](../assets/screenshots/access-desktop.jpg)
+![WikiTraveler Lens extension showing scores, feature icons, and audit photos for The Match](../assets/screenshots/lens.png)
+<!-- gallery:end -->
+
+*Same trust model: Access for map and audits; Lens as the sidecar on Booking / Expedia.*
 
 ---
 
@@ -169,13 +161,13 @@ The full architecture doc is longer. The useful mental model is short:
 
 **Clients never hold the truth. Regional nodes do — and they gossip.**
 
-<img src="../assets/screenshots/mesh-overview.jpg" alt="WikiTraveler mesh: OpenStreetMap and field audits feed a node mesh (home node + data nodes gossiping); Access and Lens consume the mesh; Lens overlays Booking / Expedia" width="720" />
+![WikiTraveler mesh: OpenStreetMap and field audits feed a node mesh (home node + data nodes gossiping); Access and Lens consume the mesh; Lens overlays Booking / Expedia](../assets/screenshots/mesh-overview.jpg)
 
 *Sources feed the mesh. The mesh is the truth. Clients only ask.*
 
 OpenStreetMap gives a baseline inventory. People on the ground add audits and photos. That truth lives on **regional data nodes**; a **home node** handles identity and “which node owns this place?” Nodes **gossip** deltas to peers so no single server has to cover the planet. Access, Lens, and the SDK only consume the mesh — search, overlay, embed — they never become the source of record. Booking sites stay where people book.
 
-<img src="../assets/screenshots/mesh-coverage-map.png" alt="World map: traveler in Europe signs in via a home node, which resolves to a US data node; peer coverage can overlap; everywhere outside the colored regions has no coverage" width="720" />
+![World map: traveler in Europe signs in via a home node, which resolves to a US data node; peer coverage can overlap; everywhere outside the colored regions has no coverage](../assets/screenshots/mesh-coverage-map.png)
 
 *Coverage is geographic. Identity is not. A traveler in Europe can still look up a hotel in the US — their home node routes them to the data node that owns that region. Some coverages overlap. Everything outside a colored circle has no coverage yet — that isn’t one region, it’s the rest of the map.*
 
@@ -203,10 +195,6 @@ You’re on Booking.com / Expedia / Hotels.com.
 You hover a listing.
 WikiTraveler tries to resolve the property and show accessibility facts from the community mesh.
 If the area isn’t covered, it should say so honestly instead of inventing confidence.
-
-![WikiTraveler Lens extension showing scores, feature icons, and audit photos for The Match](../assets/screenshots/lens.png)
-
-*Lens — the sidecar in practice: scores, features, audit photos, without leaving the browsing flow.*
 
 The SDK is the same idea for product teams:
 
@@ -423,29 +411,20 @@ Not everyone should vibe-build a federated mesh. This one happened accidentally.
 
 ## An invitation, not a victory lap
 
-WikiTraveler is still a side project that grew teeth — releases, docs, a mesh, clients.
-
-Shipping code with agents isn’t the point.
-
-If this resonated, the useful next steps are simple:
-
-1. **Read** the repo docs if you want the technical deep dive.  
-2. **Share** with someone who books accessible travel, builds travel products, or already works on access information.  
-3. **Reuse** what helps: fork, integrate the SDK, strip the pattern for another domain — or tell me where the architecture is wrong.  
-4. **Get in touch** if you want hands-on Access or Lens. Public registration is off while this stays a controlled test — reach out via [GitHub](https://github.com/ingmarstruijs/WikiTraveler) and I’ll create an account and walk you through it.
-
-Human test: would this have helped the last time someone needed trustworthy facts before booking a stay?
-
-Shortest summary:
+WikiTraveler is still a side project that grew teeth — releases, docs, a mesh, clients. 
 
 **The goal was trustworthy accessibility facts for stays — via open data (beside OSM, not against it), a sidecar UX strategy, and AI-accelerated building. What exists now is a monorepo, a federated mesh, a browser extension, an SDK, too many architectural U-turns, and clearer respect for how hard that information is.**
 
-That’s the project.  
-That’s the lesson.  
-That’s the offer.
+That’s the project. That’s the lesson.
 
-Read it. Share it if it’s useful. Tell me where I’m wrong.  
-And if you want to take any of it further — welcome.
+If it resonated:
+
+1. **Read** the repo if you want the technical deep dive.
+2. **Share** it with someone who books accessible travel, builds travel products, or already works on access information.
+3. **Reuse** what helps: fork, integrate the SDK, strip the pattern for another domain — or tell me where the architecture is wrong.
+4. **Get in touch** if you want hands-on Access or Lens. Public registration is off while this stays a controlled test — reach out via [GitHub](https://github.com/ingmarstruijs/WikiTraveler) and I’ll create an account and walk you through it.
+
+Tell me where I’m wrong. And if you want to take any of it further — welcome.
 
 ---
 

@@ -13,6 +13,20 @@ function fenceLang(lang: string | undefined): string {
   return (lang ?? "").trim().split(/\s+/)[0] ?? "";
 }
 
+/** Collapse <!-- gallery:start -->…<!-- gallery:end --> into a horizontal row. */
+export function wrapStoryGalleries(html: string): string {
+  return html.replace(
+    /<!--\s*gallery:start\s*-->([\s\S]*?)<!--\s*gallery:end\s*-->/gi,
+    (_match, inner: string) => {
+      const links = [...inner.matchAll(/<a class="wt-www-article__media-link"[\s\S]*?<\/a>/g)].map(
+        (m) => m[0]
+      );
+      if (links.length === 0) return inner;
+      return `<div class="wt-www-article__gallery">${links.join("")}</div>\n`;
+    }
+  );
+}
+
 export function renderStoryHtml(markdown: string): string {
   const renderer = new marked.Renderer();
   const defaultCode = renderer.code.bind(renderer);
@@ -43,5 +57,6 @@ export function renderStoryHtml(markdown: string): string {
     );
   };
 
-  return marked.parse(markdown, { gfm: true, async: false, renderer }) as string;
+  const html = marked.parse(markdown, { gfm: true, async: false, renderer }) as string;
+  return wrapStoryGalleries(html);
 }
