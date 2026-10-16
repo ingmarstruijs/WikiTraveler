@@ -75,7 +75,7 @@ Journeys. Trust boundaries. Failure modes. What must stay honest. What must stay
 
 AI doesn’t invent that board.
 AI doesn’t invent taste.
-AI doesn’t invent the original problem — Maurice did.
+AI doesn’t invent the original problem — that conversation did.
 
 What it can offer is **hands at the tempo of thought**.
 
