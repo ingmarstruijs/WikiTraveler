@@ -32,6 +32,16 @@ describe("renderStoryHtml", () => {
     expect(html).toContain('target="_blank"');
   });
 
+  it("collapses gallery markers into a horizontal row", () => {
+    const html = renderStoryHtml(
+      "<!-- gallery:start -->\n![A](/screenshots/a.png)\n![B](/screenshots/b.png)\n<!-- gallery:end -->\n"
+    );
+    expect(html).toContain('class="wt-www-article__gallery"');
+    expect(html).toContain('href="/screenshots/a.png"');
+    expect(html).toContain('href="/screenshots/b.png"');
+    expect(html).not.toContain("gallery:start");
+  });
+
   it("opens external markdown links in a new tab", () => {
     const html = renderStoryHtml("[WtW](https://wheeltheworld.com/)\n");
     expect(html).toContain('href="https://wheeltheworld.com/"');

@@ -54,14 +54,14 @@ We follow coordinated disclosure: we will work with reporters on a fix before pu
 
 ## Dependency vulnerabilities (maintainers)
 
-This repository uses **alerts + security-update PRs, without version-bump PRs**:
+This repository uses **alerts only** — no Dependabot PRs (security or version):
 
 | GitHub setting | Location | Desired state |
 |----------------|----------|---------------|
 | **Dependabot alerts** | Settings → Code security and analysis | **Enabled** — vulnerabilities appear on the **Security** tab |
-| **Dependabot security updates** | Same page | **Enabled** — automatic PRs for known CVEs only |
+| **Dependabot security updates** | Same page | **Off** — no automatic CVE PRs (monorepo bumps break CI / Vercel previews) |
 | **Dependabot version updates** | `.github/dependabot.yml` | **Off** — no scheduled bump PRs |
 
-Review and merge security PRs promptly. For non-CVE bumps, use `pnpm update` manually, then `pnpm test` / `pnpm build`. Document security-related dependency changes in [CHANGELOG.md](CHANGELOG.md).
+When the **Security** tab shows a CVE, bump with `pnpm` manually, then `pnpm test` / `pnpm build`. Document security-related dependency changes in [CHANGELOG.md](CHANGELOG.md). Vercel `ignoreCommand` skips preview deploys for `dependabot/*` branches if any slip through ([`vercel.json`](vercel.json), Access, www).
 
-**Next.js 16:** Apps run Next.js **16.x** (React 19). Prefer coordinated upgrades of `apps/node` and `apps/access` together; close Dependabot major bumps that only touch one app. Transitive alerts: Dependabot on this repository.
+**Next.js 16:** Apps run Next.js **16.x** (React 19). Coordinate upgrades of `apps/node`, `apps/access`, and `apps/www` together.

@@ -123,15 +123,15 @@ Maintainer-only: `pnpm db:migrate-photos` — see [VERCEL.md](./VERCEL.md).
 
 ### Dependency updates
 
-**Alerts + security PRs; no version-bump PRs:**
+**Alerts only; no Dependabot PRs:**
 
 | What | How |
 |------|-----|
 | See vulnerabilities | **Security** tab (Dependabot alerts — keep **enabled** in repo Settings) |
-| Security fix PRs | **On** — Settings → Code security → **Dependabot security updates** |
+| Security fix PRs | **Off** — Settings → Code security → **Dependabot security updates** disabled |
 | Version bump PRs | **Off** — no `.github/dependabot.yml` |
 
-Merge Dependabot security PRs after CI passes. Bump other deps manually when needed. See [SECURITY.md](../SECURITY.md).
+Bump deps manually when the Security tab (or you) need it; coordinate Next across apps. See [SECURITY.md](../SECURITY.md).
 
 ---
 
