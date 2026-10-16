@@ -1,6 +1,4 @@
-import { loadStoryMarkdown } from "../../lib/loadStory";
-import { renderStoryHtml } from "../../lib/renderStory";
-import { StoryArticle } from "../StoryArticle";
+import { StoryContent } from "./StoryContent";
 
 export const metadata = {
   title: "The hotel said “accessible.” That wasn’t enough.",
@@ -9,11 +7,9 @@ export const metadata = {
 };
 
 export default function StoryPage() {
-  const html = renderStoryHtml(loadStoryMarkdown());
-
   return (
     <main id="main-content" className="wt-www-main">
-      <StoryArticle html={html} />
+      <StoryContent />
     </main>
   );
 }

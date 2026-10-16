@@ -1,3 +1,5 @@
+> **Not the live site source.** The published story is the React page at [`apps/www/app/story/`](../../apps/www/app/story/) ([www.wikitraveler.org/story](https://www.wikitraveler.org/story)). This markdown is an editorial archive for paste/export only.
+
 # The hotel said “accessible.” That wasn’t enough.
 
 ### A relative told me how miserable booking travel with a wheelchair still is. Curiosity and a UX brain did the rest — then I got sucked into an accidental product once coding stopped being the bottleneck.
@@ -143,15 +145,41 @@ That one table is the moral of the system.
 
 ### What it looks like
 
-Three faces of the same truth model — Access on mobile and desktop, Lens on a booking site:
+Same trust model, different jobs — search, detail, field audit, booking sidecar, and operating a node.
+(Canonical layout: React page on www.)
 
-<!-- gallery:start -->
-![WikiTraveler Access on mobile: map of Eindhoven with an audited property sheet for The Match](../assets/screenshots/access-mobile.png)
+**Access — find a stay**
+
 ![WikiTraveler Access on desktop: map, property list, and detail card](../assets/screenshots/access-desktop.jpg)
-![WikiTraveler Lens extension showing scores, feature icons, and audit photos for The Match](../assets/screenshots/lens.png)
-<!-- gallery:end -->
+![WikiTraveler Access on mobile: map of Eindhoven with an audited property sheet for The Match](../assets/screenshots/access-mobile.png)
 
-*Same trust model: Access for map and audits; Lens as the sidecar on Booking / Expedia.*
+*Search on desktop and mobile. Scores and facts in these screenshots are made up for illustration — not real property data.*
+
+**Access — property detail**
+
+![WikiTraveler Access property detail for The Match: accessibility score, feature badges, and Official facts](../assets/screenshots/access-property-the-match.png)
+
+*Detail is where travelers see evidence — not a marketing checkbox. Scores and facts in this screenshot are made up for illustration — not real property data.*
+
+**Access — audit wizard**
+
+![WikiTraveler Access audit wizard for The Match: Step 1 Entrance with door width, step-free path, verified fields, and photos](../assets/screenshots/access-audit-the-match.png)
+
+*Field proof attaches to the claim, not a free-floating tag. Values and photos in this screenshot are made up for illustration — not a real audit.*
+
+**Lens — booking sidecar**
+
+![WikiTraveler Lens overlay on a blurred Booking.com listing for The Match: scores, feature icons, and audit photos](../assets/screenshots/lens-on-booking.png)
+
+*Sidecar UX: stay where people already book. Scores and facts in this screenshot are made up for illustration — not real property data.*
+
+**Node Admin — operate a region**
+
+![WikiTraveler Node property audit for The Match: Submit audit wizard entrance step](../assets/screenshots/node-property-edit.png)
+![WikiTraveler Node Admin Peers tab showing node-eu peer with gossip protocol 2](../assets/screenshots/node-peers.png)
+![WikiTraveler Node Community signals queue for auditor review](../assets/screenshots/node-signals.png)
+
+*Edit audits on a stay, sync peers over gossip, review traveler signals. Property facts in these screenshots are made up for illustration — not real audits.*
 
 ---
 
@@ -167,11 +195,9 @@ The full architecture doc is longer. The useful mental model is short:
 
 OpenStreetMap gives a baseline inventory. People on the ground add audits and photos. That truth lives on **regional data nodes**; a **home node** handles identity and “which node owns this place?” Nodes **gossip** deltas to peers so no single server has to cover the planet. Access, Lens, and the SDK only consume the mesh — search, overlay, embed — they never become the source of record. Booking sites stay where people book.
 
-![World map: traveler in Europe signs in via a home node, which resolves to a US data node; peer coverage can overlap; everywhere outside the colored regions has no coverage](../assets/screenshots/mesh-coverage-map.png)
+![World map: traveler in Europe signs in via a home node; EU data node with an overlapping peer; a US peer with no overlap; home node resolves a US search to that peer](../assets/screenshots/mesh-coverage-geo.png)
 
-*Coverage is geographic. Identity is not. A traveler in Europe can still look up a hotel in the US — their home node routes them to the data node that owns that region. Some coverages overlap. Everything outside a colored circle has no coverage yet — that isn’t one region, it’s the rest of the map.*
-
-In practice that gap is still the product: a node can hold hundreds of thousands of OSM stays while almost every fact is still `OFFICIAL`. Audits are basically a rounding error — until people fill them.
+*Coverage is geographic. Identity is not. A traveler in Europe can still look up a hotel in the US — their home node routes them to the peer that covers that region. Some coverages overlap; others don’t.*
 
 ---
 
@@ -292,39 +318,13 @@ That’s the system as it stands around **v0.5.x**: not finished, but shaped. Si
 
 ## Vibe coding, but with adult supervision
 
-There’s a lot of discourse about vibe coding.
+There’s a lot of discourse about vibe coding. Some of it is fair. Some of it is people defending their identity as “real engineers” against a scary new productivity curve. Some of it is warnings I agree with: if you can’t read diffs, you will ship haunted houses.
 
-Some of it is fair.
-Some of it is people defending their identity as “real engineers” against a scary new productivity curve.
-Some of it is warnings I agree with: if you can’t read diffs, you will ship haunted houses.
+The experience is less ideological and more practical. You can imagine a system from a handful of ideas. You can hold the user model, the trust model, and the deployment model in your head. You can tell when an AI suggestion is locally clever and globally stupid. You still need help turning that mental picture into thousands of coherent lines across apps, packages, tests, docs, and CI.
 
-The experience is less ideological and more practical.
+So you collaborate with agents — hard. Intent gets described. The agent explores the monorepo. You argue via diffs. You redirect when the system drifts. Security findings get fixed. Operator docs get written. Yesterday’s registry idea turns out to be a trap. Field Kit becomes Access — because travelers aren’t a “kit.” Another release candidate ships that is somehow both more serious and more unfinished.
 
-You can imagine a system from a handful of ideas.
-You can hold the user model, the trust model, and the deployment model in your head.
-You can tell when an AI suggestion is locally clever and globally stupid.
-You still need help turning that mental picture into thousands of coherent lines across apps, packages, tests, docs, and CI.
-
-So you collaborate with agents.
-
-Hard.
-
-Intent gets described.
-The agent explores the monorepo.
-You argue via diffs.
-You redirect when the system drifts.
-Security findings get fixed.
-Operator docs get written.
-Yesterday’s registry idea turns out to be a trap.
-Field Kit becomes Access — because travelers aren’t a “kit.”
-Another release candidate ships that is somehow both more serious and more unfinished.
-
-The scarce skill isn’t coding speed.
-It’s knowing what *not* to ship when agents can generate almost anything.
-
-Can you keep judgment sharp when building suddenly got cheap?
-
-That is the new UX systems problem.
+The scarce skill isn’t coding speed. It’s knowing what *not* to ship when agents can generate almost anything. Can you keep judgment sharp when building suddenly got cheap? That is the new UX systems problem.
 
 ---
 
@@ -334,29 +334,9 @@ Shortly after the toolkit started working, I found [Ongehinderd](https://www.ong
 
 I wrote to them. No commercial pitch. Just: here’s an open-source side project that got out of hand; if any of the learning or tooling is useful to people who have been doing this work for years, I’d rather share it than pretend I invented the need. Data exchange, open standards, hands on a keyboard — whatever fits. They haven’t replied (yet). That’s fine. The useful move isn’t to compete with people already in the field — it’s to keep the toolkit open so someone who needs it can use it.
 
-Here’s the part where the engineer ego needs to sit down anyway: the code is not the hard part. Filling a system with **reliable accessibility information** — and keeping it trustworthy — is. Without travelers, auditors, operators, and integrators, the mesh is a fancy mirror of OSM tags and AI guesses. OSM is inventory, not a bathroom doorway. Open source is the offer: use, fork, or discard what exists.
+Here’s the part where the engineer ego needs to sit down anyway: the code is not the hard part. Filling a system with **reliable accessibility information** — and keeping it trustworthy — is. Without travelers, auditors, operators, and integrators, the mesh is a fancy mirror of OSM tags and AI guesses. OSM is inventory, not a bathroom doorway. If the mesh lies about that doorway, it isn’t a backlog bug — it’s a broken promise with physical consequences. Open source is the offer: use, fork, or discard what exists.
 
-The bet that remains is still the same shape: a commons beside the booking journey — closer to OpenStreetMap than to a closed inventory — with stay-depth (audits, photos, trust tiers) living in the mesh, and coarse verified wheelchair signals able to flow back where they belong.
-
----
-
-## Why reliability beats cleverness
-
-If WikiTraveler tells someone a bathroom is accessible and it isn’t, that is not a bug in a backlog.
-
-That is a broken promise with physical consequences.
-
-So the system is biased toward:
-
-- explicit trust tiers
-- independent confirmation
-- photo evidence attached to meaningful audit steps
-- coverage honesty over fake completeness
-- operator sovereignty over forced upgrades
-- RFCs for federation-impacting changes
-- security checks in CI, not as folklore
-
-Clever architecture without that bias is just a faster way to ship a lie.
+The bet that remains is still the same shape: a commons beside the booking journey — closer to OpenStreetMap than to a closed inventory — with stay-depth (audits, photos, trust tiers) living in the mesh, and coarse verified wheelchair signals able to flow back where they belong. Clever architecture without that bias is just a faster way to ship a lie.
 
 ---
 

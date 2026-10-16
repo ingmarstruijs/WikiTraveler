@@ -502,6 +502,30 @@ img {
 .wt-www-article h1 { font-size: 32px; }
 .wt-www-article h2 { font-size: 22px; }
 .wt-www-article h3 { font-size: 18px; }
+.wt-www-article h4 {
+  font-size: 16px;
+  font-weight: 650;
+  margin: 24px 0 8px;
+}
+
+.wt-www-article__deck {
+  font-size: 1.125rem;
+  line-height: 1.45;
+  color: var(--wt-text-muted);
+  margin: 0 0 8px;
+}
+
+.wt-www-article__figure {
+  margin: 20px 0;
+}
+
+.wt-www-article__figure figcaption {
+  margin-top: 10px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--wt-text-muted);
+  font-style: italic;
+}
 
 .wt-www-article p,
 .wt-www-article li {
@@ -547,9 +571,32 @@ img {
   object-fit: contain;
 }
 
+/* Desktop + phone: landscape takes the row; phone stays phone-sized. */
+.wt-www-article__gallery--desktop-mobile {
+  align-items: center;
+  gap: 16px;
+}
+
+.wt-www-article__gallery--desktop-mobile > .wt-www-article__media-link:first-child {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.wt-www-article__gallery--desktop-mobile > .wt-www-article__media-link:last-child {
+  flex: 0 0 auto;
+  width: min(28%, 200px);
+  max-width: 200px;
+}
+
 @media (max-width: 640px) {
   .wt-www-article__gallery {
     flex-direction: column;
+  }
+
+  .wt-www-article__gallery--desktop-mobile > .wt-www-article__media-link:last-child {
+    width: min(56%, 220px);
+    max-width: 220px;
+    align-self: center;
   }
 }
 
@@ -567,45 +614,17 @@ img {
 }
 
 .wt-www-article__media-link img {
-  margin: 16px 0;
+  margin: 0;
   vertical-align: middle;
 }
 
-.wt-www-article pre,
+.wt-www-article__figure > .wt-www-article__media-link img {
+  margin: 0;
+}
+
 .wt-www-article code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.92em;
-}
-
-.wt-www-article pre {
-  overflow: auto;
-  padding: 14px;
-  background: var(--wt-bg-secondary);
-  border-radius: 10px;
-  margin: 16px 0;
-}
-
-.wt-www-article pre.mermaid {
-  background: #fff;
-  border: 1px solid var(--wt-border);
-  overflow-x: auto;
-  font-family: inherit;
-  font-size: 14px;
-}
-
-.wt-www-article pre.mermaid.wt-www-article__mermaid--clickable {
-  cursor: zoom-in;
-}
-
-.wt-www-article pre.mermaid.wt-www-article__mermaid--clickable:focus-visible {
-  outline: 2px solid var(--wt-accent, #1d4ed8);
-  outline-offset: 2px;
-}
-
-.wt-www-article pre.mermaid svg {
-  max-width: 100%;
-  height: auto;
-  pointer-events: none;
 }
 
 .wt-www-article blockquote {

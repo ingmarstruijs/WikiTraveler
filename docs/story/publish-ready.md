@@ -1,6 +1,6 @@
 # Publish-ready kit
 
-Copy/paste for Medium, LinkedIn, Hacker News, and forums. The long-form article lives in [the-hotel-said-accessible-that-wasnt-enough.md](./the-hotel-said-accessible-that-wasnt-enough.md) ([www.wikitraveler.org/story](https://www.wikitraveler.org/story)).
+Copy/paste for Medium, LinkedIn, Hacker News, and forums. Live story: [www.wikitraveler.org/story](https://www.wikitraveler.org/story) (React in `apps/www/app/story/`). Editorial markdown archive: [the-hotel-said-accessible-that-wasnt-enough.md](./the-hotel-said-accessible-that-wasnt-enough.md).
 
 ### Publish-ready links
 
@@ -13,7 +13,7 @@ Copy/paste for Medium, LinkedIn, Hacker News, and forums. The long-form article 
 
 *Audience note: primary readers = UX/product people exploring AI-assisted building; secondary = a11y/disability, OSS/dev, travel tech. Channels: Medium, LinkedIn, Hacker News, plus disability / open-source / developer forums. CTA: read, share, reuse, critique — hands-on Access/Lens via GitHub contact (registration off). Suggested tags:* `#accessibility` `#opensource` `#ux` `#a11y` `#traveltech` `#federation` `#vibecoding`. *Estimated reading time: ~15–18 minutes.*
 
-**Images:** linked relatively from the story as `../assets/screenshots/` (`mesh-overview.jpg`, `mesh-coverage-map.png`, `access-mobile.png`, `access-desktop.jpg`, `lens.png`). On GitHub they render from the repo. For Medium/LinkedIn, upload those same files and swap in CDN URLs.
+**Images:** linked relatively from the story as `../assets/screenshots/` (`mesh-overview.jpg`, `mesh-coverage-geo.png`, `access-mobile.png`, `access-desktop.jpg`, `lens-on-booking.png`, …). On GitHub they render from the repo. For Medium/LinkedIn, upload those same files and swap in CDN URLs.
 
 ---
 
