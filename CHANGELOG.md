@@ -18,6 +18,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- www `/story` is a native React page (canonical); docs markdown is editorial archive only — no runtime `marked` / Mermaid pipeline ([docs/story/README.md](docs/story/README.md))
+- www `/story` “What it looks like” groups product screenshots by feature (Access search/detail/audit, Lens, Node property/peers/signals)
+- www `/story` Lens shot shows the popup over a blurred light-theme Booking.com listing
+- www `/story` Access “find a stay” gallery sizes desktop larger than the phone frame
+- www `/story` mesh coverage diagram simplified: US is a peer (no overlap); removed “no coverage” callout
 - Dependabot security-update PRs off (alerts stay on); Vercel skips preview deploys for `dependabot/*` branches ([SECURITY.md](SECURITY.md))
 - Origin story: Ongehinderd instead of Wheel the World contrast; shorter reuse-oriented close; invitation is contact-via-GitHub (registration off); Lens Chrome Web Store link; portable mesh diagrams; dates include years ([docs/story/README.md](docs/story/README.md))
 - Traveler access JWTs expire in **1 hour** by default (`TRAVELER_ACCESS_TOKEN_TTL`); login/setup return `{ token, refreshToken, expiresIn, … }`
@@ -27,7 +32,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
-- www `/story`: Access + Lens screenshots sit in one horizontal gallery row again (`<!-- gallery:start/end -->` + flex layout)
 - Access Saved favorites re-mint expired signed photo thumbnails instead of showing unauthorized images ([FEDERATED-AUTH.md](docs/FEDERATED-AUTH.md))
 - Access 401 retry refreshes against the home node (not the peer data URL) and single-flights concurrent refresh rotates
 
