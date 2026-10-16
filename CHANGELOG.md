@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Dependabot security-update PRs off (alerts stay on); Vercel skips preview deploys for `dependabot/*` branches ([SECURITY.md](SECURITY.md))
 - Origin story: Ongehinderd instead of Wheel the World contrast; shorter reuse-oriented close; invitation is contact-via-GitHub (registration off); Lens Chrome Web Store link; portable mesh diagrams; dates include years ([docs/story/README.md](docs/story/README.md))
 - Traveler access JWTs expire in **1 hour** by default (`TRAVELER_ACCESS_TOKEN_TTL`); login/setup return `{ token, refreshToken, expiresIn, … }`
 - CORS fail-closed when `CORS_ORIGINS` / client origins are unset — only an explicit `*` allows all (local/dev) ([OPERATORS.md](docs/OPERATORS.md))

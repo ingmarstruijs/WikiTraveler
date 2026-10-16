@@ -202,7 +202,7 @@ Maintainers announce the intended minor window in the changelog or an issue when
 | `scripts/release.mjs` version bump helper | `scripts/release.mjs` | **Done** |
 | CodeQL analysis | GitHub **default setup** (Settings → Code security) | **Done** — do not also use `codeql.yml` |
 | Dependabot alerts | Settings → Code security | **Enabled** |
-| Dependabot security updates | Same | **Enabled** — CVE PRs only |
+| Dependabot security updates | Same | **Off** — alerts only; bump manually ([SECURITY.md](../SECURITY.md)) |
 | Dependabot version updates | `.github/dependabot.yml` | **Off** — no scheduled bump PRs |
 
 See [LENS.md](./LENS.md) for Chrome Web Store upload after a tag. Keep GHCR packages public for new operators. Grow [public-peers.json](./public-peers.json) as operators opt in.
