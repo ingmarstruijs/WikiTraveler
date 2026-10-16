@@ -13,7 +13,9 @@ Copy/paste for Medium, LinkedIn, Hacker News, and forums. Live story: [www.wikit
 
 *Audience note: primary readers = UX/product people exploring AI-assisted building; secondary = a11y/disability, OSS/dev, travel tech. Channels: Medium, LinkedIn, Hacker News, plus disability / open-source / developer forums. CTA: read, share, reuse, critique — hands-on Access/Lens via GitHub contact (registration off). Suggested tags:* `#accessibility` `#opensource` `#ux` `#a11y` `#traveltech` `#federation` `#vibecoding`. *Estimated reading time: ~15–18 minutes.*
 
-**Images:** linked relatively from the story as `../assets/screenshots/` (`mesh-overview.jpg`, `mesh-coverage-geo.png`, `access-mobile.png`, `access-desktop.jpg`, `lens-on-booking.png`, …). On GitHub they render from the repo. For Medium/LinkedIn, upload those same files and swap in CDN URLs.
+**Images:** linked relatively from the story as `../assets/screenshots/` (`mesh-overview.jpg`, `mesh-coverage-geo.png`, `access-desktop.jpg`, `access-mobile.png`, `access-property-the-match.png`, `access-audit-the-match.png`, `lens-on-booking.png`, Node shots, …). On GitHub they render from the repo. For Medium/LinkedIn, upload those same files and swap in CDN URLs.
+
+**Screenshot disclaimer (use when posting product UI shots):** Scores, facts, and audit values in the Access / Lens / Node screenshots are made up for illustration — not real property data.
 
 ---
 
@@ -24,6 +26,8 @@ Copy/paste for Medium, LinkedIn, Hacker News, and forums. Live story: [www.wikit
 The hotel said “accessible.” That wasn’t enough.
 
 I’m a UX engineer. After a relative who uses a wheelchair described how miserable booking travel still is, curiosity and a UX brain did the rest. Strong AI models removed the old implementation bottleneck. I got sucked into a side project that began behaving like an accidental product: federated mesh, browser sidecar, agency SDK — and later found organisations already working on the same problem. The write-up is open; so is the code.
+
+(If you attach product screenshots: scores and facts in those UIs are sample/demo data — not real property information.)
 
 [LINK TO ARTICLE]
 
@@ -44,6 +48,8 @@ Access (registration off): [https://access.wikitraveler.org](https://access.wiki
 **Deck / intro blurb:**  
 I’m not a distributed-systems engineer by trade — I do UX and engineering for work. After a conversation about booking accessible stays, I started a sidecar-style open project on top of travel platforms. This is the honest story of what got built, what got thrown away, and what I’d still bet on.
 
+**Image note (caption under product screenshots):** Sample UI — scores and accessibility facts are fictional for illustration, not real property data.
+
 ---
 
 ### Hacker News (title + comment)
@@ -57,7 +63,7 @@ I’m not a distributed-systems engineer by trade — I do UX and engineering fo
 **First comment (recommended for Show HN / discussion):**  
 Family conversation → “accessible hotel info is unreliable” → tried Amadeus → self-service developer portal decommissioned 17 July 2026 (enterprise-only left) → moved to OpenStreetMap → somehow ended up with a monorepo, gossip mesh, audit PWA, Chrome extension (Lens), and an agency SDK.
 
-Later found people already working on the same problem (e.g. Ongehinderd in NL). Open bet remains: CC-BY mesh + sidecar beside Booking, OSM as baseline. I’m closer to UX/engineering than to “I meant to invent federation.” Happy to talk trust tiers, sidecar UX, security — or where this is still naive. Registration is off; if you want a hands-on look, ping me on GitHub.
+Later found people already working on the same problem (e.g. Ongehinderd in NL). Open bet remains: CC-BY mesh + sidecar beside Booking, OSM as baseline. I’m closer to UX/engineering than to “I meant to invent federation.” Happy to talk trust tiers, sidecar UX, security — or where this is still naive. Registration is off; if you want a hands-on look, ping me on GitHub. (Screenshots in the post use demo accessibility data — not real hotel facts.)
 
 Repo: [https://github.com/ingmarstruijs/WikiTraveler](https://github.com/ingmarstruijs/WikiTraveler)  
 Lens: [https://chromewebstore.google.com/detail/wikitraveler-lens/bkkbidghpfkojnhhjnmddegkiopjbkho](https://chromewebstore.google.com/detail/wikitraveler-lens/bkkbidghpfkojnhhjnmddegkiopjbkho)  
@@ -71,7 +77,7 @@ Article: [LINK]
 Short version:  
 A relative who uses a wheelchair described how hard it is to find up-to-date accessibility information for hotels and other stays. I built an open prototype (web app + browser extension) that starts from open map data and is meant to be enriched by real audits and photos — not marketing checkboxes.
 
-I’d love honest feedback from people who actually travel with accessibility needs: Does this solve a real problem, or the wrong one? Public signup is off while it’s a controlled test — GitHub issues / discussion welcome if you want an account.
+I’d love honest feedback from people who actually travel with accessibility needs: Does this solve a real problem, or the wrong one? Public signup is off while it’s a controlled test — GitHub issues / discussion welcome if you want an account. Screenshots show sample data only — not real hotel accessibility facts.
 
 Access (registration off): [https://access.wikitraveler.org](https://access.wikitraveler.org)  
 Article: [LINK]  
