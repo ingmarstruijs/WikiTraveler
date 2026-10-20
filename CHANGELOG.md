@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Origin story: drop punchy closers (“cosplay” line; “faster way to ship a lie”) ([docs/story/README.md](docs/story/README.md))
 - Origin story treats nodes as one software (sign-in vs regional facts without home/data product framing) ([docs/story/README.md](docs/story/README.md))
 - Origin story: scarce skill as picturing the system (experience / architecture / value); confession includes agent process beats; separate AI-assisted section removed
 - www `/story` and publish-ready kit link the agency SDK (`@wikitraveler/sdk` on npm); home ecosystem card already used the same URL
