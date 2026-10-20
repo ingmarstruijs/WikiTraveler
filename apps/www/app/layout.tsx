@@ -10,14 +10,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(CANONICAL_SITE_URL),
   title: {
     default: "WikiTraveler",
-    template: "%s — WikiTraveler",
+    template: "%s · WikiTraveler",
   },
   description:
-    "Open-source, federated accessibility intelligence for travel. Community-verified facts about stays — no central gatekeeper.",
+    "Open toolkit for federated accessibility facts about stays. Community data where people already book. Read the origin story; Access signup is off for this controlled test.",
   openGraph: {
     title: "WikiTraveler",
     description:
-      "Open-source, federated accessibility intelligence for travel. Community-verified facts about stays.",
+      "Open toolkit for federated accessibility facts about stays. Overlay on booking sites, gossip mesh, community audits.",
     url: CANONICAL_SITE_URL,
     siteName: "WikiTraveler",
     type: "website",

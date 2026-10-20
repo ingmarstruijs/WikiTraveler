@@ -2,7 +2,7 @@
 
 **Docs:** [Hub](./README.md) · [Releases](./RELEASES.md) · [Community](./COMMUNITY.md) · [RFC-0002](./rfcs/0002-global-hub-access.md)
 
-WikiTraveler is a federated truth layer for accessibility data — a mesh of independently operated **nodes** that share and corroborate facts. Travelers use a **hub Access** (and Lens) worldwide: home node = identity, regional data nodes = facts. Federation stays invisible except for honest coverage messaging.
+WikiTraveler is a federated truth layer for accessibility data — a mesh of independently operated **nodes** that share and corroborate facts. Travelers use a **hub Access** (and Lens) worldwide: **home** and **data** are roles on the same node software (often one deployment) — identity vs regional facts. Federation stays invisible except for honest coverage messaging.
 
 ---
 
@@ -41,8 +41,7 @@ flowchart LR
 
 | Piece | Job |
 |-------|-----|
-| **Data node** | Owns properties/facts for a geographic region |
-| **Home node** | Registration, JWT, “which data node for this place?” |
+| **Node** | Same deployable everywhere. **Home** role = registration, JWT, “which node for this place?”; **data** role = properties/facts for a geographic region. One deployment often does both. |
 | **Access** | Traveler + auditor app |
 | **Lens** | Sidecar UX on existing booking sites |
 | **SDK** | Embed/fetch the same facts in agency products |

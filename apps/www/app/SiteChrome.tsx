@@ -8,10 +8,8 @@ import { LINKS } from "../lib/site";
 
 const nav: { href: string; label: string; external?: boolean }[] = [
   { href: "/", label: "Home" },
-  { href: LINKS.access, label: "Access", external: true },
-  { href: "/#features", label: "Features" },
-  { href: "/#ecosystem", label: "Ecosystem" },
-  { href: "/story", label: "About" },
+  { href: "/story", label: "Story" },
+  { href: LINKS.lensRelease, label: "Lens", external: true },
 ];
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
@@ -107,18 +105,20 @@ export function SiteFooter() {
             <LogoMark size={24} />
             <span>WikiTraveler</span>
           </Link>
-          <nav aria-label="Footer">
-            <NavLinks />
-          </nav>
-          <a
-            className="wt-www-icon-link"
-            href={LINKS.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub (opens in a new tab)"
-          >
-            <GitHubIcon />
-          </a>
+          <div className="wt-www-footer__links">
+            <nav aria-label="Footer">
+              <NavLinks />
+            </nav>
+            <a
+              className="wt-www-icon-link"
+              href={LINKS.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub (opens in a new tab)"
+            >
+              <GitHubIcon />
+            </a>
+          </div>
         </div>
         <div className="wt-www-footer__bottom">
           <p>© 2026 WikiTraveler. Open source. Federated. Accessible.</p>
