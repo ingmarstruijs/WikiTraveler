@@ -22,7 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Origin story: scarce skill as picturing the system (experience / architecture / value); confession includes agent process beats; separate AI-assisted section removed
 - www `/story` and publish-ready kit link the agency SDK (`@wikitraveler/sdk` on npm); home ecosystem card already used the same URL
 - www home rewritten as story-aligned entry (Read the story / GitHub first; toolkit + trust table; napkin system overview; no product-landing CTAs); closing links as a two-column list; “Open and reusable” instead of “unfinished”; wider desktop measure; flatter copy (fewer aphorism headlines)
-- www story/home/publish-ready: remove em dashes from traveler-facing copy (reads less “AI essay”)
+- www story/home/publish-ready: remove em dashes from traveler-facing copy (reads less “AI essay”); publish-ready platform captions aligned with scarce-skill / AI-assistance / one-node framing
 - www `/story` is a native React page (canonical); docs markdown is editorial archive only — no runtime `marked` / Mermaid pipeline ([docs/story/README.md](docs/story/README.md))
 - www `/story` “What it looks like” groups product screenshots by feature (Access search/detail/audit, Lens, Node property/peers/signals)
 - www `/story` Lens shot shows the popup over a blurred light-theme Booking.com listing
