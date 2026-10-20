@@ -296,22 +296,21 @@ export function StoryContent() {
       </p>
       <StoryFigure
         src="/screenshots/mesh-overview.jpg"
-        alt="WikiTraveler mesh: OpenStreetMap and field audits feed a node mesh (home node + data nodes gossiping); Access and Lens consume the mesh; Lens overlays Booking / Expedia"
+        alt="WikiTraveler mesh: OpenStreetMap and field audits feed gossiping nodes; Access and Lens consume the mesh; Lens overlays Booking / Expedia"
         caption="Sources feed the mesh. The mesh is the truth. Clients only ask."
         width={1200}
         height={675}
       />
       <p>
         OpenStreetMap is the baseline. People add audits and photos. That truth lives on{" "}
-        <strong>nodes</strong>: same software everywhere. <strong>Home</strong> and{" "}
-        <strong>data</strong> are roles on that software, often the same machine. Nodes{" "}
-        <strong>gossip</strong> so no single server covers the planet. Access, Lens, and the SDK
-        only ask the mesh; they never become the source of record.
+        <strong>nodes</strong>: same software everywhere. Nodes <strong>gossip</strong> so no
+        single server covers the planet. Access, Lens, and the SDK only ask the mesh; they never
+        become the source of record.
       </p>
       <StoryFigure
         src="/screenshots/mesh-coverage-geo.png"
-        alt="World map: traveler in Europe signs in via a home node that is also the EU data node; an overlapping peer; a US peer with no overlap; home role resolves a US search to that peer"
-        caption="Coverage is geographic. Identity is not. Home and data are roles on the same kind of node, often the same deployment. A traveler in Europe can still look up a hotel in the US: their home node routes them to the peer that covers that region. Some coverages overlap; others don’t."
+        alt="World map: traveler in Europe signs in on an EU node; overlapping peer coverage; a US peer; search outside the home region routes to the peer that covers that place"
+        caption="Coverage is geographic. Identity is not. A traveler signed in on an EU node can still look up a hotel in the US: their node routes them to the peer that covers that region. Some coverages overlap; others don’t."
         width={1671}
         height={941}
       />
@@ -419,11 +418,8 @@ export function StoryContent() {
       </p>
       <ul>
         <li>
-          every operator runs the same <strong>node</strong>; it can be someone’s home, hold
-          regional facts, or both
-        </li>
-        <li>
-          the <strong>data</strong> role owns facts for a geographic area
+          every operator runs the same <strong>node</strong> software (identity, regional facts, or
+          both)
         </li>
         <li>clients ask “which node is responsible for here?”</li>
         <li>
@@ -491,13 +487,7 @@ export function StoryContent() {
       </p>
       <ul>
         <li>one Access experience worldwide</li>
-        <li>
-          <strong>home</strong> role = identity (same node binary as everyone else)
-        </li>
-        <li>
-          <strong>data</strong> role = facts for the place you’re looking at (often your home node;
-          otherwise a peer)
-        </li>
+        <li>sign in on a node; fetch facts from whichever node covers the place you’re looking at</li>
         <li>Lens and SDK follow the same resolve pattern</li>
         <li>if an area isn’t covered, say so, don’t fake completeness</li>
       </ul>

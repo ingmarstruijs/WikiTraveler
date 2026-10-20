@@ -18,7 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Origin story clarifies home vs data as **roles on the same node** (often one deployment), not two products ([docs/story/README.md](docs/story/README.md))
+- Origin story treats nodes as one software (sign-in vs regional facts without home/data product framing) ([docs/story/README.md](docs/story/README.md))
 - Origin story: scarce skill as picturing the system (experience / architecture / value); confession includes agent process beats; separate AI-assisted section removed
 - www `/story` and publish-ready kit link the agency SDK (`@wikitraveler/sdk` on npm); home ecosystem card already used the same URL
 - www home rewritten as story-aligned entry (Read the story / GitHub first; toolkit + trust table; napkin system overview; no product-landing CTAs); closing links as a two-column list; “Open and reusable” instead of “unfinished”; wider desktop measure; flatter copy (fewer aphorism headlines)

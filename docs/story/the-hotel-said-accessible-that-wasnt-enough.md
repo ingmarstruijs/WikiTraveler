@@ -175,15 +175,15 @@ The full architecture doc is longer. The useful mental model is short:
 
 **Clients never hold the truth. Regional nodes do, and they gossip.**
 
-![WikiTraveler mesh: OpenStreetMap and field audits feed a node mesh (home node + data nodes gossiping); Access and Lens consume the mesh; Lens overlays Booking / Expedia](../assets/screenshots/mesh-overview.jpg)
+![WikiTraveler mesh: OpenStreetMap and field audits feed gossiping nodes; Access and Lens consume the mesh; Lens overlays Booking / Expedia](../assets/screenshots/mesh-overview.jpg)
 
 *Sources feed the mesh. The mesh is the truth. Clients only ask.*
 
-OpenStreetMap is the baseline. People add audits and photos. That truth lives on **nodes**: same software everywhere. **Home** and **data** are roles on that software, often the same machine. Nodes **gossip** so no single server covers the planet. Access, Lens, and the SDK only ask the mesh; they never become the source of record.
+OpenStreetMap is the baseline. People add audits and photos. That truth lives on **nodes**: same software everywhere. Nodes **gossip** so no single server covers the planet. Access, Lens, and the SDK only ask the mesh; they never become the source of record.
 
-![World map: traveler in Europe signs in via a home node that is also the EU data node; an overlapping peer; a US peer with no overlap; home role resolves a US search to that peer](../assets/screenshots/mesh-coverage-geo.png)
+![World map: traveler in Europe signs in on an EU node; overlapping peer coverage; a US peer; search outside the home region routes to the peer that covers that place](../assets/screenshots/mesh-coverage-geo.png)
 
-*Coverage is geographic. Identity is not. Home and data are roles on the same kind of node, often the same deployment. A traveler in Europe can still look up a hotel in the US: their home node routes them to the peer that covers that region. Some coverages overlap; others don’t.*
+*Coverage is geographic. Identity is not. A traveler signed in on an EU node can still look up a hotel in the US: their node routes them to the peer that covers that region. Some coverages overlap; others don’t.*
 
 ---
 
@@ -246,8 +246,7 @@ Second problem: a single server can’t honestly cover the planet, and a central
 
 So the system grew a **mesh**:
 
-- every operator runs the same **node**; it can be someone’s home, hold regional facts, or both
-- the **data** role owns facts for a geographic area
+- every operator runs the same **node** software (identity, regional facts, or both)
 - clients ask “which node is responsible for here?”
 - nodes **gossip** deltas to peers
 - bootstrap peers help a new node find the network
@@ -292,8 +291,7 @@ Fifth problem: federation is only useful if normal people don’t have to unders
 **RFC-0002 / hub Access** is the product answer:
 
 - one Access experience worldwide
-- **home** role = identity (same node binary as everyone else)
-- **data** role = facts for the place you’re looking at (often your home node; otherwise a peer)
+- sign in on a node; fetch facts from whichever node covers the place you’re looking at
 - Lens and SDK follow the same resolve pattern
 - if an area isn’t covered, say so, don’t fake completeness
 

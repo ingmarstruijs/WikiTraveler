@@ -54,8 +54,8 @@ export default function HomePage() {
           <div>
             <h2 id="home-what">What it is (today)</h2>
             <p className="wt-www-home-lead">
-              Same software on every node. Home and data are roles, often one deployment. Clients
-              only ask; they never become the source of record.
+              Same software on every node. Clients only ask; they never become the source of
+              record.
             </p>
             <ul className="wt-www-home-toolkit">
               <li>
@@ -110,7 +110,7 @@ export default function HomePage() {
             >
               <Image
                 src="/screenshots/mesh-overview.jpg"
-                alt="WikiTraveler mesh: OpenStreetMap and field audits feed a node mesh (home node + data nodes gossiping); Access and Lens consume the mesh; Lens overlays Booking / Expedia"
+                alt="WikiTraveler mesh: OpenStreetMap and field audits feed gossiping nodes; Access and Lens consume the mesh; Lens overlays Booking / Expedia"
                 width={1200}
                 height={675}
                 sizes="(max-width: 900px) 92vw, 1100px"
