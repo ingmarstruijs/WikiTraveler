@@ -5,7 +5,7 @@ const TIERS = [
   },
   {
     tier: "AI_GUESS",
-    meaning: "Machine estimate to guide auditors — not ground truth",
+    meaning: "Machine estimate to guide auditors, not ground truth",
   },
   {
     tier: "VERIFIED",

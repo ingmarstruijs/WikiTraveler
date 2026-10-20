@@ -10,7 +10,7 @@ export function StoryContent() {
       <h1>The hotel said “accessible.” That wasn’t enough.</h1>
       <p className="wt-www-article__deck">
         A relative told me how miserable booking travel with a wheelchair still is. Curiosity and a
-        UX brain did the rest — then I got sucked into an accidental product once coding stopped
+        UX brain did the rest, then I got sucked into an accidental product once coding stopped
         being the bottleneck.
       </p>
 
@@ -23,7 +23,7 @@ export function StoryContent() {
       </p>
       <p>
         <strong>
-          Is this hotel actually accessible — not “accessible according to a marketing checkbox,”
+          Is this hotel actually accessible, not “accessible according to a marketing checkbox,”
           but accessible according to someone who has been there, looked, measured, photographed,
           and cared?
         </strong>
@@ -42,7 +42,7 @@ export function StoryContent() {
         sitting with the tab open, in the chair. Will the entrance actually work? Is the
         “accessible” room reachable when the lift isn’t? Can you turn in the bathroom, or do you
         find out the sink blocks the transfer only after you’ve paid and traveled? Search says
-        accessible. The photo omits the doorway. A review says “wheelchair-friendly” like “cozy” —
+        accessible. The photo omits the doorway. A review says “wheelchair-friendly” like “cozy” , 
         atmosphere, not evidence. Too often: <em>you won’t know until you’re there.</em>
       </p>
       <p>
@@ -56,7 +56,7 @@ export function StoryContent() {
       </p>
       <p>
         That picture has to come first. Only then do the product and engineering questions get real
-        room — what scales without lying, what’s feasible to build without up-to-date programming
+        room, what scales without lying, what’s feasible to build without up-to-date programming
         knowledge.
       </p>
       <p>
@@ -69,11 +69,11 @@ export function StoryContent() {
         First the data model. Then the sidecar. Then the mesh. Then the parts that make a side
         project start behaving like an accidental product.
       </p>
-      <p>And then it got out of hand — in the useful way.</p>
+      <p>And then it got out of hand, in the useful way.</p>
       <p>Welcome to WikiTraveler.</p>
       <p>
         This piece is mainly for people who do <strong>UX and product work</strong> and are figuring
-        out what AI-assisted building changes — and what it doesn’t.
+        out what AI-assisted building changes, and what it doesn’t.
         <br />
         Along the way it should also make sense if you care about{" "}
         <strong>disability and travel access</strong>, <strong>open source commons</strong>, or{" "}
@@ -84,10 +84,10 @@ export function StoryContent() {
         One vocabulary note before we go on, because “UX” gets abused into meaning “someone made the
         buttons blue.” <strong>User experience (UX)</strong> is the whole lived path through a
         product: goals, confusion, trust, dead ends, what happens when the data is wrong.{" "}
-        <strong>Usability</strong> is a chunk of that — can someone complete the task without
+        <strong>Usability</strong> is a chunk of that, can someone complete the task without
         fighting the interface? <strong>UI</strong> is the visible layer: screens, controls, layout.
         Related; not the same. Product sense asks whether we’re solving the right problem at all.
-        When I say UX in this piece, I mostly mean the <em>experience of trusting a stay</em> —
+        When I say UX in this piece, I mostly mean the <em>experience of trusting a stay</em> , 
         journey and information architecture first, pixels second.
       </p>
 
@@ -97,14 +97,14 @@ export function StoryContent() {
       <p>I do UX and engineering for work.</p>
       <p>
         That means I spend a lot of time on how complex tools feel to real people: flows,
-        information structure, trust, whether something is usable under pressure — usability inside
-        a broader experience, with UI as one of the instruments. I’ve also been poking at
-        AI-assisted building — not because the model should own the product, but because
-        implementation used to be the tax on having a clear system in your head.
+        information structure, trust, whether something is usable under pressure, usability inside
+        a broader experience, with UI as one of the instruments.
       </p>
       <p>
         I can prototype. I’m not allergic to code. My programming knowledge is uneven and, in
-        places, outdated. Historically that would have been enough to stop a build like:
+        places, outdated. Historically that would have been enough to stop a build like this. Today
+        I build with AI assistance across several projects, not because the model should own the
+        product, but because I can now ship things like:
       </p>
       <ul>
         <li>a federated mesh of nodes</li>
@@ -121,28 +121,21 @@ export function StoryContent() {
       </ul>
       <p>…in six months, as a side project.</p>
       <p>Which is exactly what happened.</p>
-      <p>The unpopular opinion worth planting early:</p>
       <p>
         <strong>
-          Outdated coding skills are less of a blocker than people think — if you can hold the
-          system in your head like a board on the wall.
+          The scarce skill is picturing the whole system as experience, as architecture, and as a
+          value bet, and keeping those views coherent.
         </strong>
       </p>
-      <p>Journeys. Trust boundaries. Failure modes. What must stay honest. What must stay human.</p>
-      <p>AI doesn’t invent that board.</p>
+      <p>AI doesn’t invent that picture.</p>
       <p>AI doesn’t invent taste.</p>
-      <p>AI doesn’t invent the original problem — Maurice did.</p>
+      <p>AI doesn’t invent the original problem. Maurice did.</p>
       <p>
-        What it can offer is <strong>hands at the tempo of thought</strong>.
+        What it offers is <strong>hands at the tempo of thought</strong>. Multiple agents assemble
+        parts. You argue via diffs, check they aren’t solving the wrong problem, and kill that path
+        before it hardens.
       </p>
-      <p>Agents can assemble a lot of the parts.</p>
-      <p>Someone still has to hold the picture.</p>
-      <p>Someone still has to conduct.</p>
-      <p>
-        The scarce skill isn’t assembling the system. It’s noticing when the agents are solving the
-        wrong problem — and killing that path before it hardens.
-      </p>
-      <p>And throughput, it turns out, is a hell of a drug.</p>
+      <p>Throughput, it turns out, is a hell of a drug.</p>
 
       <hr />
 
@@ -150,7 +143,7 @@ export function StoryContent() {
       <p>
         On <strong>18 March 2026</strong>, early in the build, I wrote myself a manifesto. It had a
         version number. It had emoji. It had sentences like “Distributed Truth Layer” and
-        “Community-Owned Certainty.” It was earnest, a little loud, and — looking back — almost
+        “Community-Owned Certainty.” It was earnest, a little loud, and looking back, almost
         awkwardly on target.
       </p>
       <p>The vision, compressed:</p>
@@ -158,7 +151,7 @@ export function StoryContent() {
         <p>
           Replace unreliable corporate booking data with a community-driven truth layer. Travelers
           deserve certainty, not best guesses. Keep insights free, open, and verified by people on
-          the ground — not by whoever is selling the room.
+          the ground, not by whoever is selling the room.
         </p>
       </blockquote>
       <p>
@@ -178,8 +171,6 @@ export function StoryContent() {
         <li>Lens as the browser overlay</li>
         <li>open protocol / open data instincts (MIT code, CC-BY mesh data)</li>
       </ul>
-      <p>The interesting part isn’t how many times the manifesto got rewritten.</p>
-      <p>It’s how much of the early shape survived contact with reality.</p>
 
       <hr />
 
@@ -202,7 +193,9 @@ export function StoryContent() {
           into booking sites.
         </li>
         <li>
-          <strong>SDK</strong> lets agencies and travel products embed or fetch the same data.
+          <strong>SDK</strong> (
+          <ExtLink href={LINKS.sdk}>@wikitraveler/sdk</ExtLink>) lets agencies and travel products
+          embed or fetch the same data.
         </li>
         <li>
           <strong>Core</strong> shared packages define tiers, merge rules, and gossip logic.
@@ -214,13 +207,13 @@ export function StoryContent() {
       <p>That one table is the moral of the system.</p>
 
       <h3>What it looks like</h3>
-      <p>Same trust model, different jobs — search, detail, field audit, booking sidecar, and operating a node:</p>
+      <p>Same trust model, different jobs, search, detail, field audit, booking sidecar, and operating a node:</p>
 
-      <h4>Access — find a stay</h4>
+      <h4>Access: find a stay</h4>
       <p>Map and list over a region, with trust visible before you open a stay.</p>
       <StoryGallery
         layout="desktop-mobile"
-        caption="Search on desktop and mobile. Coverage and audited stays show up before the booking decision. Scores and facts in these screenshots are made up for illustration — not real property data."
+        caption="Search on desktop and mobile. Coverage and audited stays show up before the booking decision. Scores and facts in these screenshots are made up for illustration, not real property data."
         items={[
           {
             src: "/screenshots/access-desktop.jpg",
@@ -237,41 +230,41 @@ export function StoryContent() {
         ]}
       />
 
-      <h4>Access — property detail</h4>
+      <h4>Access: property detail</h4>
       <p>Scores, category coverage, and fact tiers for one stay.</p>
       <StoryFigure
         src="/screenshots/access-property-the-match.png"
         alt="WikiTraveler Access property detail for The Match: accessibility score, feature badges, and Official facts"
-        caption="Detail is where travelers see evidence — not a marketing checkbox. Scores and facts in this screenshot are made up for illustration — not real property data."
+        caption="Detail is where travelers see evidence, not a marketing checkbox. Scores and facts in this screenshot are made up for illustration, not real property data."
         width={1662}
         height={1033}
         priority
       />
 
-      <h4>Access — audit wizard</h4>
+      <h4>Access: audit wizard</h4>
       <p>Structured field audit with photos attached to steps and room types.</p>
       <StoryFigure
         src="/screenshots/access-audit-the-match.png"
         alt="WikiTraveler Access audit wizard for The Match: Step 1 Entrance with door width, step-free path, verified fields, and photos"
-        caption="Field proof attaches to the claim, not a free-floating tag. Values and photos in this screenshot are made up for illustration — not a real audit."
+        caption="Field proof attaches to the claim, not a free-floating tag. Values and photos in this screenshot are made up for illustration, not a real audit."
         width={1047}
         height={1072}
       />
 
-      <h4>Lens — booking sidecar</h4>
+      <h4>Lens: booking sidecar</h4>
       <p>Community facts on Booking / Expedia without leaving the listing.</p>
       <StoryFigure
         src="/screenshots/lens-on-booking.png"
         alt="WikiTraveler Lens overlay on a blurred Booking.com listing for The Match: scores, feature icons, and audit photos"
-        caption="Sidecar UX: stay where people already book. Scores and facts in this screenshot are made up for illustration — not real property data."
+        caption="Sidecar UX: stay where people already book. Scores and facts in this screenshot are made up for illustration, not real property data."
         width={1440}
         height={900}
       />
 
-      <h4>Node Admin — operate a region</h4>
+      <h4>Node Admin: operate a region</h4>
       <p>Property editing, peer gossip, and community signals for operators.</p>
       <StoryGallery
-        caption="Edit audits on a stay, sync peers over gossip, review traveler signals. Property facts in these screenshots are made up for illustration — not real audits."
+        caption="Edit audits on a stay, sync peers over gossip, review traveler signals. Property facts in these screenshots are made up for illustration, not real audits."
         items={[
           {
             src: "/screenshots/node-property-edit.png",
@@ -299,27 +292,25 @@ export function StoryContent() {
       <h2>System overview (the napkin version)</h2>
       <p>The full architecture doc is longer. The useful mental model is short:</p>
       <p>
-        <strong>Clients never hold the truth. Regional nodes do — and they gossip.</strong>
+        <strong>Clients never hold the truth. Regional nodes do, and they gossip.</strong>
       </p>
       <StoryFigure
         src="/screenshots/mesh-overview.jpg"
-        alt="WikiTraveler mesh: OpenStreetMap and field audits feed a node mesh (home node + data nodes gossiping); Access and Lens consume the mesh; Lens overlays Booking / Expedia"
+        alt="WikiTraveler mesh: OpenStreetMap and field audits feed gossiping nodes; Access and Lens consume the mesh; Lens overlays Booking / Expedia"
         caption="Sources feed the mesh. The mesh is the truth. Clients only ask."
         width={1200}
         height={675}
       />
       <p>
-        OpenStreetMap gives a baseline inventory. People on the ground add audits and photos. That
-        truth lives on <strong>regional data nodes</strong>; a <strong>home node</strong> handles
-        identity and “which node owns this place?” Nodes <strong>gossip</strong> deltas to peers so
-        no single server has to cover the planet. Access, Lens, and the SDK only consume the mesh —
-        search, overlay, embed — they never become the source of record. Booking sites stay where
-        people book.
+        OpenStreetMap is the baseline. People add audits and photos. That truth lives on{" "}
+        <strong>nodes</strong>: same software everywhere. Nodes <strong>gossip</strong> so no
+        single server covers the planet. Access, Lens, and the SDK only ask the mesh; they never
+        become the source of record.
       </p>
       <StoryFigure
         src="/screenshots/mesh-coverage-geo.png"
-        alt="World map: traveler in Europe signs in via a home node; EU data node with an overlapping peer; a US peer with no overlap; home node resolves a US search to that peer"
-        caption="Coverage is geographic. Identity is not. A traveler in Europe can still look up a hotel in the US — their home node routes them to the peer that covers that region. Some coverages overlap; others don’t."
+        alt="World map: traveler in Europe signs in on an EU node; overlapping peer coverage; a US peer; search outside the home region routes to the peer that covers that place"
+        caption="Coverage is geographic. Identity is not. A traveler signed in on an EU node can still look up a hotel in the US: their node routes them to the peer that covers that region. Some coverages overlap; others don’t."
         width={1671}
         height={941}
       />
@@ -335,18 +326,18 @@ export function StoryContent() {
       </p>
       <ol>
         <li>
-          <strong>Baseline from the commons</strong> — OpenStreetMap and related open sources give
+          <strong>Baseline from the commons</strong>: OpenStreetMap and related open sources give
           you something to start from.
         </li>
         <li>
-          <strong>Truth lives in a mesh</strong> — independent nodes gossip verified facts; no
+          <strong>Truth lives in a mesh</strong>: independent nodes gossip verified facts; no
           single vendor is required.
         </li>
         <li>
-          <strong>Clients consume the mesh</strong> — Access, Lens, SDK.
+          <strong>Clients consume the mesh</strong>: Access, Lens, SDK.
         </li>
         <li>
-          <strong>Existing platforms remain the booking surface</strong> — we overlay, enrich,
+          <strong>Existing platforms remain the booking surface</strong>: we overlay, enrich,
           deep-link, report issues.
         </li>
       </ol>
@@ -360,7 +351,9 @@ export function StoryContent() {
       <p>
         If the area isn’t covered, it should say so honestly instead of inventing confidence.
       </p>
-      <p>The SDK is the same idea for product teams:</p>
+      <p>
+        The <ExtLink href={LINKS.sdk}>SDK</ExtLink> is the same idea for product teams:
+      </p>
       <blockquote>
         <p>Don’t rebuild accessibility truth.</p>
         <p>Consume the commons.</p>
@@ -368,28 +361,27 @@ export function StoryContent() {
           Show it in <em>your</em> UX.
         </p>
       </blockquote>
-      <p>If that sounds ambitious: yes.</p>
-      <p>If that sounds unfinished: also yes.</p>
       <p>
-        If that sounds more useful than another closed database of half-true icons: that’s the bet.
+        Ambitious, and still early. Yet the bet is simple: an open mesh of field-checked facts is
+        more useful than another closed database of half-true icons.
       </p>
 
       <hr />
 
       <h2>How the system was built (in acts)</h2>
       <p>
-        I won’t pretend this arrived fully formed. It grew in layers — each one solving a real
+        I won’t pretend this arrived fully formed. It grew in layers, each one solving a real
         problem, and sometimes creating the next one.
       </p>
 
-      <h3>Act I — Inventory without renting the universe</h3>
+      <h3>Act I: Inventory without renting the universe</h3>
       <p>First problem: where do the stays come from?</p>
       <p>
         The March 2026 manifesto still assumed <strong>Amadeus</strong> as the official baseline to
         “expose” vague corporate tags. I started there because it looked like a sensible property
         feed. Then the self-service developer portal was gone: decommissioned on{" "}
         <strong>17 July 2026</strong> (their announcement), with only the Enterprise API path
-        remaining — request access, sandbox, travel consultants, commercial offers. For a side
+        remaining, request access, sandbox, travel consultants, commercial offers. For a side
         project that wants open, keepable inventory, that’s a dead end. So I ripped the dependency
         out and went looking for a baseline I could keep building on without a sales conversation
         every time the wind changed.
@@ -406,17 +398,17 @@ export function StoryContent() {
         <li>ride beside booking platforms instead of becoming one</li>
         <li>
           eventually give <strong>coarse</strong> verified wheelchair signals back to OSM where they
-          belong — and keep stay-depth (photos, measurements, trust tiers) in WikiTraveler
+          belong, and keep stay-depth (photos, measurements, trust tiers) in WikiTraveler
         </li>
       </ul>
       <p>
         Around the same time I sketched the first <strong>Lens</strong> idea (show facts on top of
         existing sites) and poked at federation experiments that didn’t all survive. The important
-        leftover: <strong>the data layer should be open and ownable</strong> — and neighbourly to
+        leftover: <strong>the data layer should be open and ownable</strong>: and neighbourly to
         the commons it already leans on, not a one-way extract.
       </p>
 
-      <h3>Act II — One node isn’t a world</h3>
+      <h3>Act II: One node isn’t a world</h3>
       <p>
         Second problem: a single server can’t honestly cover the planet, and a central “node
         registry” is still a soft monopoly.
@@ -426,7 +418,8 @@ export function StoryContent() {
       </p>
       <ul>
         <li>
-          regional <strong>data nodes</strong> own facts for a geographic area
+          every operator runs the same <strong>node</strong> software (identity, regional facts, or
+          both)
         </li>
         <li>clients ask “which node is responsible for here?”</li>
         <li>
@@ -440,10 +433,10 @@ export function StoryContent() {
         resolve, and federation that doesn’t need a king.
       </p>
 
-      <h3>Act III — Make it usable for travelers and auditors</h3>
+      <h3>Act III: Make it usable for travelers and auditors</h3>
       <p>Third problem: infrastructure without a product is a science fair.</p>
       <p>
-        The traveler/auditor app started life as <strong>Field Kit</strong> — a name that sounded
+        The traveler/auditor app started life as <strong>Field Kit</strong>: a name that sounded
         like specialist gear. The product needed to serve travelers <em>and</em> people doing
         audits. Renaming it to <strong>WikiTraveler Access</strong> wasn’t cosmetics; it changed
         who the system claimed to be for.
@@ -463,7 +456,7 @@ export function StoryContent() {
         blast radius: break merge logic once, and every client feels it.
       </p>
 
-      <h3>Act IV — Make it safe enough to share</h3>
+      <h3>Act IV: Make it safe enough to share</h3>
       <p>
         Fourth problem: once peers fetch peers, and JWTs cross nodes, and photos get uploaded, “it
         works on my laptop” stops being a strategy.
@@ -481,11 +474,11 @@ export function StoryContent() {
         <li>release versioning so operators aren’t forced into day-zero upgrades</li>
       </ul>
       <p>
-        This is where vibe-built software either grows up or stays cosplay. Accessibility data can
+        This is where AI-assisted software either grows up or stays cosplay. Accessibility data can
         affect real travel decisions. That raises the bar.
       </p>
 
-      <h3>Act V — Hide the mesh from travelers</h3>
+      <h3>Act V: Hide the mesh from travelers</h3>
       <p>
         Fifth problem: federation is only useful if normal people don’t have to understand it.
       </p>
@@ -494,14 +487,9 @@ export function StoryContent() {
       </p>
       <ul>
         <li>one Access experience worldwide</li>
-        <li>
-          <strong>home node</strong> = identity
-        </li>
-        <li>
-          <strong>data node</strong> = facts for the place you’re looking at
-        </li>
+        <li>sign in on a node; fetch facts from whichever node covers the place you’re looking at</li>
         <li>Lens and SDK follow the same resolve pattern</li>
-        <li>if an area isn’t covered, say so — don’t fake completeness</li>
+        <li>if an area isn’t covered, say so, don’t fake completeness</li>
       </ul>
       <p>
         That’s the system as it stands around <strong>v0.5.x</strong>: not finished, but shaped.
@@ -511,38 +499,10 @@ export function StoryContent() {
 
       <hr />
 
-      <h2>Vibe coding, but with adult supervision</h2>
-      <p>
-        There’s a lot of discourse about vibe coding. Some of it is fair. Some of it is people
-        defending their identity as “real engineers” against a scary new productivity curve. Some of
-        it is warnings I agree with: if you can’t read diffs, you will ship haunted houses.
-      </p>
-      <p>
-        The experience is less ideological and more practical. You can imagine a system from a
-        handful of ideas. You can hold the user model, the trust model, and the deployment model in
-        your head. You can tell when an AI suggestion is locally clever and globally stupid. You
-        still need help turning that mental picture into thousands of coherent lines across apps,
-        packages, tests, docs, and CI.
-      </p>
-      <p>
-        So you collaborate with agents — hard. Intent gets described. The agent explores the
-        monorepo. You argue via diffs. You redirect when the system drifts. Security findings get
-        fixed. Operator docs get written. Yesterday’s registry idea turns out to be a trap. Field
-        Kit becomes Access — because travelers aren’t a “kit.” Another release candidate ships that
-        is somehow both more serious and more unfinished.
-      </p>
-      <p>
-        The scarce skill isn’t coding speed. It’s knowing what <em>not</em> to ship when agents can
-        generate almost anything. Can you keep judgment sharp when building suddenly got cheap?
-        That is the new UX systems problem.
-      </p>
-
-      <hr />
-
       <h2>Then I found something that already existed</h2>
       <p>
         Shortly after the toolkit started working, I found{" "}
-        <ExtLink href="https://www.ongehinderd.nl/">Ongehinderd</ExtLink> — a Dutch organisation
+        <ExtLink href="https://www.ongehinderd.nl/">Ongehinderd</ExtLink>, a Dutch organisation
         that already runs a system aimed at the same problem: trustworthy accessibility information
         for places people actually need to use.
       </p>
@@ -550,21 +510,21 @@ export function StoryContent() {
         I wrote to them. No commercial pitch. Just: here’s an open-source side project that got out
         of hand; if any of the learning or tooling is useful to people who have been doing this work
         for years, I’d rather share it than pretend I invented the need. Data exchange, open
-        standards, hands on a keyboard — whatever fits. They haven’t replied (yet). That’s fine. The
-        useful move isn’t to compete with people already in the field — it’s to keep the toolkit
+        standards, hands on a keyboard, whatever fits. They haven’t replied (yet). That’s fine. The
+        useful move isn’t to compete with people already in the field, it’s to keep the toolkit
         open so someone who needs it can use it.
       </p>
       <p>
         Here’s the part where the engineer ego needs to sit down anyway: the code is not the hard
-        part. Filling a system with <strong>reliable accessibility information</strong> — and
-        keeping it trustworthy — is. Without travelers, auditors, operators, and integrators, the
+        part. Filling a system with <strong>reliable accessibility information</strong>: and
+        keeping it trustworthy, is. Without travelers, auditors, operators, and integrators, the
         mesh is a fancy mirror of OSM tags and AI guesses. OSM is inventory, not a bathroom doorway.
-        If the mesh lies about that doorway, it isn’t a backlog bug — it’s a broken promise with
+        If the mesh lies about that doorway, it isn’t a backlog bug, it’s a broken promise with
         physical consequences. Open source is the offer: use, fork, or discard what exists.
       </p>
       <p>
-        The bet that remains is still the same shape: a commons beside the booking journey — closer
-        to OpenStreetMap than to a closed inventory — with stay-depth (audits, photos, trust tiers)
+        The bet that remains is still the same shape: a commons beside the booking journey, closer
+        to OpenStreetMap than to a closed inventory, with stay-depth (audits, photos, trust tiers)
         living in the mesh, and coarse verified wheelchair signals able to flow back where they
         belong. Clever architecture without that bias is just a faster way to ship a lie.
       </p>
@@ -576,12 +536,12 @@ export function StoryContent() {
       <h3>1. A clear mental model beats a perfect initial stack</h3>
       <p>
         The design moved left to right. Amadeus-until-self-service-died, OSM, central registry, peer
-        mesh, Field Kit, Access, hub routing — some of the best instincts arrived as workarounds.
-        The surviving ideas — sidecar, commons, trust tiers, honest coverage — were less “designed
+        mesh, Field Kit, Access, hub routing, some of the best instincts arrived as workarounds.
+        The surviving ideas, sidecar, commons, trust tiers, honest coverage, were less “designed
         on day one” and more “what remained after reality edited the plan.”
       </p>
 
-      <h3>2. Agents make wrong paths ship fast — so killing them becomes the work</h3>
+      <h3>2. Agents make wrong paths ship fast, so killing them becomes the work</h3>
       <p>
         Locally coherent ideas are easy to generate now. The useful skill isn’t producing more
         surface area; it’s noticing when a path fights the product and deleting it before it hardens
@@ -591,12 +551,12 @@ export function StoryContent() {
       <h3>3. Renames are architecture</h3>
       <p>
         Naming isn’t cosmetics. A rename forces a clearer claim about who the system is for and what
-        it is allowed to become — and that clarity is what lets the next design decisions land.
+        it is allowed to become, and that clarity is what lets the next design decisions land.
       </p>
 
       <h3>4. Security work is community work</h3>
       <p>
-        SSRF guards, dependency pins, trusted CORS for hub clients — these are how you respect
+        SSRF guards, dependency pins, trusted CORS for hub clients, these are how you respect
         operators and travelers you haven’t met yet.
       </p>
 
@@ -632,18 +592,21 @@ export function StoryContent() {
       <p>
         Also, if you do UX or product work and you’ve been told your technical knowledge is “too
         outdated” for modern building: maybe. Or maybe your advantage is exactly that you still
-        think in journeys, trust, and system boundaries — and now the implementation bottleneck is
+        think in journeys, trust, and system boundaries, and now the implementation bottleneck is
         negotiable.
       </p>
-      <p>Not everyone should vibe-build a federated mesh. This one happened accidentally.</p>
+      <p>
+        Not everyone should build a federated mesh with AI assistance. This one happened
+        accidentally.
+      </p>
 
       <hr />
 
       <h2>An invitation, not a victory lap</h2>
-      <p>WikiTraveler is still a side project that grew teeth — releases, docs, a mesh, clients.</p>
+      <p>WikiTraveler is still a side project that grew teeth, releases, docs, a mesh, clients.</p>
       <p>
         <strong>
-          The goal was trustworthy accessibility facts for stays — via open data (beside OSM, not
+          The goal was trustworthy accessibility facts for stays, via open data (beside OSM, not
           against it), a sidecar UX strategy, and AI-accelerated building. What exists now is a
           monorepo, a federated mesh, a browser extension, an SDK, too many architectural U-turns,
           and clearer respect for how hard that information is.
@@ -660,17 +623,18 @@ export function StoryContent() {
           products, or already works on access information.
         </li>
         <li>
-          <strong>Reuse</strong> what helps: fork, integrate the SDK, strip the pattern for another
-          domain — or tell me where the architecture is wrong.
+          <strong>Reuse</strong> what helps: fork, integrate the{" "}
+          <ExtLink href={LINKS.sdk}>SDK</ExtLink>, strip the pattern for another domain, or tell me
+          where the architecture is wrong.
         </li>
         <li>
           <strong>Get in touch</strong> if you want hands-on Access or Lens. Public registration is
-          off while this stays a controlled test — reach out via{" "}
+          off while this stays a controlled test, reach out via{" "}
           <ExtLink href={LINKS.github}>GitHub</ExtLink> and I’ll create an account and walk you
           through it.
         </li>
       </ol>
-      <p>Tell me where I’m wrong. And if you want to take any of it further — welcome.</p>
+      <p>Tell me where I’m wrong. And if you want to take any of it further: welcome.</p>
 
       <hr />
 
@@ -686,6 +650,9 @@ export function StoryContent() {
         <li>
           Access (hub URL; registration currently off):{" "}
           <ExtLink href={LINKS.access}>{LINKS.access}</ExtLink>
+        </li>
+        <li>
+          SDK (npm): <ExtLink href={LINKS.sdk}>{LINKS.sdk}</ExtLink>
         </li>
         <li>
           Docs hub: <ExtLink href={LINKS.docs}>{LINKS.docs}</ExtLink>
