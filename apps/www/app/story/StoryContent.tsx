@@ -473,11 +473,6 @@ export function StoryContent() {
         <li>dependency / CodeQL hygiene</li>
         <li>release versioning so operators aren’t forced into day-zero upgrades</li>
       </ul>
-      <p>
-        This is where AI-assisted software either grows up or stays cosplay. Accessibility data can
-        affect real travel decisions. That raises the bar.
-      </p>
-
       <h3>Act V: Hide the mesh from travelers</h3>
       <p>
         Fifth problem: federation is only useful if normal people don’t have to understand it.
@@ -526,7 +521,7 @@ export function StoryContent() {
         The bet that remains is still the same shape: a commons beside the booking journey, closer
         to OpenStreetMap than to a closed inventory, with stay-depth (audits, photos, trust tiers)
         living in the mesh, and coarse verified wheelchair signals able to flow back where they
-        belong. Clever architecture without that bias is just a faster way to ship a lie.
+        belong.
       </p>
 
       <hr />

@@ -282,8 +282,6 @@ So the build shifted from features to **operability**:
 - dependency / CodeQL hygiene
 - release versioning so operators aren’t forced into day-zero upgrades
 
-This is where AI-assisted software either grows up or stays cosplay. Accessibility data can affect real travel decisions. That raises the bar.
-
 ### Act V: Hide the mesh from travelers
 
 Fifth problem: federation is only useful if normal people don’t have to understand it.
@@ -307,7 +305,7 @@ I wrote to them. No commercial pitch. Just: here’s an open-source side project
 
 Here’s the part where the engineer ego needs to sit down anyway: the code is not the hard part. Filling a system with **reliable accessibility information**: and keeping it trustworthy, is. Without travelers, auditors, operators, and integrators, the mesh is a fancy mirror of OSM tags and AI guesses. OSM is inventory, not a bathroom doorway. If the mesh lies about that doorway, it isn’t a backlog bug, it’s a broken promise with physical consequences. Open source is the offer: use, fork, or discard what exists.
 
-The bet that remains is still the same shape: a commons beside the booking journey, closer to OpenStreetMap than to a closed inventory, with stay-depth (audits, photos, trust tiers) living in the mesh, and coarse verified wheelchair signals able to flow back where they belong. Clever architecture without that bias is just a faster way to ship a lie.
+The bet that remains is still the same shape: a commons beside the booking journey, closer to OpenStreetMap than to a closed inventory, with stay-depth (audits, photos, trust tiers) living in the mesh, and coarse verified wheelchair signals able to flow back where they belong.
 
 ---
 
