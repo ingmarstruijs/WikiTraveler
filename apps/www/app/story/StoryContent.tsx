@@ -518,10 +518,8 @@ export function StoryContent() {
         physical consequences. Open source is the offer: use, fork, or discard what exists.
       </p>
       <p>
-        The bet that remains is still the same shape: a commons beside the booking journey, closer
-        to OpenStreetMap than to a closed inventory, with stay-depth (audits, photos, trust tiers)
-        living in the mesh, and coarse verified wheelchair signals able to flow back where they
-        belong.
+        The bet that remains: an open commons beside Booking, rooted in OpenStreetMap, with audits
+        and photos in the mesh so verified wheelchair signals can flow back where they belong.
       </p>
 
       <hr />
