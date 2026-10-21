@@ -1,7 +1,33 @@
-import Image from "next/image";
 import Link from "next/link";
+import { LightboxFigure } from "./LightboxFigure";
 import { LINKS } from "../lib/site";
-import { TrustTable } from "./story/TrustTable";
+
+const PARTS = [
+  {
+    title: "Nodes",
+    body: "Same software on every operator. Regional truth, gossip between peers, and where people register.",
+    href: LINKS.node,
+    cta: "Open node-eu.wikitraveler.org",
+  },
+  {
+    title: "Access",
+    body: "Traveler and auditor web app: search, map, property detail, and field audits. Hub signup is off for this controlled test.",
+    href: LINKS.access,
+    cta: "Open access.wikitraveler.org",
+  },
+  {
+    title: "Lens",
+    body: "Chrome extension that overlays community facts on Booking and Expedia while you decide.",
+    href: LINKS.lensRelease,
+    cta: "Open Chrome Web Store",
+  },
+  {
+    title: "SDK",
+    body: "Agency package to embed or fetch the same mesh data in other travel products.",
+    href: LINKS.sdk,
+    cta: "Open npm · @wikitraveler/sdk",
+  },
+] as const;
 
 export default function HomePage() {
   return (
@@ -9,11 +35,10 @@ export default function HomePage() {
       <section className="wt-www-home-hero">
         <div className="wt-www-shell wt-www-home-hero__grid">
           <div className="wt-www-home-hero__copy">
-            <p className="wt-www-home-brand">WikiTraveler</p>
-            <h1>The hotel said “accessible.” That wasn’t enough.</h1>
+            <h1 className="wt-www-home-brand">WikiTraveler</h1>
             <p className="wt-www-home-lead">
-              An open toolkit for federated accessibility facts about stays. It overlays community
-              data where people already book. Started as a side project; the mesh kept growing.
+              An open toolkit for federated accessibility facts about stays. Community data where
+              people already book. Started as a side project; got out of hand in a useful way.
             </p>
             <div className="wt-www-actions">
               <Link className="wt-www-btn wt-www-btn--primary" href="/story">
@@ -33,104 +58,89 @@ export default function HomePage() {
               Access signup is off for this controlled test. Start from the story or GitHub.
             </p>
           </div>
-          <figure className="wt-www-home-hero__media">
-            <Image
-              src="/screenshots/access-property-the-match.png"
-              alt="WikiTraveler Access property detail, demo accessibility scores for The Match"
-              width={1662}
-              height={1033}
-              priority
-              sizes="(max-width: 900px) 92vw, 560px"
-            />
-            <figcaption>
-              Access detail. Scores and facts in screenshots are sample data.
-            </figcaption>
-          </figure>
+          <LightboxFigure
+            className="wt-www-home-hero__media"
+            src="/screenshots/access-property-the-match.png"
+            alt="WikiTraveler Access property detail, demo accessibility scores for The Match"
+            caption="Access detail. Scores and facts in screenshots are sample data."
+            width={1662}
+            height={1033}
+            priority
+            sizes="(max-width: 900px) 92vw, 560px"
+          />
         </div>
       </section>
 
-      <section className="wt-www-section" aria-labelledby="home-what">
-        <div className="wt-www-shell wt-www-home-duo">
-          <div>
-            <h2 id="home-what">What it is (today)</h2>
-            <p className="wt-www-home-lead">
-              Same software on every node. Clients only ask; they never become the source of
-              record.
-            </p>
-            <ul className="wt-www-home-toolkit">
-              <li>
-                <strong>Nodes</strong>: regional truth, gossip, identity
-              </li>
-              <li>
-                <strong>Access</strong>: traveler / auditor app (
-                <a href={LINKS.access} target="_blank" rel="noopener noreferrer">
-                  hub
+      <section className="wt-www-section" aria-labelledby="home-what" id="what-it-is">
+        <div className="wt-www-shell">
+          <h2 id="home-what" className="wt-www-home-section-title">
+            What it is
+          </h2>
+          <p className="wt-www-home-lead wt-www-home-lead--wide">
+            Clients never hold the truth. Regional nodes do, and they gossip. Access, Lens, and the
+            SDK only ask the mesh.
+          </p>
+          <ul className="wt-www-eco-grid wt-www-home-parts">
+            {PARTS.map((part) => (
+              <li key={part.title}>
+                <a
+                  className="wt-www-card wt-www-card--eco wt-www-home-part"
+                  href={part.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <h3>{part.title}</h3>
+                  <p>{part.body}</p>
+                  <span className="wt-www-home-part__cta">
+                    {part.cta} <span aria-hidden="true">↗</span>
+                  </span>
                 </a>
-                ; registration off)
               </li>
-              <li>
-                <strong>Lens</strong>:{" "}
-                <a href={LINKS.lensRelease} target="_blank" rel="noopener noreferrer">
-                  Chrome extension
-                </a>{" "}
-                on Booking / Expedia
-              </li>
-              <li>
-                <strong>SDK</strong>:{" "}
-                <a href={LINKS.sdk} target="_blank" rel="noopener noreferrer">
-                  @wikitraveler/sdk
-                </a>{" "}
-                for agencies
-              </li>
-            </ul>
-          </div>
-          <div className="wt-www-article" aria-labelledby="home-trust">
-            <h2 id="home-trust">Trust tiers</h2>
-            <p className="wt-www-home-lead">
-              Higher tiers win on merge. AI estimates guide auditors; they don’t become ground
-              truth.
-            </p>
-            <TrustTable />
-          </div>
+            ))}
+          </ul>
         </div>
       </section>
 
       <section className="wt-www-section wt-www-section--tint" aria-labelledby="home-overview">
         <div className="wt-www-shell wt-www-home-overview">
-          <h2 id="home-overview">System overview</h2>
+          <h2 id="home-overview" className="wt-www-home-section-title">
+            System overview
+          </h2>
           <p className="wt-www-home-lead">
-            Clients never hold the truth. Regional nodes do, and they gossip.
+            Sources feed the mesh. Coverage is geographic; identity is not.
           </p>
-          <figure className="wt-www-home-figure wt-www-home-figure--wide">
-            <a
-              className="wt-www-home-media-link"
-              href="/screenshots/mesh-overview.jpg"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src="/screenshots/mesh-overview.jpg"
-                alt="WikiTraveler mesh: OpenStreetMap and field audits feed gossiping nodes; Access and Lens consume the mesh; Lens overlays Booking / Expedia"
-                width={1200}
-                height={675}
-                sizes="(max-width: 900px) 92vw, 1100px"
-              />
-            </a>
-            <figcaption>Sources feed the mesh. The mesh is the truth. Clients only ask.</figcaption>
-          </figure>
+          <div className="wt-www-home-overview__grid">
+            <LightboxFigure
+              compact
+              src="/screenshots/mesh-overview.jpg"
+              alt="WikiTraveler mesh: OpenStreetMap and field audits feed gossiping nodes; Access and Lens consume the mesh"
+              caption="Napkin view: sources, nodes, clients."
+              width={1200}
+              height={675}
+              sizes="(max-width: 900px) 92vw, 480px"
+            />
+            <LightboxFigure
+              compact
+              src="/screenshots/mesh-coverage-geo.png"
+              alt="World map: traveler signed in on an EU node; peer coverage elsewhere; search routes to the peer that covers that place"
+              caption="Coverage is geographic. Peers cover other regions."
+              width={1671}
+              height={941}
+              sizes="(max-width: 900px) 92vw, 480px"
+            />
+          </div>
         </div>
       </section>
 
       <section className="wt-www-section" aria-labelledby="home-sidecar">
         <div className="wt-www-shell wt-www-home-sidecar">
           <div>
-            <h2 id="home-sidecar">On the booking page</h2>
+            <h2 id="home-sidecar" className="wt-www-home-section-title">
+              On the booking page
+            </h2>
             <p className="wt-www-home-lead">
               WikiTraveler is not another place to book. Lens puts community facts on Booking and
               Expedia while you decide.
-            </p>
-            <p className="wt-www-note">
-              The origin story covers Maurice, the mesh, and why federation stays mostly invisible.
             </p>
             <div className="wt-www-actions">
               <Link className="wt-www-btn wt-www-btn--primary" href="/story">
@@ -138,28 +148,29 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <figure className="wt-www-home-figure">
-            <Image
-              src="/screenshots/lens-on-booking.png"
-              alt="WikiTraveler Lens overlay on a Booking.com listing, demo data, not real property facts"
-              width={1440}
-              height={900}
-              sizes="(max-width: 900px) 92vw, 480px"
-            />
-            <figcaption>
-              Lens on a booking page. Demo data for illustration, not real property facts.
-            </figcaption>
-          </figure>
+          <LightboxFigure
+            src="/screenshots/lens-on-booking.png"
+            alt="WikiTraveler Lens overlay on a Booking.com listing, demo data, not real property facts"
+            caption="Lens on a booking page. Demo data for illustration, not real property facts."
+            width={1440}
+            height={900}
+            sizes="(max-width: 900px) 92vw, 480px"
+          />
         </div>
       </section>
 
-      <section className="wt-www-section" aria-labelledby="home-open">
-        <div className="wt-www-shell wt-www-home-narrow">
-          <h2 id="home-open">Open and reusable</h2>
-          <p className="wt-www-home-lead">
-            MIT code. CC-BY mesh data. Registration stays off while this is a controlled test. Fork
-            what helps, integrate the SDK, or tell us where the architecture is wrong.
-          </p>
+      <section className="wt-www-section wt-www-section--tint" aria-labelledby="home-toolkit">
+        <div className="wt-www-shell wt-www-home-toolkit">
+          <div className="wt-www-home-toolkit__copy">
+            <h2 id="home-toolkit" className="wt-www-home-section-title">
+              Open toolkit
+            </h2>
+            <p className="wt-www-home-lead">
+              MIT code. CC-BY mesh data. Ambitious, and still early. Fork what helps, integrate the
+              SDK, or tell us where the architecture is wrong. Registration stays off while this is
+              a controlled test; reach out if you want hands-on Access or Lens.
+            </p>
+          </div>
           <ul className="wt-www-home-links">
             <li>
               <Link href="/story">Origin story</Link>
@@ -169,13 +180,19 @@ export default function HomePage() {
               <a href={LINKS.github} target="_blank" rel="noopener noreferrer">
                 GitHub
               </a>
-              <span>Source, issues, reuse</span>
+              <span>Source and reuse</span>
             </li>
             <li>
-              <a href={LINKS.lensRelease} target="_blank" rel="noopener noreferrer">
-                Lens
+              <a href={LINKS.issues} target="_blank" rel="noopener noreferrer">
+                Contact
               </a>
-              <span>Chrome Web Store</span>
+              <span>Issues and questions</span>
+            </li>
+            <li>
+              <a href={LINKS.contributing} target="_blank" rel="noopener noreferrer">
+                Contributing
+              </a>
+              <span>How to help</span>
             </li>
             <li>
               <a href={LINKS.sdk} target="_blank" rel="noopener noreferrer">
@@ -188,12 +205,6 @@ export default function HomePage() {
                 Docs
               </a>
               <span>Architecture hub</span>
-            </li>
-            <li>
-              <a href={LINKS.access} target="_blank" rel="noopener noreferrer">
-                Access
-              </a>
-              <span>Traveler app · signup off</span>
             </li>
           </ul>
         </div>
