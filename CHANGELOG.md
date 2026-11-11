@@ -18,7 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
-- Origin story tightened for LinkedIn publish: manifesto section dropped, flow bridges after pruning, shorter gallery, flatter product copy, lessons cut to three ([docs/story/README.md](docs/story/README.md))
+- Origin story tightened for LinkedIn publish: manifesto section dropped, flow bridges after pruning, shorter gallery, flatter product copy, lessons cut to three; LinkedIn caption rewritten ([docs/story/publish-ready.md](docs/story/publish-ready.md))
 - www home differentiated from `/story`: no story headline; What it is as part cards with destinations; smaller mesh + coverage diagrams; Open toolkit (ambitious / still early) + contact links; screenshots open in a lightbox
 - Origin story: simplify the remaining “bet” paragraph after Ongehinderd
 - Origin story: drop punchy closers (“cosplay” line; “faster way to ship a lie”) ([docs/story/README.md](docs/story/README.md))
