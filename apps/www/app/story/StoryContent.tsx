@@ -1,7 +1,6 @@
 import { LINKS } from "../../lib/site";
 import { ExtLink } from "./ExtLink";
 import { StoryFigure } from "./StoryFigure";
-import { StoryGallery } from "./StoryGallery";
 import { TrustTable } from "./TrustTable";
 
 export function StoryContent() {
@@ -42,7 +41,7 @@ export function StoryContent() {
         sitting with the tab open, in the chair. Will the entrance actually work? Is the
         “accessible” room reachable when the lift isn’t? Can you turn in the bathroom, or do you
         find out the sink blocks the transfer only after you’ve paid and traveled? Search says
-        accessible. The photo omits the doorway. A review says “wheelchair-friendly” like “cozy” , 
+        accessible. The photo omits the doorway. A review says “wheelchair-friendly” like “cozy”:
         atmosphere, not evidence. Too often: <em>you won’t know until you’re there.</em>
       </p>
       <p>
@@ -55,13 +54,7 @@ export function StoryContent() {
         a trust problem dressed up as a content problem.
       </p>
       <p>
-        That picture has to come first. Only then do the product and engineering questions get real
-        room, what scales without lying, what’s feasible to build without up-to-date programming
-        knowledge.
-      </p>
-      <p>
-        Strong AI models change the tempo: they can implement against a picture you can already hold
-        in your head. The picture is the hard part. The agents type. You’re the conductor.
+        That picture had to come first: what scales without lying, and what’s feasible to build.
       </p>
       <p>So I did what people with dangerous curiosity always do.</p>
       <p>I started building.</p>
@@ -72,23 +65,9 @@ export function StoryContent() {
       <p>And then it got out of hand, in the useful way.</p>
       <p>Welcome to WikiTraveler.</p>
       <p>
-        This piece is mainly for people who do <strong>UX and product work</strong> and are figuring
-        out what AI-assisted building changes, and what it doesn’t.
-        <br />
-        Along the way it should also make sense if you care about{" "}
-        <strong>disability and travel access</strong>, <strong>open source commons</strong>, or{" "}
-        <strong>shipping weird infrastructure as a side project</strong>.
-      </p>
-      <p>Different readers can take different exits. Same story.</p>
-      <p>
-        One vocabulary note before we go on, because “UX” gets abused into meaning “someone made the
-        buttons blue.” <strong>User experience (UX)</strong> is the whole lived path through a
-        product: goals, confusion, trust, dead ends, what happens when the data is wrong.{" "}
-        <strong>Usability</strong> is a chunk of that, can someone complete the task without
-        fighting the interface? <strong>UI</strong> is the visible layer: screens, controls, layout.
-        Related; not the same. Product sense asks whether we’re solving the right problem at all.
-        When I say UX in this piece, I mostly mean the <em>experience of trusting a stay</em> , 
-        journey and information architecture first, pixels second.
+        This is mainly for <strong>UX and product people</strong> figuring out what AI-assisted
+        building changes. It should also make sense if you care about{" "}
+        <strong>disability and travel access</strong>, or open tooling you can reuse.
       </p>
 
       <hr />
@@ -120,7 +99,6 @@ export function StoryContent() {
         <li>and a community model with auditors and operators</li>
       </ul>
       <p>…in six months, as a side project.</p>
-      <p>Which is exactly what happened.</p>
       <p>
         <strong>
           The scarce skill is picturing the whole system as experience, as architecture, and as a
@@ -139,47 +117,11 @@ export function StoryContent() {
 
       <hr />
 
-      <h2>The March 2026 manifesto (mostly still true)</h2>
-      <p>
-        On <strong>18 March 2026</strong>, early in the build, I wrote myself a manifesto. It had a
-        version number. It had emoji. It had sentences like “Distributed Truth Layer” and
-        “Community-Owned Certainty.” It was earnest, a little loud, and looking back, almost
-        awkwardly on target.
-      </p>
-      <p>The vision, compressed:</p>
-      <blockquote>
-        <p>
-          Replace unreliable corporate booking data with a community-driven truth layer. Travelers
-          deserve certainty, not best guesses. Keep insights free, open, and verified by people on
-          the ground, not by whoever is selling the room.
-        </p>
-      </blockquote>
-      <p>
-        The strategy had five verbs: <strong>Expose → Verify → Decentralize → Gossip → Open-source.</strong>
-      </p>
-      <p>
-        The toolkit was already named in spirit: <strong>Node</strong>, <strong>Lens</strong>,{" "}
-        <strong>Field Kit</strong>, a <strong>gossip</strong> sync, trust tiers from official
-        baseline → AI guess → community verification → multi-party consensus.
-      </p>
-      <p>What held:</p>
-      <ul>
-        <li>sidecar, not replacement</li>
-        <li>AI estimates guide; they don’t become reality</li>
-        <li>field audits as the scarce honest resource</li>
-        <li>federated nodes so truth can’t sit behind one paywall</li>
-        <li>Lens as the browser overlay</li>
-        <li>open protocol / open data instincts (MIT code, CC-BY mesh data)</li>
-      </ul>
-
-      <hr />
-
       <h2>What WikiTraveler is (today)</h2>
       <p>
-        WikiTraveler is an open-source toolkit for{" "}
-        <strong>federated accessibility intelligence for travel</strong>.
+        In human terms, WikiTraveler is an open-source toolkit for{" "}
+        <strong>accessibility facts about stays</strong>:
       </p>
-      <p>In human terms:</p>
       <ul>
         <li>
           <strong>Nodes</strong> hold the truth for geographic regions.
@@ -201,54 +143,24 @@ export function StoryContent() {
           <strong>Core</strong> shared packages define tiers, merge rules, and gossip logic.
         </li>
       </ul>
-      <p>Trust is layered on purpose:</p>
+      <p>Trust is layered. Higher tiers win on merge:</p>
       <TrustTable />
-      <p>Higher tiers win on merge.</p>
-      <p>That one table is the moral of the system.</p>
+      <p>
+        Scores and facts in the screenshots below are made up for illustration, not real property
+        data.
+      </p>
 
       <h3>What it looks like</h3>
-      <p>Same trust model, different jobs, search, detail, field audit, booking sidecar, and operating a node:</p>
-
-      <h4>Access: find a stay</h4>
-      <p>Map and list over a region, with trust visible before you open a stay.</p>
-      <StoryGallery
-        layout="desktop-mobile"
-        caption="Search on desktop and mobile. Coverage and audited stays show up before the booking decision. Scores and facts in these screenshots are made up for illustration, not real property data."
-        items={[
-          {
-            src: "/screenshots/access-desktop.jpg",
-            alt: "WikiTraveler Access on desktop: map, property list, and detail card",
-            width: 1024,
-            height: 732,
-          },
-          {
-            src: "/screenshots/access-mobile.png",
-            alt: "WikiTraveler Access on mobile: map of Eindhoven with an audited property sheet for The Match",
-            width: 390,
-            height: 844,
-          },
-        ]}
-      />
 
       <h4>Access: property detail</h4>
       <p>Scores, category coverage, and fact tiers for one stay.</p>
       <StoryFigure
         src="/screenshots/access-property-the-match.png"
         alt="WikiTraveler Access property detail for The Match: accessibility score, feature badges, and Official facts"
-        caption="Detail is where travelers see evidence, not a marketing checkbox. Scores and facts in this screenshot are made up for illustration, not real property data."
+        caption="Detail is where travelers see evidence, not a marketing checkbox."
         width={1662}
         height={1033}
         priority
-      />
-
-      <h4>Access: audit wizard</h4>
-      <p>Structured field audit with photos attached to steps and room types.</p>
-      <StoryFigure
-        src="/screenshots/access-audit-the-match.png"
-        alt="WikiTraveler Access audit wizard for The Match: Step 1 Entrance with door width, step-free path, verified fields, and photos"
-        caption="Field proof attaches to the claim, not a free-floating tag. Values and photos in this screenshot are made up for illustration, not a real audit."
-        width={1047}
-        height={1072}
       />
 
       <h4>Lens: booking sidecar</h4>
@@ -256,35 +168,9 @@ export function StoryContent() {
       <StoryFigure
         src="/screenshots/lens-on-booking.png"
         alt="WikiTraveler Lens overlay on a blurred Booking.com listing for The Match: scores, feature icons, and audit photos"
-        caption="Sidecar UX: stay where people already book. Scores and facts in this screenshot are made up for illustration, not real property data."
+        caption="Sidecar UX: stay where people already book."
         width={1440}
         height={900}
-      />
-
-      <h4>Node Admin: operate a region</h4>
-      <p>Property editing, peer gossip, and community signals for operators.</p>
-      <StoryGallery
-        caption="Edit audits on a stay, sync peers over gossip, review traveler signals. Property facts in these screenshots are made up for illustration, not real audits."
-        items={[
-          {
-            src: "/screenshots/node-property-edit.png",
-            alt: "WikiTraveler Node property audit for The Match: Submit audit wizard entrance step",
-            width: 1280,
-            height: 800,
-          },
-          {
-            src: "/screenshots/node-peers.png",
-            alt: "WikiTraveler Node Admin Peers tab showing node-eu peer with gossip protocol 2",
-            width: 1280,
-            height: 800,
-          },
-          {
-            src: "/screenshots/node-signals.png",
-            alt: "WikiTraveler Node Community signals queue for auditor review",
-            width: 1280,
-            height: 800,
-          },
-        ]}
       />
 
       <hr />
@@ -322,45 +208,21 @@ export function StoryContent() {
       <p>People do not wake up wanting a new travel platform.</p>
       <p>They wake up wanting a stay that won’t trap them.</p>
       <p>
-        So WikiTraveler is designed as a <strong>sidecar</strong>:
+        So WikiTraveler is a <strong>sidecar</strong>: OpenStreetMap as baseline, truth in a
+        gossiping mesh, clients that only ask, and Booking / Expedia still where people book. We
+        overlay, enrich, deep-link, report. We don’t try to become the destination.
       </p>
-      <ol>
-        <li>
-          <strong>Baseline from the commons</strong>: OpenStreetMap and related open sources give
-          you something to start from.
-        </li>
-        <li>
-          <strong>Truth lives in a mesh</strong>: independent nodes gossip verified facts; no
-          single vendor is required.
-        </li>
-        <li>
-          <strong>Clients consume the mesh</strong>: Access, Lens, SDK.
-        </li>
-        <li>
-          <strong>Existing platforms remain the booking surface</strong>: we overlay, enrich,
-          deep-link, report issues.
-        </li>
-      </ol>
-      <p>Lens is the purest expression of that idea.</p>
+      <p>Lens is the purest expression of that.</p>
       <p>You’re on Booking.com / Expedia / Hotels.com.</p>
       <p>You hover a listing.</p>
       <p>
         WikiTraveler tries to resolve the property and show accessibility facts from the community
-        mesh.
+        mesh. If the area isn’t covered, it should say so honestly instead of inventing confidence.
       </p>
       <p>
-        If the area isn’t covered, it should say so honestly instead of inventing confidence.
+        The <ExtLink href={LINKS.sdk}>SDK</ExtLink> is the same idea for product teams: don’t
+        rebuild accessibility truth. Consume the commons. Show it in <em>your</em> UX.
       </p>
-      <p>
-        The <ExtLink href={LINKS.sdk}>SDK</ExtLink> is the same idea for product teams:
-      </p>
-      <blockquote>
-        <p>Don’t rebuild accessibility truth.</p>
-        <p>Consume the commons.</p>
-        <p>
-          Show it in <em>your</em> UX.
-        </p>
-      </blockquote>
       <p>
         Ambitious, and still early. Yet the bet is simple: an open mesh of field-checked facts is
         more useful than another closed database of half-true icons.
@@ -377,9 +239,8 @@ export function StoryContent() {
       <h3>Act I: Inventory without renting the universe</h3>
       <p>First problem: where do the stays come from?</p>
       <p>
-        The March 2026 manifesto still assumed <strong>Amadeus</strong> as the official baseline to
-        “expose” vague corporate tags. I started there because it looked like a sensible property
-        feed. Then the self-service developer portal was gone: decommissioned on{" "}
+        I started with <strong>Amadeus</strong> as the official baseline to “expose” vague
+        corporate tags. It looked like a sensible property feed. Then the self-service developer portal was gone: decommissioned on{" "}
         <strong>17 July 2026</strong> (their announcement), with only the Enterprise API path
         remaining, request access, sandbox, travel consultants, commercial offers. For a side
         project that wants open, keepable inventory, that’s a dead end. So I ripped the dependency
@@ -473,6 +334,8 @@ export function StoryContent() {
         <li>dependency / CodeQL hygiene</li>
         <li>release versioning so operators aren’t forced into day-zero upgrades</li>
       </ul>
+      <p>Once it was safe enough to share, the next question was how to hide the mesh.</p>
+
       <h3>Act V: Hide the mesh from travelers</h3>
       <p>
         Fifth problem: federation is only useful if normal people don’t have to understand it.
@@ -511,55 +374,38 @@ export function StoryContent() {
       </p>
       <p>
         Here’s the part where the engineer ego needs to sit down anyway: the code is not the hard
-        part. Filling a system with <strong>reliable accessibility information</strong>: and
+        part. Filling a system with <strong>reliable accessibility information</strong>, and
         keeping it trustworthy, is. Without travelers, auditors, operators, and integrators, the
         mesh is a fancy mirror of OSM tags and AI guesses. OSM is inventory, not a bathroom doorway.
         If the mesh lies about that doorway, it isn’t a backlog bug, it’s a broken promise with
-        physical consequences. Open source is the offer: use, fork, or discard what exists.
+        physical consequences.
       </p>
       <p>
-        The bet that remains: an open commons beside Booking, rooted in OpenStreetMap, with audits
-        and photos in the mesh so verified wheelchair signals can flow back where they belong.
+        So what remains is this bet: an open commons beside Booking, rooted in OpenStreetMap, with
+        audits and photos in the mesh so verified wheelchair signals can flow back where they
+        belong.
       </p>
 
       <hr />
 
       <h2>What this built taught (without the TED Talk polish)</h2>
 
-      <h3>1. A clear mental model beats a perfect initial stack</h3>
-      <p>
-        The design moved left to right. Amadeus-until-self-service-died, OSM, central registry, peer
-        mesh, Field Kit, Access, hub routing, some of the best instincts arrived as workarounds.
-        The surviving ideas, sidecar, commons, trust tiers, honest coverage, were less “designed
-        on day one” and more “what remained after reality edited the plan.”
-      </p>
-
-      <h3>2. Agents make wrong paths ship fast, so killing them becomes the work</h3>
+      <h3>1. Agents make wrong paths ship fast, so killing them becomes the work</h3>
       <p>
         Locally coherent ideas are easy to generate now. The useful skill isn’t producing more
         surface area; it’s noticing when a path fights the product and deleting it before it hardens
-        into “the product.”
+        into “the product.” The central registry felt orderly. It was also the wrong shape. Killing
+        it forced the real design.
       </p>
 
-      <h3>3. Renames are architecture</h3>
+      <h3>2. Renames are architecture</h3>
       <p>
-        Naming isn’t cosmetics. A rename forces a clearer claim about who the system is for and what
-        it is allowed to become, and that clarity is what lets the next design decisions land.
+        Naming isn’t cosmetics. Field Kit became Access because travelers aren’t a “kit.” A rename
+        forces a clearer claim about who the system is for, and that clarity is what lets the next
+        design decisions land.
       </p>
 
-      <h3>4. Security work is community work</h3>
-      <p>
-        SSRF guards, dependency pins, trusted CORS for hub clients, these are how you respect
-        operators and travelers you haven’t met yet.
-      </p>
-
-      <h3>5. Docs are part of the UX</h3>
-      <p>
-        Operator guides, RFCs, upgrade runbooks, community roles: if only one person understands the
-        mesh, it isn’t a mesh. It’s a science project with a domain name.
-      </p>
-
-      <h3>6. Code without coverage is still vapor</h3>
+      <h3>3. Code without coverage is still vapor</h3>
       <p>
         Nodes can ship forever. If verified facts don’t accumulate in real regions, WikiTraveler
         remains a well-documented empty room. That risk is real. Naming it is part of taking the
