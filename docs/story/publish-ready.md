@@ -12,7 +12,7 @@ Copy/paste for Medium, LinkedIn, Hacker News, and forums. Live story: [www.wikit
 
 ---
 
-*Audience note: primary readers = UX/product people exploring AI-assisted building; secondary = a11y/disability, OSS/dev, travel tech. Channels: Medium, LinkedIn, Hacker News, plus disability / open-source / developer forums. CTA: read, share, reuse, critique, hands-on Access/Lens via GitHub contact (registration off). Suggested tags:* `#accessibility` `#opensource` `#ux` `#a11y` `#traveltech` `#federation`. *Estimated reading time: ~15-18 minutes.*
+*Audience note: primary readers = UX/product people exploring AI-assisted building; secondary = a11y/disability, OSS/dev, travel tech. Channels: Medium, LinkedIn, Hacker News, plus disability / open-source / developer forums. CTA: read, share, reuse, critique, hands-on Access/Lens via GitHub contact (registration off). Suggested tags:* `#accessibility` `#opensource` `#ux` `#a11y` `#traveltech` `#federation`. *Estimated reading time: ~12 minutes.*
 
 **Images:** linked relatively from the story as `../assets/screenshots/` (`mesh-overview.jpg`, `mesh-coverage-geo.png`, `access-desktop.jpg`, `access-mobile.png`, `access-property-the-match.png`, `access-audit-the-match.png`, `lens-on-booking.png`, Node shots, …). On GitHub they render from the repo. For Medium/LinkedIn, upload those same files and swap in CDN URLs.
 
@@ -24,20 +24,23 @@ Copy/paste for Medium, LinkedIn, Hacker News, and forums. Live story: [www.wikit
 
 ### LinkedIn
 
-The hotel said “accessible.” That wasn’t enough.
+The hotel said “accessible.”
 
-I’m a UX engineer. After a relative who uses a wheelchair described how miserable booking travel still is, curiosity and a UX brain did the rest. AI assistance removed the old implementation bottleneck; the scarce skill was picturing the system (experience, architecture, value bet). What grew is an open toolkit: gossiping nodes, Access, Lens on Booking/Expedia, agency SDK. Later I found organisations already working on the same problem. The write-up is open; so is the code.
+That wasn’t enough. Not for my cousin-in-law Maurice, who uses a wheelchair. Booking travel still means guessing from marketing checkboxes, blurry photos, and reviews that say “wheelchair-friendly” the way they say “cozy.”
 
-(If you attach product screenshots: scores and facts in those UIs are sample/demo data, not real property information.)
+That conversation wouldn’t leave me alone. So I started building.
 
-[LINK TO ARTICLE]
+AI assistance made the hands keep up with the thought. The hard part was still the picture: experience, architecture, and the value bet, kept coherent while agents assemble parts.
 
-If this resonates: read the repo, share it, reuse what helps, or tell me where I’m wrong. Public Access/Lens signup is off for now; if you want hands-on access, reach out via GitHub.
+Six months later there’s an open toolkit for accessibility facts about stays: a mesh of nodes, a traveler/auditor app, a Chrome extension that sits on Booking and Expedia, and an SDK for products that want the same data. Sidecar, not another booking site. OpenStreetMap as baseline. Field audits as the thing that actually creates trust.
 
-Repo: [https://github.com/ingmarstruijs/WikiTraveler](https://github.com/ingmarstruijs/WikiTraveler)  
-Lens: [https://chromewebstore.google.com/detail/wikitraveler-lens/bkkbidghpfkojnhhjnmddegkiopjbkho](https://chromewebstore.google.com/detail/wikitraveler-lens/bkkbidghpfkojnhhjnmddegkiopjbkho)  
-Access (registration off): [https://access.wikitraveler.org](https://access.wikitraveler.org)  
-SDK: [https://www.npmjs.com/package/@wikitraveler/sdk](https://www.npmjs.com/package/@wikitraveler/sdk)
+~12 min read: https://www.wikitraveler.org/story
+
+If it resonates: reuse what helps, or tell me where I’m wrong. Public signup is off for now; reach out via GitHub if you want hands-on.
+
+Repo: https://github.com/ingmarstruijs/WikiTraveler
+
+(If you attach product screenshots: scores and facts are sample/demo data, not real property information.)
 
 #accessibility #ux #opensource #a11y
 
